@@ -21,6 +21,10 @@ Meridiano es la plataforma interna de North Stonebridge para el seguimiento de a
 
 **La clave nunca se guarda en este repositorio.** Solo la conocen los socios y la tarea programada.
 
+### Módulos
+
+Meridiano tiene dos pestañas: **Radar** (resumen, filtros, lista de alertas con fuentes, contactos y borradores) y **Mapa de presión** (situación por departamento). Al hacer clic en una zona del mapa se abre su ficha: nivel de presión, cifras, una lectura breve y todas las alertas de esa zona con sus fuentes, incluidas las anteriores a la ventana de tiempo como antecedente. Desde la ficha se puede abrir cualquier alerta en el Radar. El enlace `…/Meridiano-NS/#mapa` abre directamente el mapa después de ingresar la clave.
+
 ### Mapa de presión
 
 Colorea cada departamento según las alertas de los últimos 14, 30 o 60 días. Cada alerta suma según su nivel (Crítico 4, Alto 3, Medio 2, Bajo 1) y pesa la mitad cada 14 días de antigüedad; las descartadas no cuentan. Escala: Sin reportes, Bajo, Moderado, Alto y Muy alto. Al pasar el cursor se ve el resumen de la región (tipos de hecho, actores señalados, última alerta); con un clic se filtra la lista por ese departamento. Las alertas nacionales o sin departamento no aparecen en el mapa.

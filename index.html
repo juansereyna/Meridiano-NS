@@ -72,6 +72,42 @@ h1{font-family:var(--display);font-weight:600;font-size:clamp(28px,4vw,38px);lin
 .stat.crit .n{color:var(--crit)} .stat.pros .n{color:var(--gold)}
 @media (max-width:700px){.summary{grid-template-columns:repeat(2,minmax(0,1fr))}.sess{text-align:left;align-items:flex-start}.sess .row{justify-content:flex-start}}
 
+/* ---------- Mapa de calor ---------- */
+:root{--h0:#E6DFD0;--h1:#EAD7AC;--h2:#D6A660;--h3:#B9662F;--h4:#8E2A24;--hstroke:#F7F3EA}
+@media (prefers-color-scheme:dark){:root{--h0:#243546;--h1:#5E5338;--h2:#A97E3E;--h3:#C9692F;--h4:#E0574A;--hstroke:#111B26}}
+.mapsec{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:22px;align-items:start;border:1px solid var(--line);background:var(--surface);padding:18px 20px}
+@media (max-width:860px){.mapsec{grid-template-columns:minmax(0,1fr)}}
+.maphead{grid-column:1/-1;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:10px}
+.maphead h2{font-family:var(--display);font-weight:600;font-size:26px;margin:0;line-height:1.1}
+.mapwrap{position:relative;min-width:0}
+.mapwrap svg{width:100%;height:auto;display:block;max-height:78vh}
+.dp{stroke:var(--hstroke);stroke-width:.8;cursor:pointer;transition:filter .15s}
+.dp:hover,.dp.on{stroke:var(--ink);stroke-width:1.4}
+.dp:focus-visible{outline:none;stroke:var(--gold);stroke-width:2}
+.dp.sel{stroke:var(--gold);stroke-width:2.2}
+.h0{fill:var(--h0)} .h1{fill:var(--h1)} .h2{fill:var(--h2)} .h3{fill:var(--h3)} .h4{fill:var(--h4)}
+.cnt circle{fill:var(--surface);stroke:var(--ink);stroke-width:.8}
+.cnt text{font-family:var(--mono);font-size:9px;fill:var(--ink);text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.cnt{pointer-events:none}
+.inset rect{fill:none;stroke:var(--line);stroke-dasharray:3 2}
+.inset text{font-size:7px;fill:var(--muted);font-family:var(--body)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted);align-items:center}
+.legend i{display:inline-block;width:14px;height:10px;vertical-align:-1px;margin-right:5px;border:1px solid var(--line)}
+.tip{position:absolute;z-index:5;pointer-events:none;background:var(--ink);color:var(--bg);padding:10px 12px;width:min(270px,80vw);font-size:12.5px;line-height:1.45;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.tip b.n{font-family:var(--display);font-size:18px;font-weight:600;display:block;line-height:1.15}
+.tip .lv{display:inline-block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;padding:1px 6px;margin:4px 0 6px;color:#1C2A3A}
+.tip ul{margin:4px 0 0;padding-left:16px}
+.tip .last{border-top:1px solid rgba(255,255,255,.25);margin-top:6px;padding-top:6px}
+.tip .hint{opacity:.7;font-size:11.5px;margin-top:6px}
+.rank{display:flex;flex-direction:column;gap:2px}
+.rank h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 8px}
+.rk{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:2px 12px;align-items:center;padding:7px 4px;border:0;border-bottom:1px solid var(--line);background:transparent;text-align:left;cursor:pointer;width:100%}
+.rk:hover{background:var(--sunk)}
+.rk .nm{font-weight:700;font-size:14px}
+.rk .sub{grid-column:1;font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rk .bar{grid-row:1/span 2;grid-column:2;height:8px;background:var(--sunk);position:relative}
+.rk .bar span{position:absolute;inset:0 auto 0 0}
+.mnote{font-size:12px;color:var(--muted);margin:10px 0 0}
 .filters{display:flex;flex-direction:column;gap:10px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{border:1px solid var(--line);background:var(--surface);padding:5px 11px;border-radius:999px;font-size:13px;cursor:pointer}
@@ -192,6 +228,26 @@ footer{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-con
     <div class="stat"><span class="n" id="sPend">–</span><span class="l">Borradores por revisar</span></div>
   </section>
 
+  <section class="mapsec" aria-label="Mapa de presión por departamento">
+    <div class="maphead">
+      <div><div class="eyebrow">Situación actual por departamento</div><h2>Mapa de presión</h2></div>
+      <div class="seg" role="group" aria-label="Ventana de tiempo">
+        <button type="button" data-w="14" aria-pressed="true">14 días</button>
+        <button type="button" data-w="30" aria-pressed="false">30 días</button>
+        <button type="button" data-w="60" aria-pressed="false">60 días</button>
+      </div>
+    </div>
+    <div class="mapwrap" id="mapwrap">
+      <svg id="map" role="img" aria-label="Mapa de Colombia por departamentos coloreado según la presión de las alertas"></svg>
+      <div class="tip" id="tip" hidden></div>
+    </div>
+    <div>
+      <div class="rank" id="rank"></div>
+      <div class="legend" id="legend" style="margin-top:14px"></div>
+      <p class="mnote" id="mnote"></p>
+    </div>
+  </section>
+
   <section class="filters" aria-label="Filtros">
     <div class="chips" id="typeChips"></div>
     <div class="row-f">
@@ -255,7 +311,7 @@ footer{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-con
 
   /* -------- Sesión: todo vive en memoria y se borra al salir -------- */
   let S=null, lastAct=0, idleTimer=null, refreshTimer=null;
-  function blank(){return {pw:null,rows:[],meta:null,type:"",rel:"",sel:null,local:{},localKey:null};}
+  function blank(){return {pw:null,rows:[],meta:null,type:"",rel:"",sel:null,local:{},localKey:null,win:14,press:null};}
 
   async function deriveKey(pw, salt, iter){
     const base=await crypto.subtle.importKey("raw",enc.encode(pw),"PBKDF2",false,["deriveKey"]);
@@ -303,7 +359,7 @@ footer{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-con
     $("enter").disabled=true;$("loginMsg").className="msg info";$("loginMsg").textContent="Verificando…";
     try{
       const data=await openSealed(pw);
-      S=blank(); S.pw=pw; S.localKey=await localKey(pw); S.local=await loadLocal();
+      S=blank(); S.pw=pw; S.localKey=await localKey(pw); S.local=await loadLocal(); await loadGeo();
       ingest(data);
       $("pass").value="";$("loginMsg").textContent="";
       $("gate").hidden=true;$("app").hidden=false;
@@ -331,7 +387,7 @@ footer{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-con
   function logout(reason){
     clearInterval(idleTimer);clearInterval(refreshTimer);idleTimer=refreshTimer=null;
     S=null;
-    $("list").innerHTML="";$("panel").innerHTML="";$("typeChips").innerHTML="";
+    $("list").innerHTML="";$("panel").innerHTML="";$("typeChips").innerHTML="";$("map").innerHTML="";$("rank").innerHTML="";$("tip").hidden=true;
     $("app").hidden=true;$("idleWarn").hidden=true;$("gate").hidden=false;
     $("loginMsg").className="msg info";$("loginMsg").textContent=reason||"Sesión cerrada.";
     $("pass").value="";$("pass").focus();
@@ -435,11 +491,107 @@ footer{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-con
         <p class="local">El estado y las notas se guardan cifrados solo en este equipo.</p>
       </div>`;
   }
-  function render(){if(!S)return;summary();chips();deptos();list();panel();}
+  /* -------- Mapa de presión -------- */
+  let GEO=null;
+  const BANDS=[{k:"h0",t:"Sin reportes",min:-1},{k:"h1",t:"Bajo",min:0.01},{k:"h2",t:"Moderado",min:1.5},{k:"h3",t:"Alto",min:3.5},{k:"h4",t:"Muy alto",min:6.5}];
+  const BAND_BG={h1:"#EAD7AC",h2:"#D6A660",h3:"#C9692F",h4:"#E0574A"};
+  const nrm=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[.,]/g," ").replace(/\s+/g," ").trim();
+  const ALIAS={"bogota":"bogota d c","bogota dc":"bogota d c","san andres":"archipielago de san andres providencia y santa catalina","san andres y providencia":"archipielago de san andres providencia y santa catalina","valle":"valle del cauca","guajira":"la guajira","norte santander":"norte de santander","quindio":"quindio"};
+  function geoKey(dep){
+    if(!GEO||!dep) return null;
+    let k=nrm(dep); k=ALIAS[k]||k;
+    const hit=GEO.dptos.find(d=>d.key===k)||GEO.dptos.find(d=>d.key.startsWith(k));
+    return hit?hit.key:null;
+  }
+  async function loadGeo(){
+    if(GEO) return GEO;
+    try{const r=await fetch("data/colombia.json",{cache:"force-cache"});GEO=await r.json();}catch(e){GEO=null;}
+    return GEO;
+  }
+  const daysAgo=f=>{if(!f)return 999;const t=Date.parse(f+"T12:00:00-05:00");return Math.max(0,(Date.now()-t)/864e5);};
+  function pressure(){
+    const win=S.win||14, by={}, loose=[];
+    S.rows.forEach(r=>{
+      if(estadoDe(r)==="Descartada") return;
+      const d=daysAgo(r.fecha); if(d>win) return;
+      const k=geoKey(r.departamento);
+      if(!k){loose.push(r);return;}
+      const w=(LV[r.nivel]||1)*Math.pow(0.5,d/14);
+      const o=by[k]||(by[k]={score:0,n:0,tipos:{},actores:{},last:null,pros:0});
+      o.score+=w;o.n++;o.tipos[r.tipo]=(o.tipos[r.tipo]||0)+1;
+      if(r.actor&&!/no atribuido|varios/i.test(r.actor)){const a=r.actor.replace(/\s*\(.*?\)\s*/g,"").trim();o.actores[a]=(o.actores[a]||0)+1;}
+      if(isPros(r))o.pros++;
+      if(!o.last||(r.fecha||"")>(o.last.fecha||""))o.last=r;
+    });
+    return {by,loose};
+  }
+  const bandOf=s=>{let b=BANDS[0];for(const x of BANDS)if(s>=x.min)b=x;return b;};
+  function drawMap(){
+    if(!GEO){$("map").innerHTML="";$("mnote").textContent="No se pudo cargar el mapa.";return;}
+    const P=pressure(); S.press=P;
+    const [ix,iy,iw,ih,icode]=GEO.inset;
+    const selKey=geoKey($("fDepto").value);
+    let svg=`<g class="inset"><rect x="${ix}" y="${iy}" width="${iw}" height="${ih}"/><text x="${ix+4}" y="${iy+9}">San Andrés y Prov.</text></g>`;
+    svg+='<g id="dps">'+GEO.dptos.map(d=>{const o=P.by[d.key];const b=bandOf(o?o.score:-1);
+      return `<path class="dp ${b.k}${d.key===selKey?" sel":""}" d="${d.d}" data-k="${esc(d.key)}" tabindex="0" role="button" aria-label="${esc(d.name)}: ${b.t}${o?", "+o.n+" alertas":""}"/>`;}).join("")+'</g>';
+    svg+='<g>'+GEO.dptos.filter(d=>P.by[d.key]).map(d=>{const n=P.by[d.key].n;return `<g class="cnt"><circle cx="${d.cx}" cy="${d.cy}" r="${n>9?8:6.5}"/><text x="${d.cx}" y="${d.cy}">${n}</text></g>`;}).join("")+'</g>';
+    const m=$("map");m.setAttribute("viewBox",`0 0 ${GEO.w} ${GEO.h}`);m.innerHTML=svg;
+    // Ranking
+    const rk=Object.entries(P.by).sort((a,b)=>b[1].score-a[1].score).slice(0,7);
+    const max=rk.length?rk[0][1].score:1;
+    $("rank").innerHTML=`<h3>Zonas con más presión · ${S.win} días</h3>`+(rk.length?rk.map(([k,o])=>{const d=GEO.dptos.find(x=>x.key===k);const b=bandOf(o.score);const top=Object.entries(o.tipos).sort((a,b)=>b[1]-a[1])[0][0];
+      return `<button type="button" class="rk" data-k="${esc(k)}"><span class="nm">${esc(d.name)}</span><span class="bar"><span style="width:${Math.max(6,o.score/max*100)}%;background:var(--${b.k})"></span></span><span class="sub">${b.t} · ${o.n} ${o.n===1?"alerta":"alertas"} · ${esc(top)}</span></button>`;}).join(""):'<p class="mnote">Sin alertas ubicadas en esta ventana de tiempo.</p>');
+    $("legend").innerHTML=BANDS.map(b=>`<span><i style="background:var(--${b.k})"></i>${b.t}</span>`).join("");
+    $("mnote").textContent=(P.loose.length?`${P.loose.length} ${P.loose.length===1?"alerta nacional o sin ubicación no aparece":"alertas nacionales o sin ubicación no aparecen"} en el mapa. `:"")+"La presión suma las alertas por nivel y pesa más las recientes. Fronteras: DANE, MGN 2018.";
+  }
+  function tipHTML(k){
+    const d=GEO.dptos.find(x=>x.key===k);const o=S.press&&S.press.by[k];
+    if(!o) return `<b class="n">${esc(d.name)}</b><span class="lv" style="background:var(--h0);color:var(--ink)">Sin reportes</span><div>No hay alertas registradas en los últimos ${S.win} días.</div>`;
+    const b=bandOf(o.score);
+    const tipos=Object.entries(o.tipos).sort((a,b)=>b[1]-a[1]).map(([t,n])=>`<li>${esc(t)}${n>1?" ×"+n:""}</li>`).join("");
+    const act=Object.entries(o.actores).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0]);
+    return `<b class="n">${esc(d.name)}</b><span class="lv" style="background:${BAND_BG[b.k]||"#E6DFD0"}">${b.t}</span>
+      <div>${o.n} ${o.n===1?"alerta":"alertas"} en ${S.win} días${o.pros?` · ${o.pros} con empresa identificada`:""}</div>
+      <ul>${tipos}</ul>${act.length?`<div style="margin-top:4px">Actores señalados: ${esc(act.join(", "))}</div>`:""}
+      <div class="last">Última: ${esc(o.last.titulo)} <span style="opacity:.75">· ${fmtD(o.last.fecha)}</span></div>
+      <div class="hint">Clic para ver sus alertas en la lista</div>`;
+  }
+  function showTip(k,ev){
+    const tip=$("tip"),wrap=$("mapwrap").getBoundingClientRect();
+    tip.innerHTML=tipHTML(k);tip.hidden=false;
+    let x,y;
+    if(ev&&ev.clientX!=null){x=ev.clientX-wrap.left+14;y=ev.clientY-wrap.top+14;}
+    else{const el=document.querySelector(`.dp[data-k="${CSS.escape(k)}"]`).getBoundingClientRect();x=el.left-wrap.left+el.width/2;y=el.top-wrap.top+el.height/2;}
+    const tw=tip.offsetWidth,th=tip.offsetHeight;
+    if(x+tw>wrap.width)x=Math.max(0,x-tw-28);
+    if(y+th>wrap.height)y=Math.max(0,wrap.height-th);
+    tip.style.left=x+"px";tip.style.top=y+"px";
+    document.querySelectorAll(".dp.on").forEach(p=>p.classList.remove("on"));
+    const p=document.querySelector(`.dp[data-k="${CSS.escape(k)}"]`);if(p){p.classList.add("on");p.parentNode.appendChild(p);}
+  }
+  function hideTip(){$("tip").hidden=true;document.querySelectorAll(".dp.on").forEach(p=>p.classList.remove("on"));}
+  function pickDept(k){
+    const d=GEO.dptos.find(x=>x.key===k);if(!d)return;
+    const sel=$("fDepto");
+    const opt=[...sel.options].find(o=>geoKey(o.value)===k);
+    if(!opt){hideTip();$("mnote").textContent=`${d.name} no tiene alertas registradas.`;return;}
+    sel.value=sel.value===opt.value?"":opt.value;
+    S.sel=null;hideTip();drawMap();list();panel();
+    if(sel.value)$("list").scrollIntoView({behavior:"smooth",block:"start"});
+  }
+  $("map").addEventListener("pointermove",e=>{const p=e.target.closest(".dp");if(p)showTip(p.dataset.k,e);else hideTip();});
+  $("map").addEventListener("pointerleave",hideTip);
+  $("map").addEventListener("focusin",e=>{const p=e.target.closest(".dp");if(p)showTip(p.dataset.k,null);});
+  $("map").addEventListener("focusout",hideTip);
+  $("map").addEventListener("keydown",e=>{const p=e.target.closest(".dp");if(p&&(e.key==="Enter"||e.key===" ")){e.preventDefault();pickDept(p.dataset.k);}});
+
+  function render(){if(!S)return;summary();chips();deptos();drawMap();list();panel();}
 
   document.addEventListener("click",async e=>{
     if(!S) return;
     const t=e.target.closest("#typeChips [data-t]");if(t){S.type=t.dataset.t;render();return;}
+    const dp=e.target.closest(".dp, .rk");if(dp){pickDept(dp.dataset.k);return;}
+    const wb=e.target.closest(".seg [data-w]");if(wb){S.win=+wb.dataset.w;document.querySelectorAll(".seg [data-w]").forEach(x=>x.setAttribute("aria-pressed",x===wb));drawMap();return;}
     const rb=e.target.closest(".seg [data-r]");if(rb){S.rel=rb.dataset.r;document.querySelectorAll(".seg [data-r]").forEach(x=>x.setAttribute("aria-pressed",x===rb));render();return;}
     const al=e.target.closest(".al");if(al){S.sel=al.dataset.id;list();panel();if(innerWidth<920)$("panel").scrollIntoView({behavior:"smooth",block:"start"});return;}
     const st=e.target.closest("[data-st]");
@@ -447,7 +599,8 @@ footer{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-con
     if(e.target.id==="saveNota"){const r=S.rows.find(x=>x._id===S.sel);if(!r)return;S.local[r._id]=Object.assign({},S.local[r._id],{notas:$("nota").value});if(await saveLocal()){$("notaOk").hidden=false;setTimeout(()=>{const o=$("notaOk");if(o)o.hidden=true},1800);}return;}
     if(e.target.id==="cpMail"){const txt="Asunto: "+$("mSub").textContent+"\n\n"+$("mBody").textContent;try{await navigator.clipboard.writeText(txt);$("cpOk").hidden=false;}catch(_){const rg=document.createRange();rg.selectNodeContents($("mBody"));const s=getSelection();s.removeAllRanges();s.addRange(rg);}}
   });
-  ["fNivel","fDepto","fEstado"].forEach(id=>$(id).addEventListener("change",()=>S&&list()));
+  ["fNivel","fEstado"].forEach(id=>$(id).addEventListener("change",()=>S&&list()));
+  $("fDepto").addEventListener("change",()=>{if(S){drawMap();list();}});
   $("fQ").addEventListener("input",()=>S&&list());
 
   if(!window.crypto||!crypto.subtle){$("loginMsg").className="msg err";$("loginMsg").textContent="Este navegador no permite abrir Meridiano. Use Chrome, Edge, Safari o Firefox actualizados, por https.";$("enter").disabled=true;}

@@ -1,6 +1,7 @@
 # Nunca subir datos descifrados ni claves
 *.json
 !data/alertas.enc.json
+!data/colombia.json
 *.txt
 .env
 *.tmp

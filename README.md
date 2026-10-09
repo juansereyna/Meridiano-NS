@@ -16,9 +16,14 @@ Meridiano es la plataforma interna de North Stonebridge para el seguimiento de a
 | `index.html` | La plataforma. Pide la clave al abrir, descifra las alertas en el navegador y cierra la sesión tras 15 minutos sin actividad. |
 | `data/alertas.enc.json` | Las alertas, **cifradas** (AES-256-GCM, clave derivada con PBKDF2-SHA256, 600.000 iteraciones). Sin la clave es texto ilegible. |
 | `tools/sellar.py` | Script para cifrar, descifrar, agregar alertas y rotar la clave. |
+| `data/colombia.json` | Fronteras de los 33 departamentos (DANE · MGN 2018, simplificado) para el mapa de presión. Lo genera `tools/mapa.py`. |
 | Tarea programada | Dos barridas diarias (6:45 a. m. y 12:45 p. m., Bogotá) que agregan alertas nuevas al archivo cifrado y lo publican aquí. |
 
 **La clave nunca se guarda en este repositorio.** Solo la conocen los socios y la tarea programada.
+
+### Mapa de presión
+
+Colorea cada departamento según las alertas de los últimos 14, 30 o 60 días. Cada alerta suma según su nivel (Crítico 4, Alto 3, Medio 2, Bajo 1) y pesa la mitad cada 14 días de antigüedad; las descartadas no cuentan. Escala: Sin reportes, Bajo, Moderado, Alto y Muy alto. Al pasar el cursor se ve el resumen de la región (tipos de hecho, actores señalados, última alerta); con un clic se filtra la lista por ese departamento. Las alertas nacionales o sin departamento no aparecen en el mapa.
 
 ### Comportamiento de la sesión
 

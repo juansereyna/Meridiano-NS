@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'">
+<title>Meridiano · North Stonebridge</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231C2A3A'/%3E%3Crect x='3.5' y='3.5' width='25' height='25' fill='none' stroke='%23A8884E'/%3E%3Ctext x='16' y='21' font-family='Georgia' font-size='12' font-weight='700' fill='%23A8884E' text-anchor='middle'%3ENS%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Lato:wght@400;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Meridiano: ingreso con clave · barra de sesión · resumen · filtros · lista con franja de severidad · panel de detalle */
+:root{
+  --bg:#F7F3EA; --surface:#FFFFFF; --sunk:#EFE8D8; --line:#DDD3BE;
+  --ink:#1C2A3A; --muted:#5F6B78; --gold:#A8884E; --gold-2:#C9A86A; --ivory:#F4ECDA; --navy:#1C2A3A;
+  --crit:#9B2C2C; --high:#B4632B; --med:#A8884E; --low:#5F6B78; --ok:#2F6B4F;
+  --display:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --body:Lato,Calibri,"Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#111B26;--surface:#1C2A3A;--sunk:#16222F;--line:#2C3D50;--ink:#F4ECDA;--muted:#A9B3BE;--gold:#C9A86A;--gold-2:#D8BE8A;
+  --crit:#E07A6E;--high:#E39A5E;--med:#C9A86A;--low:#93A0AD;--ok:#7BC29B;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;padding-inline:16px;padding-block:env(safe-area-inset-top,0px) 40px}
+[hidden]{display:none!important}
+a{color:var(--ink);text-decoration-color:var(--gold);text-underline-offset:3px}
+button,select,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* ---------- Ingreso ---------- */
+.gate{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding-block:32px}
+.gate-card{width:min(420px,100%);display:flex;flex-direction:column;gap:22px}
+.meridian{width:100%;height:120px;display:block}
+.wordmark{display:flex;flex-direction:column;gap:4px}
+.wordmark .name{font-family:var(--display);font-weight:600;font-size:52px;line-height:.95;letter-spacing:.01em}
+.wordmark .by{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.tag{font-family:var(--display);font-style:italic;font-size:19px;color:var(--gold);margin:0}
+.gate form{display:flex;flex-direction:column;gap:10px}
+.gate label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.pw{display:flex;border:1px solid var(--line);background:var(--surface)}
+.pw input{flex:1;min-width:0;border:0;background:transparent;padding:12px 14px;font-size:16px}
+.pw input:focus{outline:none}
+.pw:focus-within{outline:2px solid var(--gold);outline-offset:1px}
+.pw button{border:0;background:transparent;padding:0 14px;color:var(--muted);cursor:pointer;font-size:13px}
+.btn{border:1px solid var(--ink);background:var(--ink);color:var(--bg);padding:11px 16px;cursor:pointer;font-size:14px;letter-spacing:.04em}
+.btn[disabled]{opacity:.6;cursor:progress}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line);padding:7px 13px;font-size:13px}
+.msg{font-size:13.5px;min-height:1.4em;margin:0}
+.msg.err{color:var(--crit)} .msg.info{color:var(--muted)}
+.fine{font-size:12px;color:var(--muted);border-top:1px solid var(--gold);padding-top:12px;display:flex;flex-direction:column;gap:2px}
+
+/* ---------- Aplicación ---------- */
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;padding-block:22px 16px;border-bottom:1px solid var(--gold)}
+.brand{display:flex;align-items:center;gap:14px}
+.mono-ns{width:44px;height:44px;border:1px solid var(--gold);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:20px;color:var(--gold)}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(28px,4vw,38px);line-height:1;margin:0}
+.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.sess{font-family:var(--mono);font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:3px;text-align:right;align-items:flex-end}
+.sess b{color:var(--ink);font-weight:500}
+.sess .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.warn{background:var(--sunk);border-left:3px solid var(--high);padding:10px 14px;font-size:13.5px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+
+.summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.stat{background:var(--surface);padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+.stat .n{font-family:var(--display);font-size:34px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.stat .l{font-size:12.5px;color:var(--muted)}
+.stat.crit .n{color:var(--crit)} .stat.pros .n{color:var(--gold)}
+@media (max-width:700px){.summary{grid-template-columns:repeat(2,minmax(0,1fr))}.sess{text-align:left;align-items:flex-start}.sess .row{justify-content:flex-start}}
+
+.filters{display:flex;flex-direction:column;gap:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);padding:5px 11px;border-radius:999px;font-size:13px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip .c{font-family:var(--mono);font-size:11.5px;opacity:.7;margin-left:4px}
+.row-f{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.row-f select,.row-f input{background:var(--surface);border:1px solid var(--line);padding:7px 10px;min-width:0}
+.row-f input{flex:1 1 220px}
+.seg{display:inline-flex;border:1px solid var(--line)}
+.seg button{background:var(--surface);border:0;padding:7px 12px;cursor:pointer;font-size:13px}
+.seg button[aria-pressed="true"]{background:var(--gold);color:#1C2A3A}
+
+.grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:920px){.grid{grid-template-columns:minmax(0,1fr)}}
+.list{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.empty{padding:28px 6px;color:var(--muted)}
+.al{display:grid;grid-template-columns:4px minmax(0,1fr) auto;gap:0 14px;padding:13px 10px 13px 0;border:0;border-bottom:1px solid var(--line);cursor:pointer;background:transparent;text-align:left;width:100%}
+.al:hover{background:var(--sunk)}
+.al[aria-current="true"]{background:var(--surface)}
+.stripe{grid-row:1/span 2;align-self:stretch}
+.lv-Crítico .stripe{background:var(--crit)} .lv-Alto .stripe{background:var(--high)} .lv-Medio .stripe{background:var(--med)} .lv-Bajo .stripe{background:var(--low)}
+.al .t{font-weight:700;font-size:15px;line-height:1.35}
+.al .m{grid-column:2;font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 12px}
+.al .d{grid-row:1;grid-column:3;font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.tg{font-size:11px;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line);padding:1px 7px;color:var(--muted)}
+.tg.pros{border-color:var(--gold);color:var(--gold)}
+.tg.st-Nueva{color:var(--ok);border-color:var(--ok)}
+.tg.upd{border-color:var(--high);color:var(--high)}
+
+.panel{background:var(--surface);border:1px solid var(--line);padding:20px 22px;display:flex;flex-direction:column;gap:18px;position:sticky;top:12px}
+@media (max-width:920px){.panel{position:static}}
+.panel h2{font-family:var(--display);font-weight:600;font-size:26px;line-height:1.15;margin:0;text-wrap:balance}
+.panel h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 6px;font-weight:700}
+.kv{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px 14px;font-size:13.5px;margin:0}
+.kv dt{color:var(--muted)} .kv dd{margin:0;overflow-wrap:anywhere}
+.lvl{font-weight:700} .lvl.Crítico{color:var(--crit)} .lvl.Alto{color:var(--high)} .lvl.Medio{color:var(--med)} .lvl.Bajo{color:var(--low)}
+.src{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none;font-size:13.5px}
+.src li{display:flex;gap:8px;align-items:baseline}
+.src .k{font-family:var(--mono);font-size:10.5px;padding:0 5px;border:1px solid var(--line);color:var(--muted);flex:none}
+.src .k.of{border-color:var(--ok);color:var(--ok)}
+.note{font-size:13px;color:var(--muted);background:var(--sunk);padding:10px 12px;border-left:2px solid var(--gold)}
+.mail{border:1px solid var(--line);background:var(--bg)}
+.mail .hd{padding:10px 12px;border-bottom:1px solid var(--line);font-size:13px;display:flex;flex-direction:column;gap:2px}
+.mail pre{margin:0;padding:12px;white-space:pre-wrap;font-family:var(--body);font-size:13.5px;line-height:1.55;max-height:340px;overflow:auto}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.state{display:flex;flex-wrap:wrap;gap:6px}
+textarea{width:100%;min-height:70px;background:var(--bg);border:1px solid var(--line);padding:8px 10px;resize:vertical}
+.toast{font-size:12.5px;color:var(--ok)}
+.local{font-size:12px;color:var(--muted)}
+
+.sources{border-top:1px solid var(--line);padding-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px 26px;font-size:13px}
+.sources h3{font-family:var(--display);font-size:20px;margin:0 0 4px;font-weight:600}
+.sources ul{margin:0;padding-left:18px;color:var(--muted)}
+footer{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;border-top:1px solid var(--gold);padding-top:12px}
+@media (prefers-reduced-motion:no-preference){.al{transition:background .15s}}
+</style>
+</head>
+<body>
+
+<!-- ================= INGRESO ================= -->
+<main class="gate" id="gate">
+  <div class="gate-card">
+    <svg class="meridian" viewBox="0 0 420 120" aria-hidden="true">
+      <line x1="0" y1="60" x2="420" y2="60" stroke="var(--line)" stroke-width="1"/>
+      <path d="M0,96 C90,96 120,24 210,24 C300,24 330,96 420,96" fill="none" stroke="var(--gold)" stroke-width="1.25"/>
+      <line x1="210" y1="6" x2="210" y2="114" stroke="var(--gold)" stroke-width="1"/>
+      <circle cx="210" cy="24" r="4" fill="var(--gold)"/>
+      <text x="216" y="14" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--muted)">N</text>
+    </svg>
+    <div class="wordmark">
+      <span class="name">Meridiano</span>
+      <span class="by">Inteligencia de riesgo · North Stonebridge</span>
+    </div>
+    <p class="tag">Cada alerta, en su lugar.</p>
+    <form id="loginForm" autocomplete="off" novalidate>
+      <label for="pass">Clave de acceso</label>
+      <div class="pw">
+        <input id="pass" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+        <button type="button" id="showPw" aria-pressed="false">Mostrar</button>
+      </div>
+      <button class="btn" type="submit" id="enter">Entrar</button>
+      <p class="msg" id="loginMsg" role="status" aria-live="polite"></p>
+    </form>
+    <div class="fine">
+      <span>Uso interno · Documento Confidencial</span>
+      <span>La sesión se cierra tras 15 minutos sin actividad.</span>
+    </div>
+  </div>
+</main>
+
+<!-- ================= APLICACIÓN ================= -->
+<div class="wrap" id="app" hidden>
+  <header class="top">
+    <div class="brand">
+      <div class="mono-ns" aria-hidden="true">NS</div>
+      <div>
+        <div class="eyebrow">North Stonebridge · Inteligencia de riesgo</div>
+        <h1>Meridiano</h1>
+      </div>
+    </div>
+    <div class="sess">
+      <span>Barridas · 6:45 a. m. y 12:45 p. m. (Bogotá)</span>
+      <span>Última: <b id="lastSweep">—</b></span>
+      <span id="sweepNote"></span>
+      <span class="row"><span id="idle">Sesión activa</span><button type="button" class="btn ghost" id="logout">Salir</button></span>
+    </div>
+  </header>
+
+  <div class="warn" id="idleWarn" hidden>
+    <span>La sesión se cerrará por inactividad en <b id="idleLeft">60</b> s.</span>
+    <button type="button" class="btn ghost" id="stay">Seguir trabajando</button>
+  </div>
+
+  <section class="summary" aria-label="Resumen">
+    <div class="stat"><span class="n" id="sTotal">–</span><span class="l">Alertas activas (14 días)</span></div>
+    <div class="stat crit"><span class="n" id="sHigh">–</span><span class="l">Críticas o altas</span></div>
+    <div class="stat pros"><span class="n" id="sPros">–</span><span class="l">Con empresa identificada</span></div>
+    <div class="stat"><span class="n" id="sPend">–</span><span class="l">Borradores por revisar</span></div>
+  </section>
+
+  <section class="filters" aria-label="Filtros">
+    <div class="chips" id="typeChips"></div>
+    <div class="row-f">
+      <div class="seg" role="group" aria-label="Relevancia">
+        <button type="button" id="rTodas" aria-pressed="true" data-r="">Todas</button>
+        <button type="button" id="rPros" aria-pressed="false" data-r="Prospecto">Prospectos</button>
+        <button type="button" id="rCtx" aria-pressed="false" data-r="Contexto">Contexto</button>
+      </div>
+      <select id="fNivel" aria-label="Nivel"><option value="">Todos los niveles</option><option>Crítico</option><option>Alto</option><option>Medio</option><option>Bajo</option></select>
+      <select id="fDepto" aria-label="Departamento"><option value="">Todos los departamentos</option></select>
+      <select id="fEstado" aria-label="Estado"><option value="">Todos los estados</option><option>Nueva</option><option>En revisión</option><option>Contactada</option><option>Descartada</option></select>
+      <input id="fQ" type="search" placeholder="Buscar municipio, empresa, actor…" aria-label="Buscar" autocomplete="off">
+    </div>
+  </section>
+
+  <div class="grid">
+    <div class="list" id="list"></div>
+    <aside class="panel" id="panel" aria-live="polite"></aside>
+  </div>
+
+  <section class="sources" aria-label="Fuentes vigiladas">
+    <div><h3>Fuentes oficiales</h3><ul>
+      <li>Defensoría del Pueblo · Sistema de Alertas Tempranas</li>
+      <li>Ministerio de Defensa · Ejército, Armada, Fuerza Aeroespacial</li>
+      <li>Policía Nacional · GAULA · Fiscalía General</li>
+      <li>Presidencia · MinInterior · MinMinas · ColCERT</li>
+      <li>Gobernaciones y alcaldías con alertas activas</li>
+    </ul></div>
+    <div><h3>Prensa y análisis</h3><ul>
+      <li>El Tiempo · El Colombiano · El País · Vanguardia · La Opinión · El Heraldo · El Universal</li>
+      <li>Infobae Colombia · Caracol · RCN · Blu · La FM · RTVC · Semana · Cambio</li>
+      <li>Fundación Ideas para la Paz · Indepaz · InSight Crime</li>
+    </ul></div>
+    <div><h3>Reglas de Meridiano</h3><ul>
+      <li>Solo Colombia. Cada alerta enlaza su fuente.</li>
+      <li>Contactos: únicamente canales corporativos públicos.</li>
+      <li>Nunca se contacta a víctimas ni familiares.</li>
+      <li>Ningún correo sale sin aprobación de un socio.</li>
+    </ul></div>
+  </section>
+
+  <footer>
+    <span>Meridiano · Uso interno · Documento Confidencial</span>
+    <span>northstonebridge.com · info@northstonebridge.com · +57 323 612 7516</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  const DATA_URL = "data/alertas.enc.json";
+  const IDLE_MS = 15 * 60 * 1000, WARN_MS = 60 * 1000, REFRESH_MS = 10 * 60 * 1000;
+  const TYPES=["Atentado con explosivos","Ataque con drones","Ataque armado / hostigamiento","Secuestro","Extorsión","Ataque a infraestructura","Paro armado / restricción","Amenaza / alerta temprana","Ciberataque","Orden público","Contexto / informe"];
+  const LV={"Crítico":4,"Alto":3,"Medio":2,"Bajo":1};
+  const $=id=>document.getElementById(id);
+  const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const safeUrl=u=>/^https?:\/\//i.test(String(u||""))?u:"#";
+  const enc=new TextEncoder(), dec=new TextDecoder();
+  const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+  const tob64=u=>btoa(String.fromCharCode(...new Uint8Array(u)));
+
+  /* -------- Sesión: todo vive en memoria y se borra al salir -------- */
+  let S=null, lastAct=0, idleTimer=null, refreshTimer=null;
+  function blank(){return {pw:null,rows:[],meta:null,type:"",rel:"",sel:null,local:{},localKey:null};}
+
+  async function deriveKey(pw, salt, iter){
+    const base=await crypto.subtle.importKey("raw",enc.encode(pw),"PBKDF2",false,["deriveKey"]);
+    return crypto.subtle.deriveKey({name:"PBKDF2",hash:"SHA-256",salt,iterations:iter},base,{name:"AES-GCM",length:256},false,["encrypt","decrypt"]);
+  }
+  async function openSealed(pw){
+    const r=await fetch(DATA_URL+"?t="+Date.now(),{cache:"no-store"});
+    if(!r.ok) throw new Error("net");
+    const env=await r.json();
+    const key=await deriveKey(pw,b64(env.salt),env.iter||600000);
+    let pt;
+    try{ pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:b64(env.iv)},key,b64(env.ct)); }
+    catch(e){ throw new Error("clave"); }
+    return JSON.parse(dec.decode(pt));
+  }
+
+  /* Estado y notas locales: cifrados con la misma clave, guardados solo en este equipo */
+  const LOCAL="meridiano.local.v1";
+  async function localKey(pw){return deriveKey(pw,enc.encode("meridiano-local-v1"),200000);}
+  async function loadLocal(){
+    try{
+      const raw=localStorage.getItem(LOCAL); if(!raw) return {};
+      const o=JSON.parse(raw);
+      const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:b64(o.iv)},S.localKey,b64(o.ct));
+      return JSON.parse(dec.decode(pt));
+    }catch(e){return {};}
+  }
+  async function saveLocal(){
+    try{
+      const iv=crypto.getRandomValues(new Uint8Array(12));
+      const ct=await crypto.subtle.encrypt({name:"AES-GCM",iv},S.localKey,enc.encode(JSON.stringify(S.local)));
+      localStorage.setItem(LOCAL,JSON.stringify({iv:tob64(iv),ct:tob64(ct)}));
+      return true;
+    }catch(e){return false;}
+  }
+  const estadoDe=r=>(S.local[r._id]&&S.local[r._id].estado)||r.estado||"Nueva";
+  const notasDe=r=>(S.local[r._id]&&S.local[r._id].notas)||"";
+
+  /* -------- Ingreso -------- */
+  $("showPw").addEventListener("click",()=>{const i=$("pass");const on=i.type==="password";i.type=on?"text":"password";$("showPw").textContent=on?"Ocultar":"Mostrar";$("showPw").setAttribute("aria-pressed",on);});
+  $("loginForm").addEventListener("submit",async e=>{
+    e.preventDefault();
+    const pw=$("pass").value;
+    if(!pw){$("loginMsg").className="msg err";$("loginMsg").textContent="Escriba la clave de acceso.";return;}
+    $("enter").disabled=true;$("loginMsg").className="msg info";$("loginMsg").textContent="Verificando…";
+    try{
+      const data=await openSealed(pw);
+      S=blank(); S.pw=pw; S.localKey=await localKey(pw); S.local=await loadLocal();
+      ingest(data);
+      $("pass").value="";$("loginMsg").textContent="";
+      $("gate").hidden=true;$("app").hidden=false;
+      startIdle(); refreshTimer=setInterval(refresh,REFRESH_MS);
+      render();
+    }catch(err){
+      $("loginMsg").className="msg err";
+      $("loginMsg").textContent=err.message==="clave"?"Clave incorrecta. Verifique e intente de nuevo.":"No se pudo cargar la información. Revise su conexión e intente de nuevo.";
+      $("pass").select();
+    }finally{$("enter").disabled=false;}
+  });
+
+  function ingest(data){
+    S.rows=(data.alertas||[]).map(a=>Object.assign({_id:a.id},a));
+    S.meta=data.barrida||null;
+    if(!S.sel||!S.rows.some(r=>r._id===S.sel)) S.sel=null;
+  }
+  async function refresh(){
+    if(!S) return;
+    try{ ingest(await openSealed(S.pw)); render(); }
+    catch(e){ if(e.message==="clave") logout("La clave cambió. Ingrese con la clave nueva."); }
+  }
+
+  /* -------- Cierre de sesión -------- */
+  function logout(reason){
+    clearInterval(idleTimer);clearInterval(refreshTimer);idleTimer=refreshTimer=null;
+    S=null;
+    $("list").innerHTML="";$("panel").innerHTML="";$("typeChips").innerHTML="";
+    $("app").hidden=true;$("idleWarn").hidden=true;$("gate").hidden=false;
+    $("loginMsg").className="msg info";$("loginMsg").textContent=reason||"Sesión cerrada.";
+    $("pass").value="";$("pass").focus();
+  }
+  $("logout").addEventListener("click",()=>logout("Sesión cerrada."));
+  function touch(){lastAct=Date.now();if(!$("idleWarn").hidden)$("idleWarn").hidden=true;}
+  ["pointerdown","keydown","wheel","touchstart","scroll"].forEach(ev=>addEventListener(ev,()=>{if(S)touch();},{passive:true}));
+  addEventListener("pointermove",(()=>{let t=0;return()=>{const n=Date.now();if(S&&n-t>5000){t=n;touch();}}})(),{passive:true});
+  $("stay").addEventListener("click",touch);
+  function startIdle(){
+    touch();
+    idleTimer=setInterval(()=>{
+      if(!S) return;
+      const left=IDLE_MS-(Date.now()-lastAct);
+      if(left<=0){logout("Sesión cerrada por inactividad. Ingrese de nuevo.");return;}
+      const m=Math.ceil(left/60000);
+      $("idle").textContent="Se cierra en "+m+" min sin actividad";
+      if(left<=WARN_MS){$("idleWarn").hidden=false;$("idleLeft").textContent=Math.ceil(left/1000);}
+    },1000);
+  }
+  /* Volver a una pestaña que estuvo oculta más de 15 minutos también cierra la sesión */
+  document.addEventListener("visibilitychange",()=>{if(S&&!document.hidden&&Date.now()-lastAct>IDLE_MS)logout("Sesión cerrada por inactividad. Ingrese de nuevo.");});
+
+  /* -------- Vista -------- */
+  const fmtD=d=>{if(!d)return"—";const p=d.split("-");const m=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];return (p[2]?+p[2]+" ":"")+m[(+p[1]||1)-1]+" "+p[0];};
+  const isPros=r=>r.relevancia==="Prospecto";
+  function chips(){
+    const c={};S.rows.forEach(r=>c[r.tipo]=(c[r.tipo]||0)+1);
+    $("typeChips").innerHTML=[`<button type="button" class="chip" data-t="" aria-pressed="${S.type===""}">Todos los tipos<span class="c">${S.rows.length}</span></button>`]
+      .concat(TYPES.filter(t=>c[t]).map(t=>`<button type="button" class="chip" data-t="${esc(t)}" aria-pressed="${S.type===t}">${esc(t)}<span class="c">${c[t]}</span></button>`)).join("");
+  }
+  function deptos(){
+    const sel=$("fDepto"),cur=sel.value;const ds=[...new Set(S.rows.map(r=>r.departamento).filter(Boolean))].sort();
+    sel.innerHTML='<option value="">Todos los departamentos</option>'+ds.map(d=>`<option${d===cur?" selected":""}>${esc(d)}</option>`).join("");
+  }
+  function filtered(){
+    const n=$("fNivel").value,d=$("fDepto").value,e=$("fEstado").value,q=$("fQ").value.trim().toLowerCase();
+    return S.rows.filter(r=>(!S.type||r.tipo===S.type)&&(!S.rel||(S.rel==="Prospecto"?isPros(r):!isPros(r)))&&(!n||r.nivel===n)&&(!d||r.departamento===d)&&(!e||estadoDe(r)===e)
+      &&(!q||[r.titulo,r.municipio,r.departamento,r.empresa,r.actor,r.resumen].join(" ").toLowerCase().includes(q)))
+      .sort((a,b)=>(b.fecha||"").localeCompare(a.fecha||"")||(LV[b.nivel]||0)-(LV[a.nivel]||0));
+  }
+  function summary(){
+    const lim=new Date(Date.now()-14*864e5).toISOString().slice(0,10);
+    const act=S.rows.filter(r=>(r.fecha||"")>=lim&&estadoDe(r)!=="Descartada");
+    $("sTotal").textContent=act.length;
+    $("sHigh").textContent=act.filter(r=>LV[r.nivel]>=3).length;
+    $("sPros").textContent=S.rows.filter(r=>isPros(r)&&estadoDe(r)!=="Descartada").length;
+    $("sPend").textContent=S.rows.filter(r=>r.borrador&&r.borrador.cuerpo&&estadoDe(r)==="Nueva").length;
+    const m=S.meta;
+    $("lastSweep").textContent=m&&m.ultima?new Date(m.ultima).toLocaleString("es-CO",{dateStyle:"medium",timeStyle:"short",timeZone:"America/Bogota"}):"pendiente";
+    $("sweepNote").textContent=m&&m.resumen?m.resumen:"";
+  }
+  function list(){
+    const rs=filtered();
+    if(!S.sel&&rs.length)S.sel=rs[0]._id;
+    if(!S.rows.length){$("list").innerHTML='<div class="empty">Aún no hay alertas. Las barridas de las 6:45 a. m. y 12:45 p. m. las irán cargando aquí.</div>';return;}
+    if(!rs.length){$("list").innerHTML='<div class="empty">Ninguna alerta coincide con estos filtros.</div>';return;}
+    $("list").innerHTML=rs.map(r=>`<button type="button" class="al lv-${esc(r.nivel)}" data-id="${esc(r._id)}" aria-current="${S.sel===r._id}">
+      <span class="stripe" aria-hidden="true"></span>
+      <span class="t">${esc(r.titulo)}</span>
+      <span class="d">${fmtD(r.fecha)}${r.fecha_exacta===false?"*":""}</span>
+      <span class="m"><span>${esc(r.tipo)}</span><span>${esc([r.municipio,r.departamento].filter(Boolean).join(", "))}</span>
+      ${isPros(r)?`<span class="tg pros">${esc(r.empresa||"Empresa")}</span>`:""}${r.actualizado?'<span class="tg upd">Actualizada</span>':""}<span class="tg st-${esc(estadoDe(r).replace(/\s/g,""))}">${esc(estadoDe(r))}</span></span>
+    </button>`).join("");
+  }
+  function panel(){
+    const r=S.rows.find(x=>x._id===S.sel);
+    if(!r){$("panel").innerHTML='<div class="empty">Seleccione una alerta para ver fuentes, contacto y borrador de correo.</div>';return;}
+    const c=r.contacto||{};const b=r.borrador||{};
+    const contactHTML=isPros(r)?`<dl class="kv">
+        ${c.correo?`<dt>Correo</dt><dd>${esc(c.correo)}</dd>`:""}
+        ${c.telefono?`<dt>Teléfono</dt><dd>${esc(c.telefono)}</dd>`:""}
+        ${c.web?`<dt>Web</dt><dd><a href="${esc(safeUrl(c.web))}" target="_blank" rel="noopener noreferrer">${esc(String(c.web).replace(/^https?:\/\//,""))}</a></dd>`:""}
+        ${c.linkedin?`<dt>LinkedIn</dt><dd><a href="${esc(safeUrl(c.linkedin))}" target="_blank" rel="noopener noreferrer">Página corporativa</a></dd>`:""}
+        ${c.cargo_objetivo?`<dt>Dirigir a</dt><dd>${esc(c.cargo_objetivo)}</dd>`:""}
+        ${c.fuente?`<dt>Origen</dt><dd>${esc(c.fuente)}</dd>`:""}
+      </dl>${c.nota?`<div class="note">${esc(c.nota)}</div>`:""}`
+      :`<div class="note">${esc(c.nota||"Sin empresa privada afectada identificada. Úsela como inteligencia de contexto: boletines A3, briefings C2 y contenido para redes.")}</div>`;
+    $("panel").innerHTML=`
+      <div><div class="eyebrow">${esc(r.tipo)} · <span class="lvl ${esc(r.nivel)}">${esc(r.nivel)}</span></div><h2>${esc(r.titulo)}</h2></div>
+      <dl class="kv">
+        <dt>Fecha</dt><dd>${fmtD(r.fecha)}${r.fecha_exacta===false?" (aproximada)":""}</dd>
+        <dt>Lugar</dt><dd>${esc([r.municipio,r.departamento].filter(Boolean).join(", ")||"Por confirmar")}</dd>
+        <dt>Actor</dt><dd>${esc(r.actor||"No atribuido")}</dd>
+        <dt>Afectado</dt><dd>${esc(r.afectado||"—")}</dd>
+        <dt>Verificación</dt><dd>${esc(r.verificacion||"—")}</dd>
+        ${r.servicios?`<dt>Servicio NS</dt><dd>${esc(r.servicios)}</dd>`:""}
+        ${r.actualizado?`<dt>Actualizada</dt><dd>${esc(new Date(r.actualizado).toLocaleString("es-CO",{dateStyle:"medium",timeStyle:"short",timeZone:"America/Bogota"}))}</dd>`:""}
+      </dl>
+      <div><h3>Lectura</h3><p style="margin:0">${esc(r.resumen)}</p></div>
+      <div><h3>Fuentes</h3><ul class="src">${(r.fuentes||[]).map(f=>`<li><span class="k${f.oficial?" of":""}">${f.oficial?"OFICIAL":"PRENSA"}</span><a href="${esc(safeUrl(f.url))}" target="_blank" rel="noopener noreferrer">${esc(f.nombre)}</a></li>`).join("")||"<li>Sin enlace</li>"}</ul></div>
+      <div><h3>Contacto tentativo</h3>${contactHTML}</div>
+      ${b.cuerpo?`<div><h3>Borrador de correo · requiere aprobación</h3>
+        <div class="mail"><div class="hd"><span><b>Para:</b> ${esc(c.correo||"por definir")}</span><span><b>Asunto:</b> <span id="mSub">${esc(b.asunto||"")}</span></span></div><pre id="mBody">${esc(b.cuerpo)}</pre></div>
+        <div class="actions" style="margin-top:8px"><button type="button" class="btn ghost" id="cpMail">Copiar correo</button><span class="toast" id="cpOk" hidden>Copiado</span></div></div>`:""}
+      <div><h3>Estado</h3>
+        <div class="state" role="group" aria-label="Estado">${["Nueva","En revisión","Contactada","Descartada"].map(s=>`<button type="button" class="chip" data-st="${s}" aria-pressed="${estadoDe(r)===s}">${s}</button>`).join("")}</div>
+        <label for="nota" class="eyebrow" style="display:block;margin:10px 0 4px">Notas</label>
+        <textarea id="nota">${esc(notasDe(r))}</textarea>
+        <div class="actions" style="margin-top:6px"><button type="button" class="btn ghost" id="saveNota">Guardar nota</button><span class="toast" id="notaOk" hidden>Guardada</span></div>
+        <p class="local">El estado y las notas se guardan cifrados solo en este equipo.</p>
+      </div>`;
+  }
+  function render(){if(!S)return;summary();chips();deptos();list();panel();}
+
+  document.addEventListener("click",async e=>{
+    if(!S) return;
+    const t=e.target.closest("#typeChips [data-t]");if(t){S.type=t.dataset.t;render();return;}
+    const rb=e.target.closest(".seg [data-r]");if(rb){S.rel=rb.dataset.r;document.querySelectorAll(".seg [data-r]").forEach(x=>x.setAttribute("aria-pressed",x===rb));render();return;}
+    const al=e.target.closest(".al");if(al){S.sel=al.dataset.id;list();panel();if(innerWidth<920)$("panel").scrollIntoView({behavior:"smooth",block:"start"});return;}
+    const st=e.target.closest("[data-st]");
+    if(st){const r=S.rows.find(x=>x._id===S.sel);if(!r)return;S.local[r._id]=Object.assign({},S.local[r._id],{estado:st.dataset.st});await saveLocal();summary();list();panel();return;}
+    if(e.target.id==="saveNota"){const r=S.rows.find(x=>x._id===S.sel);if(!r)return;S.local[r._id]=Object.assign({},S.local[r._id],{notas:$("nota").value});if(await saveLocal()){$("notaOk").hidden=false;setTimeout(()=>{const o=$("notaOk");if(o)o.hidden=true},1800);}return;}
+    if(e.target.id==="cpMail"){const txt="Asunto: "+$("mSub").textContent+"\n\n"+$("mBody").textContent;try{await navigator.clipboard.writeText(txt);$("cpOk").hidden=false;}catch(_){const rg=document.createRange();rg.selectNodeContents($("mBody"));const s=getSelection();s.removeAllRanges();s.addRange(rg);}}
+  });
+  ["fNivel","fDepto","fEstado"].forEach(id=>$(id).addEventListener("change",()=>S&&list()));
+  $("fQ").addEventListener("input",()=>S&&list());
+
+  if(!window.crypto||!crypto.subtle){$("loginMsg").className="msg err";$("loginMsg").textContent="Este navegador no permite abrir Meridiano. Use Chrome, Edge, Safari o Firefox actualizados, por https.";$("enter").disabled=true;}
+  else $("pass").focus();
+})();
+</script>
+</body>
+</html>

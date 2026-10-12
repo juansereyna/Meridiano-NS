@@ -2,10 +2,12 @@ name: Barrida Meridiano
 
 # 6:45 a. m. y 12:45 p. m. hora de Bogotá (UTC-5). GitHub puede demorar
 # unos minutos el inicio de las ejecuciones programadas.
+# Horario PAUSADO: requiere el secreto ANTHROPIC_API_KEY (API de pago).
+# Para activarlo, cree los secretos y quite el "#" de las tres líneas de schedule.
 on:
-  schedule:
-    - cron: "45 11 * * *"
-    - cron: "45 17 * * *"
+  # schedule:
+  #   - cron: "45 11 * * *"
+  #   - cron: "45 17 * * *"
   workflow_dispatch:
 
 permissions:

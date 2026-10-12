@@ -17,7 +17,7 @@ Meridiano es la plataforma interna de North Stonebridge para el seguimiento de a
 | `data/alertas.enc.json` | Las alertas, **cifradas** (AES-256-GCM, clave derivada con PBKDF2-SHA256, 600.000 iteraciones). Sin la clave es texto ilegible. |
 | `tools/sellar.py` | Script para cifrar, descifrar, agregar alertas y rotar la clave. |
 | `data/colombia.json` | Fronteras de los 33 departamentos (DANE · MGN 2018, simplificado) para el mapa de presión. Lo genera `tools/mapa.py`. |
-| Tarea programada | Dos barridas diarias (6:45 a. m. y 12:45 p. m., Bogotá) que agregan alertas nuevas al archivo cifrado y lo publican aquí. |
+| `.github/workflows/barrida.yml` + `tools/barrida.py` | Barrida automática en GitHub Actions, dos veces al día (6:45 a. m. y 12:45 p. m., Bogotá). Usa la API de Claude con búsqueda web, valida las alertas, las cifra y las publica aquí. También se puede lanzar a mano desde *Actions → Barrida Meridiano → Run workflow*. |
 
 **La clave nunca se guarda en este repositorio.** Solo la conocen los socios y la tarea programada.
 
@@ -49,6 +49,19 @@ GitHub Pages en un repositorio **privado** requiere un plan pago de GitHub (Pro,
 
 ---
 
+## Activar la barrida automática (una sola vez)
+
+En *Settings → Secrets and variables → Actions → New repository secret*, cree:
+
+| Secreto | Valor |
+|---|---|
+| `MERIDIANO_CLAVE` | La clave actual de Meridiano. |
+| `ANTHROPIC_API_KEY` | Una clave de API de Anthropic (console.anthropic.com → API Keys). |
+
+Opcional, en la pestaña *Variables*: `MERIDIANO_MODELO` (por defecto `claude-sonnet-5-5`) y `MERIDIANO_BUSQUEDAS` (máximo de búsquedas web por barrida, por defecto 25).
+
+Cada ejecución deja en *Actions* un resumen con las alertas nuevas, y GitHub avisa por correo si una barrida falla.
+
 ## Rotar la clave
 
 Recomendado cada 90 días, y de inmediato si alguien con acceso sale de la empresa.
@@ -63,7 +76,7 @@ git add data/alertas.enc.json && git commit -m "Rotación de clave" && git push
 
 Después:
 
-1. Actualice la clave en las instrucciones de la tarea programada de Meridiano (si no, la siguiente barrida fallará).
+1. Actualice el secreto `MERIDIANO_CLAVE` en *Settings → Secrets and variables → Actions* (si no, la siguiente barrida fallará y GitHub le avisará).
 2. Comunique la clave nueva al equipo por un canal seguro, nunca por correo masivo ni en este repositorio.
 3. Las sesiones abiertas se cierran solas en el siguiente refresco y piden la clave nueva.
 4. El estado y las notas locales guardados con la clave anterior no se recuperan con la nueva.

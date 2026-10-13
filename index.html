@@ -135,6 +135,39 @@ h1{font-family:var(--display);font-weight:600;font-size:clamp(28px,4vw,38px);lin
 .zi p{margin:0 0 6px;font-size:13px;color:var(--muted)}
 .zi .zs{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;align-items:center}
 .linkbtn{border:0;background:transparent;padding:0;color:var(--gold);cursor:pointer;font-size:12.5px;text-decoration:underline;text-underline-offset:3px}
+/* Históricos */
+.hbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.hbar select{background:var(--surface);border:1px solid var(--line);padding:7px 10px}
+.hspacer{flex:1 1 auto}
+.hbody{display:flex;flex-direction:column;gap:22px}
+.hhead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:10px;border-bottom:1px solid var(--gold);padding-bottom:12px}
+.hhead h2{font-family:var(--display);font-weight:600;font-size:clamp(26px,3.6vw,34px);margin:0;line-height:1.05}
+.hhead .sub{font-size:13px;color:var(--muted)}
+.hkpi{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.hkpi div{background:var(--surface);padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.hkpi b{font-family:var(--display);font-size:30px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.hkpi span{font-size:12px;color:var(--muted)}
+.hkpi em{font-style:normal;font-size:11.5px;font-family:var(--mono)}
+.up{color:var(--crit)} .down{color:var(--ok)} .flat{color:var(--muted)}
+@media (max-width:760px){.hkpi{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.hgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:860px){.hgrid{grid-template-columns:minmax(0,1fr)}}
+.hcard{background:var(--surface);border:1px solid var(--line);padding:16px 18px;min-width:0}
+.hcard h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 10px;font-weight:700}
+.hcard svg{width:100%;height:auto;display:block}
+.hmap svg{max-height:70vh}
+.blist{display:flex;flex-direction:column;gap:7px;font-size:13px}
+.brow{display:grid;grid-template-columns:minmax(0,1fr) 120px 30px;gap:10px;align-items:center}
+.brow .bt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brow .bb{height:8px;background:var(--sunk);position:relative}
+.brow .bb span{position:absolute;inset:0 auto 0 0;background:var(--gold)}
+.brow .bn{font-family:var(--mono);font-size:12px;text-align:right}
+.hread{font-size:14px;margin:0;line-height:1.6}
+.htable{width:100%;border-collapse:collapse;font-size:13px}
+.htable th{text-align:left;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);padding:6px 8px;font-weight:700}
+.htable td{border-bottom:1px solid var(--line);padding:7px 8px;vertical-align:top}
+.htable td.n{font-family:var(--mono);white-space:nowrap;font-size:12px}
+.tscroll{overflow-x:auto}
 .zi.lv-Crítico .stripe{background:var(--crit)} .zi.lv-Alto .stripe{background:var(--high)} .zi.lv-Medio .stripe{background:var(--med)} .zi.lv-Bajo .stripe{background:var(--low)}
 .filters{display:flex;flex-direction:column;gap:10px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
@@ -252,6 +285,7 @@ footer{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-con
   <nav class="tabs" role="tablist" aria-label="Módulos de Meridiano">
     <button type="button" role="tab" id="t-radar" data-tab="radar" aria-selected="true" aria-controls="tab-radar">Radar<span>Alertas, fuentes y contactos</span></button>
     <button type="button" role="tab" id="t-mapa" data-tab="mapa" aria-selected="false" aria-controls="tab-mapa">Mapa de presión<span>Situación por zona</span></button>
+    <button type="button" role="tab" id="t-historicos" data-tab="historicos" aria-selected="false" aria-controls="tab-historicos">Históricos<span>Mes, semestre y año · informes</span></button>
   </nav>
 
   <div id="tab-radar" class="tabpane" role="tabpanel" aria-labelledby="t-radar">
@@ -302,6 +336,22 @@ footer{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-con
   </section>
   </div>
 
+  <div id="tab-historicos" class="tabpane" role="tabpanel" aria-labelledby="t-historicos" hidden>
+    <section class="hbar" aria-label="Período">
+      <div class="seg" role="group" aria-label="Tipo de período">
+        <button type="button" data-hm="mes" aria-pressed="true">Mensual</button>
+        <button type="button" data-hm="sem" aria-pressed="false">Semestral</button>
+        <button type="button" data-hm="anio" aria-pressed="false">Anual</button>
+      </div>
+      <select id="hYear" aria-label="Año"></select>
+      <select id="hIdx" aria-label="Período"></select>
+      <span class="hspacer"></span>
+      <button type="button" class="btn ghost" id="hPdf">Imprimir o guardar PDF</button>
+      <button type="button" class="btn" id="hDown">Descargar informe</button>
+    </section>
+    <div id="hBody" class="hbody" aria-live="polite"></div>
+  </div>
+
   <section class="sources" aria-label="Fuentes vigiladas">
     <div><h3>Fuentes oficiales</h3><ul>
       <li>Defensoría del Pueblo · Sistema de Alertas Tempranas</li>
@@ -345,7 +395,7 @@ footer{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-con
 
   /* -------- Sesión: todo vive en memoria y se borra al salir -------- */
   let S=null, lastAct=0, idleTimer=null, refreshTimer=null;
-  function blank(){return {pw:null,rows:[],meta:null,type:"",rel:"",sel:null,local:{},localKey:null,win:14,press:null,tab:"radar",zone:null};}
+  function blank(){return {pw:null,rows:[],meta:null,type:"",rel:"",sel:null,local:{},localKey:null,win:14,press:null,tab:"radar",zone:null,hist:{mode:"mes",year:null,idx:null}};}
 
   async function deriveKey(pw, salt, iter){
     const base=await crypto.subtle.importKey("raw",enc.encode(pw),"PBKDF2",false,["deriveKey"]);
@@ -398,7 +448,7 @@ footer{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-con
       $("pass").value="";$("loginMsg").textContent="";
       $("gate").hidden=true;$("app").hidden=false;
       startIdle(); refreshTimer=setInterval(refresh,REFRESH_MS);
-      render(); setTab(location.hash==="#mapa"?"mapa":"radar");
+      render(); setTab(location.hash.slice(1));
     }catch(err){
       $("loginMsg").className="msg err";
       $("loginMsg").textContent=err.message==="clave"?"Clave incorrecta. Verifique e intente de nuevo.":"No se pudo cargar la información. Revise su conexión e intente de nuevo.";
@@ -421,7 +471,7 @@ footer{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-con
   function logout(reason){
     clearInterval(idleTimer);clearInterval(refreshTimer);idleTimer=refreshTimer=null;
     S=null;
-    $("list").innerHTML="";$("panel").innerHTML="";$("typeChips").innerHTML="";$("map").innerHTML="";$("zonecol").innerHTML="";$("tip").hidden=true;
+    $("list").innerHTML="";$("panel").innerHTML="";$("typeChips").innerHTML="";$("map").innerHTML="";$("zonecol").innerHTML="";$("hBody").innerHTML="";$("tip").hidden=true;
     $("app").hidden=true;$("idleWarn").hidden=true;$("gate").hidden=false;
     $("loginMsg").className="msg info";$("loginMsg").textContent=reason||"Sesión cerrada.";
     $("pass").value="";$("pass").focus();
@@ -616,11 +666,212 @@ footer{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-con
   }
   function setTab(t){
     if(!S) return;
-    S.tab=t==="mapa"?"mapa":"radar";
-    ["radar","mapa"].forEach(x=>{$("tab-"+x).hidden=x!==S.tab;$("t-"+x).setAttribute("aria-selected",x===S.tab);});
+    S.tab=["mapa","historicos"].includes(t)?t:"radar";
+    ["radar","mapa","historicos"].forEach(x=>{$("tab-"+x).hidden=x!==S.tab;$("t-"+x).setAttribute("aria-selected",x===S.tab);});
     try{history.replaceState(null,"","#"+S.tab);}catch(e){}
     hideTip();
     if(S.tab==="mapa")drawMap();
+    if(S.tab==="historicos")drawHist();
+  }
+
+  /* -------- Históricos -------- */
+  const MESES=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+  const pad=n=>String(n).padStart(2,"0");
+  function periodo(mode,y,i){
+    if(mode==="mes"){const ny=i===11?y+1:y,nm=i===11?1:i+2;return {ini:`${y}-${pad(i+1)}-01`,fin:`${ny}-${pad(nm)}-01`,label:`${MESES[i]} de ${y}`,corto:`${MESES[i]} ${y}`,mode,y,i};}
+    if(mode==="sem"){return i===0?{ini:`${y}-01-01`,fin:`${y}-07-01`,label:`Primer semestre de ${y}`,corto:`S1 ${y}`,mode,y,i}:{ini:`${y}-07-01`,fin:`${y+1}-01-01`,label:`Segundo semestre de ${y}`,corto:`S2 ${y}`,mode,y,i};}
+    return {ini:`${y}-01-01`,fin:`${y+1}-01-01`,label:`Año ${y}`,corto:`${y}`,mode,y,i:0};
+  }
+  function anterior(p){
+    if(p.mode==="mes")return p.i===0?periodo("mes",p.y-1,11):periodo("mes",p.y,p.i-1);
+    if(p.mode==="sem")return p.i===0?periodo("sem",p.y-1,1):periodo("sem",p.y,0);
+    return periodo("anio",p.y-1,0);
+  }
+  const hoyStr=()=>new Date(Date.now()-5*3600e3).toISOString().slice(0,10);
+  function enPeriodo(p){return S.rows.filter(r=>r.fecha&&r.fecha>=p.ini&&r.fecha<p.fin);}
+  function agregar(rows){
+    const A={n:rows.length,crit:0,alto:0,pros:0,byDept:{},byType:{},actores:{},loose:0,rows};
+    rows.forEach(r=>{
+      if(r.nivel==="Crítico")A.crit++; if(r.nivel==="Alto")A.alto++; if(isPros(r))A.pros++;
+      A.byType[r.tipo]=(A.byType[r.tipo]||0)+1;
+      if(r.actor&&!/no atribuido|no identificado|desconocido|varios|^fuerzas militares|^ej[eé]rcito|^polic[ií]a/i.test(r.actor)){const a=r.actor.replace(/\s*\(.*?\)\s*/g,"").replace(/^presuntas?\s+/i,"").trim();if(a)A.actores[a]=(A.actores[a]||0)+1;}
+      const k=geoKey(r.departamento);
+      if(!k){A.loose++;return;}
+      const o=A.byDept[k]||(A.byDept[k]={n:0,score:0,tipos:{},crit:0});
+      o.n++;o.score+=LV[r.nivel]||1;o.tipos[r.tipo]=(o.tipos[r.tipo]||0)+1;if(LV[r.nivel]>=3)o.crit++;
+    });
+    A.deptos=Object.keys(A.byDept).length;
+    return A;
+  }
+  const RBANDS=[{k:"h0",t:"Sin reportes"},{k:"h1",t:"Baja"},{k:"h2",t:"Moderada"},{k:"h3",t:"Alta"},{k:"h4",t:"Muy alta"}];
+  function rband(score,max){if(!score)return RBANDS[0];const f=score/max;return f>.75?RBANDS[4]:f>.5?RBANDS[3]:f>.25?RBANDS[2]:RBANDS[1];}
+  const PAL_PRINT={h0:"#ECE6D8",h1:"#EAD7AC",h2:"#D6A660",h3:"#B9662F",h4:"#8E2A24",stroke:"#FFFFFF",ink:"#1C2A3A",muted:"#5F6B78",gold:"#A8884E",line:"#DDD3BE"};
+  function mapaSVG(A,print){
+    if(!GEO)return"";
+    const max=Math.max(1,...Object.values(A.byDept).map(o=>o.score));
+    const [ix,iy,iw,ih]=GEO.inset;
+    const fill=k=>print?PAL_PRINT[k]:`var(--${k})`;
+    let s=`<svg viewBox="0 0 ${GEO.w} ${GEO.h}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mapa de presión del período">`;
+    s+=`<rect x="${ix}" y="${iy}" width="${iw}" height="${ih}" fill="none" stroke="${print?PAL_PRINT.line:"var(--line)"}" stroke-dasharray="3 2"/><text x="${ix+4}" y="${iy+9}" font-size="7" fill="${print?PAL_PRINT.muted:"var(--muted)"}" font-family="sans-serif">San Andrés y Prov.</text>`;
+    s+=GEO.dptos.map(d=>{const o=A.byDept[d.key];const b=rband(o?o.score:0,max);return `<path d="${d.d}" fill="${fill(b.k)}" stroke="${print?PAL_PRINT.stroke:"var(--hstroke)"}" stroke-width=".8"><title>${esc(d.name)}: ${o?o.n+" alertas":"sin reportes"}</title></path>`;}).join("");
+    s+=GEO.dptos.filter(d=>A.byDept[d.key]).map(d=>{const n=A.byDept[d.key].n;return `<circle cx="${d.cx}" cy="${d.cy}" r="${n>9?8:6.5}" fill="${print?"#FFFFFF":"var(--surface)"}" stroke="${print?PAL_PRINT.ink:"var(--ink)"}" stroke-width=".8"/><text x="${d.cx}" y="${d.cy}" font-size="9" font-family="monospace" fill="${print?PAL_PRINT.ink:"var(--ink)"}" text-anchor="middle" dominant-baseline="central">${n}</text>`;}).join("");
+    return s+"</svg>";
+  }
+  function serie(p,rows){
+    const pts=[];
+    if(p.mode==="mes"){const dias=Math.round((Date.parse(p.fin)-Date.parse(p.ini))/864e5);for(let d=1;d<=dias;d++){const f=`${p.ini.slice(0,8)}${pad(d)}`;pts.push({l:String(d),n:rows.filter(r=>r.fecha===f).length,c:rows.filter(r=>r.fecha===f&&LV[r.nivel]>=3).length});}}
+    else{const m0=p.mode==="sem"?p.i*6:0,m1=p.mode==="sem"?m0+6:12;for(let m=m0;m<m1;m++){const pre=`${p.y}-${pad(m+1)}`;pts.push({l:MESES[m].slice(0,3),n:rows.filter(r=>r.fecha.startsWith(pre)).length,c:rows.filter(r=>r.fecha.startsWith(pre)&&LV[r.nivel]>=3).length});}}
+    return pts;
+  }
+  function serieSVG(pts,print){
+    const W=560,H=170,L=26,B=22,T=10,max=Math.max(1,...pts.map(p=>p.n));
+    const step=Math.max(1,Math.ceil(max/4)),top=step*Math.ceil(max/step);
+    const bw=(W-L-6)/pts.length,col=k=>print?{a:"#D6A660",c:"#8E2A24",t:"#5F6B78",g:"#E6DFD0"}[k]:{a:"var(--h2)",c:"var(--crit)",t:"var(--muted)",g:"var(--line)"}[k];
+    let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Alertas por ${pts.length>12?"día":"mes"}">`;
+    for(let v=0;v<=top;v+=step){const y=T+(H-T-B)*(1-v/top);s+=`<line x1="${L}" x2="${W}" y1="${y}" y2="${y}" stroke="${col("g")}" stroke-width=".6"/><text x="${L-5}" y="${y}" font-size="9" fill="${col("t")}" text-anchor="end" dominant-baseline="central" font-family="monospace">${v}</text>`;}
+    pts.forEach((p,i)=>{const x=L+i*bw+bw*.15,w=bw*.7,h=(H-T-B)*p.n/top,hc=(H-T-B)*p.c/top,y=H-B-h;
+      if(p.n)s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${col("a")}"><title>${p.l}: ${p.n} alertas (${p.c} críticas o altas)</title></rect>`;
+      if(p.c)s+=`<rect x="${x}" y="${H-B-hc}" width="${w}" height="${hc}" fill="${col("c")}"/>`;
+      if(pts.length<=12||i%5===0||i===pts.length-1)s+=`<text x="${x+w/2}" y="${H-B+12}" font-size="9" fill="${col("t")}" text-anchor="middle" font-family="sans-serif">${p.l}</text>`;});
+    return s+"</svg>";
+  }
+  const pct=(a,b)=>b?Math.round((a-b)/b*100):null;
+  function delta(a,b,B){if(B&&B.sinCobertura)return `<em class="flat">sin datos completos del período anterior</em>`;const d=pct(a,b);if(d===null)return `<em class="flat">sin período previo con datos</em>`;if(d===0)return `<em class="flat">igual que el período anterior</em>`;return `<em class="${d>0?"up":"down"}">${d>0?"▲":"▼"} ${Math.abs(d)} % vs. período anterior</em>`;}
+  const topN=(o,n)=>Object.entries(o).sort((a,b)=>b[1]-a[1]).slice(0,n);
+  const nameOf=k=>(GEO&&GEO.dptos.find(d=>d.key===k)||{name:k}).name;
+  function lectura(p,A,P){
+    if(!A.n)return `No hay alertas registradas en Meridiano para ${p.label.toLowerCase()}.`;
+    const td=topN(Object.fromEntries(Object.entries(A.byDept).map(([k,o])=>[k,o.score])),3).map(([k])=>nameOf(k));
+    const tt=topN(A.byType,2).map(([t,n])=>`${t.toLowerCase()} (${n})`);
+    const ta=topN(A.actores,2).map(([a])=>a);
+    const d=P.sinCobertura?null:pct(A.n,P.n);
+    return `Durante ${p.label.toLowerCase()} Meridiano registró ${A.n} ${A.n===1?"alerta":"alertas"} en ${A.deptos} ${A.deptos===1?"departamento":"departamentos"}, de las cuales ${A.crit+A.alto} fueron críticas o altas.`+
+      (td.length?` La presión se concentró en ${td.join(", ")}.`:"")+(tt.length?` Predominaron ${tt.join(" y ")}.`:"")+(ta.length?` Actores más señalados: ${ta.join(", ")}.`:"")+
+      (d!==null?` Frente al período anterior, el volumen ${d>0?"aumentó":d<0?"disminuyó":"se mantuvo"}${d?` ${Math.abs(d)} %`:""}.`:"")+(A.pros?` ${A.pros} ${A.pros===1?"alerta identificó":"alertas identificaron"} una empresa afectada.`:"");
+  }
+  function cobertura(){const fs=S.rows.map(r=>r.fecha).filter(Boolean).sort();return fs.length?fs[0]:null;}
+  function histData(){
+    const h=S.hist,p=periodo(h.mode,h.year,h.idx),P=anterior(p);
+    const A=agregar(enPeriodo(p)),desde=cobertura();
+    // Solo se compara si Meridiano cubrió completo el período anterior
+    const B=(desde&&desde<=P.ini)?agregar(enPeriodo(P)):{n:0,crit:0,alto:0,sinCobertura:true};
+    return {p,P,A,B,pts:serie(p,A.rows),desde,parcial:p.fin>hoyStr()&&p.ini<=hoyStr()};
+  }
+  function bars(o,n,nm){const t=topN(o,n);const m=t.length?t[0][1]:1;return t.length?`<div class="blist">${t.map(([k,v])=>`<div class="brow"><span class="bt">${esc(nm?nm(k):k)}</span><span class="bb"><span style="width:${Math.max(4,v/m*100)}%"></span></span><span class="bn">${v}</span></div>`).join("")}</div>`:'<p class="mnote">Sin datos.</p>';}
+  function fillPeriodSelect(){
+    const h=S.hist,sel=$("hIdx");
+    if(h.mode==="anio"){sel.hidden=true;return;}
+    sel.hidden=false;
+    const opts=h.mode==="mes"?MESES.map((m,i)=>[i,m]):[[0,"Primer semestre"],[1,"Segundo semestre"]];
+    sel.innerHTML=opts.map(([i,t])=>`<option value="${i}"${i===h.idx?" selected":""}>${t}</option>`).join("");
+  }
+  function drawHist(){
+    if(!S)return;
+    const h=S.hist,hoy=hoyStr(),yNow=+hoy.slice(0,4),mNow=+hoy.slice(5,7)-1;
+    if(h.year==null){h.year=yNow;h.idx=mNow;}
+    const years=[...new Set(S.rows.map(r=>+String(r.fecha||"").slice(0,4)).filter(Boolean).concat([yNow]))].sort((a,b)=>b-a);
+    $("hYear").innerHTML=years.map(y=>`<option${y===h.year?" selected":""}>${y}</option>`).join("");
+    fillPeriodSelect();
+    document.querySelectorAll("[data-hm]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.hm===h.mode));
+    const {p,P,A,B,pts,desde,parcial}=histData();
+    const avisoCob=desde&&desde>p.ini?`Meridiano tiene registros desde el ${fmtD(desde)}; el período no está cubierto completo.`:"";
+    $("hBody").innerHTML=`
+      <div class="hhead"><div><div class="eyebrow">Informe histórico${parcial?" · período en curso":""}</div><h2>${esc(p.label)}</h2></div>
+        <div class="sub">${fmtD(p.ini)} – ${fmtD(new Date(Date.parse(p.fin)-864e5).toISOString().slice(0,10))}${avisoCob?"<br>"+esc(avisoCob):""}</div></div>
+      <div class="hkpi">
+        <div><b>${A.n}</b><span>Alertas</span>${delta(A.n,B.n,B)}</div>
+        <div><b>${A.crit+A.alto}</b><span>Críticas o altas</span>${delta(A.crit+A.alto,B.crit+B.alto,B)}</div>
+        <div><b>${A.crit}</b><span>Críticas</span></div>
+        <div><b>${A.deptos}</b><span>Departamentos afectados</span></div>
+        <div><b>${A.pros}</b><span>Con empresa identificada</span></div>
+      </div>
+      <p class="hread">${esc(lectura(p,A,B))}</p>
+      <div class="hgrid">
+        <div class="hcard hmap"><h3>Mapa de presión del período</h3>${A.n?mapaSVG(A,false):'<p class="mnote">Sin alertas en el período.</p>'}
+          <div class="legend" style="margin-top:8px">${RBANDS.map(b=>`<span><i style="background:var(--${b.k})"></i>${b.t}</span>`).join("")}</div>
+          <p class="mnote">Intensidad relativa al departamento con más presión del período (suma por nivel: Crítico 4, Alto 3, Medio 2, Bajo 1).${A.loose?` ${A.loose} ${A.loose===1?"alerta nacional no aparece":"alertas nacionales no aparecen"} en el mapa.`:""}</p></div>
+        <div style="display:flex;flex-direction:column;gap:22px;min-width:0">
+          <div class="hcard"><h3>Evolución · alertas por ${p.mode==="mes"?"día":"mes"}</h3>${serieSVG(pts,false)}
+            <div class="legend" style="margin-top:6px"><span><i style="background:var(--h2)"></i>Todas</span><span><i style="background:var(--crit)"></i>Críticas o altas</span></div></div>
+          <div class="hcard"><h3>Departamentos con más presión</h3>${bars(Object.fromEntries(Object.entries(A.byDept).map(([k,o])=>[k,o.n])),8,nameOf)}</div>
+        </div>
+      </div>
+      <div class="hgrid">
+        <div class="hcard"><h3>Tipos de hecho</h3>${bars(A.byType,11)}</div>
+        <div class="hcard"><h3>Actores más señalados</h3>${bars(A.actores,8)}</div>
+      </div>
+      <div class="hcard"><h3>Alertas del período (${A.n})</h3>${A.n?`<div class="tscroll"><table class="htable"><thead><tr><th>Fecha</th><th>Nivel</th><th>Departamento</th><th>Tipo</th><th>Alerta</th></tr></thead><tbody>${
+        A.rows.slice().sort((a,b)=>b.fecha.localeCompare(a.fecha)||(LV[b.nivel]||0)-(LV[a.nivel]||0)).map(r=>`<tr><td class="n">${esc(r.fecha)}</td><td><span class="lvl ${esc(r.nivel)}">${esc(r.nivel)}</span></td><td>${esc([r.municipio,r.departamento].filter(Boolean).join(", "))}</td><td>${esc(r.tipo)}</td><td>${esc(r.titulo)}${isPros(r)?` <span class="tg pros">${esc(r.empresa||"Empresa")}</span>`:""}</td></tr>`).join("")}</tbody></table></div>`:'<p class="mnote">Sin alertas en el período.</p>'}</div>`;
+  }
+  function informeHTML(){
+    const {p,P,A,B,pts,desde,parcial}=histData();
+    const gen=new Date().toLocaleString("es-CO",{dateStyle:"long",timeStyle:"short",timeZone:"America/Bogota"});
+    const d=(a,b)=>{if(B.sinCobertura)return "sin datos completos";const x=pct(a,b);return x===null?"—":(x>0?"+":"")+x+" %";};
+    const bl=(o,n,nm)=>{const t=topN(o,n);const m=t.length?t[0][1]:1;return t.length?t.map(([k,v])=>`<tr><td>${esc(nm?nm(k):k)}</td><td class="bar"><span style="width:${Math.max(4,v/m*100)}%"></span></td><td class="num">${v}</td></tr>`).join(""):'<tr><td colspan="3" class="muted">Sin datos.</td></tr>';};
+    const filas=A.rows.slice().sort((a,b)=>b.fecha.localeCompare(a.fecha)||(LV[b.nivel]||0)-(LV[a.nivel]||0));
+    return `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meridiano · Informe ${esc(p.corto)}</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Lato:wght@400;700&display=swap">
+<style>
+@page{size:letter;margin:16mm 14mm}
+*{box-sizing:border-box}body{margin:0;background:#fff;color:#1C2A3A;font-family:Lato,Calibri,Arial,sans-serif;font-size:11pt;line-height:1.45}
+.wrap{max-width:820px;margin:0 auto;padding:28px 24px}
+h1,h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;margin:0}
+h1{font-size:30pt;line-height:1.05}h2{font-size:15pt;margin:22px 0 8px;border-bottom:1px solid #A8884E;padding-bottom:4px}
+.top{display:flex;justify-content:space-between;align-items:center;border-bottom:1.5px solid #A8884E;padding-bottom:10px;margin-bottom:18px}
+.mono{width:40px;height:40px;border:1px solid #A8884E;color:#A8884E;display:grid;place-items:center;font-family:Georgia,serif;font-weight:700}
+.brand{display:flex;gap:12px;align-items:center}.brand small{display:block;font-size:8pt;letter-spacing:.14em;text-transform:uppercase;color:#5F6B78}
+.brand b{font-family:"Cormorant Garamond",Georgia,serif;font-size:20pt;font-weight:600}
+.eyebrow{font-size:8.5pt;letter-spacing:.14em;text-transform:uppercase;color:#A8884E;font-weight:700}
+.muted{color:#5F6B78}.meta{font-size:9.5pt;color:#5F6B78;margin-top:6px}
+.kpi{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid #DDD3BE;margin-top:16px}
+.kpi div{padding:10px 12px;border-right:1px solid #DDD3BE}.kpi div:last-child{border-right:0}
+.kpi b{display:block;font-family:"Cormorant Garamond",Georgia,serif;font-size:24pt;line-height:1}.kpi span{font-size:8.5pt;color:#5F6B78}
+.kpi i{display:block;font-style:normal;font-size:8pt;color:#5F6B78;margin-top:2px}
+.lead{font-size:11pt;background:#F4ECDA;padding:12px 14px;border-left:3px solid #A8884E;margin:16px 0 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+svg{width:100%;height:auto;display:block}
+.legend{font-size:8.5pt;color:#5F6B78;display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:6px}.legend i{display:inline-block;width:12px;height:9px;margin-right:4px;vertical-align:-1px}
+table{width:100%;border-collapse:collapse;font-size:9.5pt}
+td,th{padding:5px 6px;border-bottom:1px solid #EAE3D2;vertical-align:top;text-align:left}
+th{font-size:8pt;letter-spacing:.08em;text-transform:uppercase;color:#5F6B78}
+td.num{text-align:right;font-variant-numeric:tabular-nums;width:34px}td.bar{width:42%}td.bar span{display:block;height:7px;background:#A8884E}
+.lv{font-weight:700}.lv.Crítico{color:#9B2C2C}.lv.Alto{color:#B4632B}.lv.Medio{color:#A8884E}.lv.Bajo{color:#5F6B78}
+.det td{font-size:9pt}.src{font-size:8.5pt;color:#5F6B78;word-break:break-all}
+.foot{margin-top:26px;border-top:1px solid #A8884E;padding-top:8px;font-size:8.5pt;color:#5F6B78;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px}
+.note{font-size:8.5pt;color:#5F6B78}
+h2{break-after:avoid}.kpi,table tr,.mapbox,.legend{break-inside:avoid}
+.mapbox svg{max-height:118mm;width:auto;max-width:100%;margin:0 auto}
+@media print{.wrap{padding:0}a{color:inherit;text-decoration:none}}
+</style></head><body><div class="wrap">
+<div class="top"><div class="brand"><div class="mono">NS</div><div><small>North Stonebridge · Intelligence &amp; Risk Management</small><b>Meridiano</b></div></div><div class="eyebrow">Documento Confidencial</div></div>
+<div class="eyebrow">Informe histórico de alertas · Colombia${parcial?" · período en curso":""}</div>
+<h1>${esc(p.label)}</h1>
+<div class="meta">${fmtD(p.ini)} – ${fmtD(new Date(Date.parse(p.fin)-864e5).toISOString().slice(0,10))} · Generado el ${esc(gen)}${desde&&desde>p.ini?` · Cobertura de Meridiano desde el ${fmtD(desde)}`:""}</div>
+<div class="kpi"><div><b>${A.n}</b><span>Alertas</span><i>${d(A.n,B.n)} vs. ${esc(P.corto)}</i></div><div><b>${A.crit+A.alto}</b><span>Críticas o altas</span><i>${d(A.crit+A.alto,B.crit+B.alto)} vs. ${esc(P.corto)}</i></div><div><b>${A.crit}</b><span>Críticas</span></div><div><b>${A.deptos}</b><span>Departamentos</span></div><div><b>${A.pros}</b><span>Con empresa</span></div></div>
+<p class="lead">${esc(lectura(p,A,B))}</p>
+<h2>Mapa de presión y evolución</h2>
+<div class="two"><div class="mapbox">${A.n?mapaSVG(A,true):'<p class="muted">Sin alertas en el período.</p>'}<div class="legend">${RBANDS.map(b=>`<span><i style="background:${PAL_PRINT[b.k]}"></i>${b.t}</span>`).join("")}</div>
+<p class="note">Intensidad relativa al departamento con más presión del período. Fronteras: DANE, MGN 2018.${A.loose?` ${A.loose} alerta(s) nacional(es) sin ubicación en el mapa.`:""}</p></div>
+<div>${serieSVG(pts,true)}<div class="legend"><span><i style="background:#D6A660"></i>Todas</span><span><i style="background:#8E2A24"></i>Críticas o altas</span></div>
+<h2 style="font-size:12pt">Departamentos con más presión</h2><table>${bl(Object.fromEntries(Object.entries(A.byDept).map(([k,o])=>[k,o.n])),8,nameOf)}</table></div></div>
+<div class="two"><div><h2>Tipos de hecho</h2><table>${bl(A.byType,11)}</table></div><div><h2>Actores más señalados</h2><table>${bl(A.actores,8)}</table></div></div>
+<h2>Detalle de alertas (${A.n})</h2>
+${A.n?`<table class="det"><thead><tr><th>Fecha</th><th>Nivel</th><th>Lugar</th><th>Alerta y fuente</th></tr></thead><tbody>${filas.map(r=>`<tr><td style="white-space:nowrap">${esc(r.fecha)}</td><td><span class="lv ${esc(r.nivel)}">${esc(r.nivel)}</span></td><td>${esc([r.municipio,r.departamento].filter(Boolean).join(", "))}</td><td><b>${esc(r.titulo)}</b><br><span class="muted">${esc(r.tipo)}${r.actor?" · "+esc(r.actor):""}${isPros(r)?" · Empresa: "+esc(r.empresa||""):""}</span>${(r.fuentes||[])[0]?`<div class="src">${esc(r.fuentes[0].nombre)} · ${esc(r.fuentes[0].url)}</div>`:""}</td></tr>`).join("")}</tbody></table>`:'<p class="muted">Sin alertas en el período.</p>'}
+<p class="note" style="margin-top:14px">Metodología: Meridiano registra alertas de seguridad publicadas por fuentes oficiales y prensa reconocida, verificadas en su fuente. Refleja lo reportado públicamente, no una medición completa de la seguridad de cada territorio. Hechos marcados "por confirmar" pueden variar.</p>
+<div class="foot"><span>North Stonebridge Intelligence &amp; Risk Management S.A.S. · Documento Confidencial · Uso interno</span><span>northstonebridge.com · info@northstonebridge.com · +57 323 612 7516</span></div>
+</div></body></html>`;
+  }
+  function nombreInforme(){const {p}=histData();return `Meridiano_Informe_${p.mode==="mes"?p.y+"-"+pad(p.i+1):p.mode==="sem"?p.y+"-S"+(p.i+1):p.y}.html`;}
+  function descargarInforme(){
+    const blob=new Blob([informeHTML()],{type:"text/html;charset=utf-8"});
+    const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=nombreInforme();
+    document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},2000);
+  }
+  function imprimirInforme(){
+    const w=window.open("","_blank");
+    if(!w){alert("El navegador bloqueó la ventana del informe. Permita ventanas emergentes para este sitio o use “Descargar informe”.");return;}
+    w.document.open();w.document.write(informeHTML().replace("</body>","<script>window.addEventListener('load',function(){setTimeout(function(){window.print();},600);});<\/script></body>"));w.document.close();
   }
   function tipHTML(k){
     const d=GEO.dptos.find(x=>x.key===k);const o=S.press&&S.press.by[k];
@@ -670,12 +921,15 @@ footer{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-con
   $("map").addEventListener("focusout",hideTip);
   $("map").addEventListener("keydown",e=>{const p=e.target.closest(".dp");if(p&&(e.key==="Enter"||e.key===" ")){e.preventDefault();pickDept(p.dataset.k);}});
 
-  function render(){if(!S)return;summary();chips();deptos();if(S.tab==="mapa")drawMap();list();panel();}
+  function render(){if(!S)return;summary();chips();deptos();if(S.tab==="mapa")drawMap();if(S.tab==="historicos")drawHist();list();panel();}
 
   document.addEventListener("click",async e=>{
     if(!S) return;
     const t=e.target.closest("#typeChips [data-t]");if(t){S.type=t.dataset.t;render();return;}
     const tb=e.target.closest(".tabs [data-tab]");if(tb){setTab(tb.dataset.tab);return;}
+    const hm=e.target.closest("[data-hm]");if(hm){S.hist.mode=hm.dataset.hm;const m=+hoyStr().slice(5,7)-1;S.hist.idx=S.hist.mode==="mes"?m:S.hist.mode==="sem"?(m<6?0:1):0;drawHist();return;}
+    if(e.target.id==="hDown"){descargarInforme();return;}
+    if(e.target.id==="hPdf"){imprimirInforme();return;}
     const dp=e.target.closest(".dp, .rk");if(dp){pickDept(dp.dataset.k);return;}
     if(e.target.closest("[data-back]")){S.zone=null;drawMap();return;}
     const op=e.target.closest("[data-open]");if(op){openInRadar(op.dataset.open,null);return;}
@@ -690,6 +944,8 @@ footer{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-con
   });
   ["fNivel","fEstado"].forEach(id=>$(id).addEventListener("change",()=>S&&list()));
   $("fDepto").addEventListener("change",()=>{if(S){drawMap();list();}});
+  $("hYear").addEventListener("change",()=>{if(S){S.hist.year=+$("hYear").value;drawHist();}});
+  $("hIdx").addEventListener("change",()=>{if(S){S.hist.idx=+$("hIdx").value;drawHist();}});
   $("fQ").addEventListener("input",()=>S&&list());
 
   if(!window.crypto||!crypto.subtle){$("loginMsg").className="msg err";$("loginMsg").textContent="Este navegador no permite abrir Meridiano. Use Chrome, Edge, Safari o Firefox actualizados, por https.";$("enter").disabled=true;}

@@ -11,6 +11,7 @@ Uso:
   python3 tools/sellar.py abrir   data/alertas.enc.json  salida.json
   python3 tools/sellar.py sellar  entrada.json           data/alertas.enc.json
   python3 tools/sellar.py agregar data/alertas.enc.json  nuevas.json   [meta.json]
+  python3 tools/sellar.py periodo data/alertas.enc.json 2026-10 analisis.json   (claves: AAAA-MM, AAAA-S1, AAAA-S2, AAAA)
   python3 tools/sellar.py rotar   data/alertas.enc.json
   python3 tools/sellar.py verificar data/alertas.enc.json
 
@@ -130,6 +131,15 @@ def main(a):
         n, u = agregar(base, nuevas, meta)
         _escribir(a[1], sellar_obj(base, clave))
         print(f"{n} nuevas, {u} actualizadas, {len(base['alertas'])} en total.")
+    elif cmd == "periodo":
+        # python3 tools/sellar.py periodo data/alertas.enc.json 2026-10 analisis.json
+        clave = _clave()
+        base = abrir_obj(_leer(a[1]), clave)
+        an = _leer(a[3])
+        an.setdefault("generado", ahora())
+        base.setdefault("informes", {})[a[2]] = an
+        _escribir(a[1], sellar_obj(base, clave))
+        print(f"Análisis del período {a[2]} guardado.")
     elif cmd == "rotar":
         obj = abrir_obj(_leer(a[1]), _clave())
         nueva = _clave("MERIDIANO_CLAVE_NUEVA")

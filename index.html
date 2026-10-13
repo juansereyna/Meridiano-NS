@@ -168,6 +168,29 @@ h1{font-family:var(--display);font-weight:600;font-size:clamp(28px,4vw,38px);lin
 .htable td{border-bottom:1px solid var(--line);padding:7px 8px;vertical-align:top}
 .htable td.n{font-family:var(--mono);white-space:nowrap;font-size:12px}
 .tscroll{overflow-x:auto}
+/* Análisis NS */
+.tg.ana{border-color:var(--navy);color:var(--ink)}
+.ans{border-top:1px solid var(--gold);padding-top:14px}
+.atabs{display:flex;flex-wrap:wrap;gap:0;border-bottom:1px solid var(--line);margin-bottom:12px}
+.atabs button{border:0;background:transparent;padding:6px 12px 8px 0;margin-right:12px;cursor:pointer;font-size:13px;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
+.atabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--gold);font-weight:700}
+.abody{display:flex;flex-direction:column;gap:10px;font-size:13.5px}
+.lect p{margin:0 0 8px}
+.mk{font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:0 5px;border:1px solid var(--line);color:var(--muted);margin-right:3px;white-space:nowrap}
+.mk-Inferencia{border-color:var(--gold);color:var(--gold)}.mk-Recomendación{border-color:var(--ok);color:var(--ok)}
+.postura{margin:4px 0 0;padding:10px 14px;border-left:3px solid var(--gold);background:var(--sunk);font-family:var(--display);font-size:18px;line-height:1.35;display:flex;flex-direction:column;gap:4px}
+.postura .eyebrow{font-family:var(--body);font-size:10.5px}
+.pub{font-size:12.5px;padding:6px 10px;border:1px solid var(--line)}.pub.si{border-color:var(--ok)}.pub.no{border-color:var(--crit)}
+.pub.si b{color:var(--ok)}.pub.no b{color:var(--crit)}
+.sub4{margin:4px 0 2px;font-size:12.5px;font-weight:700}
+.alist{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px}
+.mtx td{font-size:12.5px}.nv{font-size:11px;font-weight:700}.nv-Alto{color:var(--crit)}.nv-Medio{color:var(--high)}.nv-Bajo{color:var(--muted)}
+.cp{border:1px solid var(--line);background:var(--bg)}
+.cph{display:flex;gap:10px;align-items:center;padding:6px 10px;border-bottom:1px solid var(--line);font-size:12.5px}.cph b{flex:1}
+.cp pre{margin:0;padding:10px;white-space:pre-wrap;font-family:var(--body);font-size:13px;line-height:1.5;max-height:260px;overflow:auto}
+.cp pre.code{font-family:var(--mono);font-size:11.5px}
+.hans{display:flex;flex-direction:column;gap:12px}
+.hans .lect{font-size:14px;line-height:1.6}
 .zi.lv-Crítico .stripe{background:var(--crit)} .zi.lv-Alto .stripe{background:var(--high)} .zi.lv-Medio .stripe{background:var(--med)} .zi.lv-Bajo .stripe{background:var(--low)}
 .filters{display:flex;flex-direction:column;gap:10px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
@@ -459,8 +482,42 @@ footer{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-con
   function ingest(data){
     S.rows=(data.alertas||[]).map(a=>Object.assign({_id:a.id},a));
     S.meta=data.barrida||null;
+    S.informes=data.informes||{};
     if(!S.sel||!S.rows.some(r=>r._id===S.sel)) S.sel=null;
   }
+
+  /* -------- Análisis North Stonebridge (skill ns-analisis-noticias) -------- */
+  const lvTxt=s=>esc(s).replace(/\[(Hecho|Inferencia|Recomendación)\]/g,'<span class="mk mk-$1">$1</span>');
+  const parrafos=s=>String(s||"").split(/\n{2,}/).map(p=>`<p>${lvTxt(p)}</p>`).join("");
+  function matrizHTML(m){return (m&&m.length)?`<div class="tscroll"><table class="htable mtx"><thead><tr><th>Dimensión</th><th>Implicación</th><th>Nivel</th><th>Expuestos</th></tr></thead><tbody>${m.map(x=>`<tr><td><b>${esc(x.dimension)}</b></td><td>${esc(x.implicacion)}</td><td><span class="nv nv-${esc(x.nivel)}">${esc(x.nivel)}</span></td><td>${esc(x.expuestos)}</td></tr>`).join("")}</tbody></table></div>`:"";}
+  const ulist=a=>(a&&a.length)?`<ul class="alist">${a.map(x=>`<li>${lvTxt(x)}</li>`).join("")}</ul>`:"";
+  function analisisHTML(r){
+    const a=r.analisis;
+    if(!a) return `<div><h3>Análisis North Stonebridge</h3><div class="note">Pendiente. Pídale a Claude: “analiza la alerta ${esc(r._id)}”.</div></div>`;
+    const t=S.atab||"lectura";
+    const tabs=[["lectura","Lectura"],["matriz","Implicaciones"],["acciones","Señales y acciones"],...(a.copys?[["copys","Copys"]]:[]),...(a.imagen?[["imagen","Imagen"]]:[])];
+    let body="";
+    if(t==="lectura") body=`${a.pertinencia?`<div class="pub ${a.pertinencia.publicar?"si":"no"}"><b>${a.pertinencia.publicar?"Publicable":"No publicar"}</b>${a.pertinencia.nota?" · "+esc(a.pertinencia.nota):""}</div>`:""}
+      <div class="lect">${parrafos(a.lectura)}</div>
+      ${a.postura?`<blockquote class="postura"><span class="eyebrow">Postura institucional</span>${esc(a.postura)}</blockquote>`:""}
+      ${a.portafolio?`<div class="note"><b>Uso interno ·</b> ${esc(a.portafolio.servicios||"")}${a.portafolio.lector?" · Lector ideal: "+esc(a.portafolio.lector):""}</div>`:""}`;
+    if(t==="matriz") body=matrizHTML(a.matriz)||'<p class="mnote">Sin matriz.</p>';
+    if(t==="acciones") body=`<h4 class="sub4">Señales a monitorear</h4>${ulist(a.senales)}<h4 class="sub4">Recomendaciones para organizaciones</h4>${ulist(a.recomendaciones)}`;
+    if(t==="copys"&&a.copys){const c=a.copys;
+      body=`${c.x?`<div class="cp"><div class="cph"><b>X</b><span class="mnote">${[...c.x].length}/280</span><button type="button" class="linkbtn" data-cp="x">Copiar</button></div><pre>${esc(c.x)}</pre></div>`:""}
+        ${c.instagram?`<div class="cp"><div class="cph"><b>Instagram</b><button type="button" class="linkbtn" data-cp="instagram">Copiar</button></div><pre>${esc(c.instagram)}</pre>${c.instagram_alt?`<div class="mnote"><b>Alt text:</b> ${esc(c.instagram_alt)} <button type="button" class="linkbtn" data-cp="instagram_alt">Copiar</button></div>`:""}</div>`:""}
+        ${c.linkedin?`<div class="cp"><div class="cph"><b>LinkedIn</b><button type="button" class="linkbtn" data-cp="linkedin">Copiar</button></div><pre>${esc(c.linkedin)}</pre></div>`:""}
+        ${a.notas_publicacion?`<div class="note"><b>Notas de publicación ·</b> ${esc(a.notas_publicacion)}</div>`:""}`;}
+    if(t==="imagen"&&a.imagen){const im=a.imagen;
+      body=`<dl class="kv"><dt>Concepto</dt><dd>${esc(im.concepto)}</dd><dt>Plantilla</dt><dd>${esc(im.plantilla||"")}</dd><dt>Fondo</dt><dd>${esc(im.fondo||"")}</dd><dt>Titular</dt><dd>${esc(im.titular||"")}</dd><dt>Apoyo</dt><dd>${esc(im.apoyo||"")}</dd><dt>Formatos</dt><dd>Instagram 1080×1350 y 1080×1080 · LinkedIn 1200×1200 o 1200×627 · X 1600×900</dd></dl>
+        ${im.prompt_es?`<div class="cp"><div class="cph"><b>Prompt en español</b><button type="button" class="linkbtn" data-cp="prompt_es">Copiar</button></div><pre class="code">${esc(im.prompt_es)}</pre></div>`:""}
+        ${im.prompt_en?`<div class="cp"><div class="cph"><b>Prompt en inglés</b><button type="button" class="linkbtn" data-cp="prompt_en">Copiar</button></div><pre class="code">${esc(im.prompt_en)}</pre></div>`:""}`;}
+    return `<div class="ans"><h3>Análisis North Stonebridge</h3>
+      <div class="atabs" role="tablist">${tabs.map(([k,l])=>`<button type="button" data-at="${k}" aria-selected="${k===t}">${l}</button>`).join("")}</div>
+      <div class="abody">${body}</div><span class="toast" id="cpAOk" hidden>Copiado</span></div>`;
+  }
+  function textoCopia(r,k){const a=r.analisis||{};return k.startsWith("prompt")?(a.imagen||{})[k]:(a.copys||{})[k];}
+  const claveInforme=p=>p.mode==="mes"?`${p.y}-${pad(p.i+1)}`:p.mode==="sem"?`${p.y}-S${p.i+1}`:`${p.y}`;
   async function refresh(){
     if(!S) return;
     try{ ingest(await openSealed(S.pw)); render(); }
@@ -534,7 +591,7 @@ footer{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-con
       <span class="t">${esc(r.titulo)}</span>
       <span class="d">${fmtD(r.fecha)}${r.fecha_exacta===false?"*":""}</span>
       <span class="m"><span>${esc(r.tipo)}</span><span>${esc([r.municipio,r.departamento].filter(Boolean).join(", "))}</span>
-      ${isPros(r)?`<span class="tg pros">${esc(r.empresa||"Empresa")}</span>`:""}${r.actualizado?'<span class="tg upd">Actualizada</span>':""}<span class="tg st-${esc(estadoDe(r).replace(/\s/g,""))}">${esc(estadoDe(r))}</span></span>
+      ${isPros(r)?`<span class="tg pros">${esc(r.empresa||"Empresa")}</span>`:""}${r.actualizado?'<span class="tg upd">Actualizada</span>':""}${r.analisis?'<span class="tg ana">Análisis</span>':""}<span class="tg st-${esc(estadoDe(r).replace(/\s/g,""))}">${esc(estadoDe(r))}</span></span>
     </button>`).join("");
   }
   function panel(){
@@ -561,7 +618,8 @@ footer{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-con
         ${r.servicios?`<dt>Servicio NS</dt><dd>${esc(r.servicios)}</dd>`:""}
         ${r.actualizado?`<dt>Actualizada</dt><dd>${esc(new Date(r.actualizado).toLocaleString("es-CO",{dateStyle:"medium",timeStyle:"short",timeZone:"America/Bogota"}))}</dd>`:""}
       </dl>
-      <div><h3>Lectura</h3><p style="margin:0">${esc(r.resumen)}</p></div>
+      <div><h3>Resumen del hecho</h3><p style="margin:0">${lvTxt(r.resumen)}</p></div>
+      ${analisisHTML(r)}
       <div><h3>Fuentes</h3><ul class="src">${(r.fuentes||[]).map(f=>`<li><span class="k${f.oficial?" of":""}">${f.oficial?"OFICIAL":"PRENSA"}</span><a href="${esc(safeUrl(f.url))}" target="_blank" rel="noopener noreferrer">${esc(f.nombre)}</a></li>`).join("")||"<li>Sin enlace</li>"}</ul></div>
       <div><h3>Contacto tentativo</h3>${contactHTML}</div>
       ${b.cuerpo?`<div><h3>Borrador de correo · requiere aprobación</h3>
@@ -786,6 +844,13 @@ footer{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-con
         <div><b>${A.pros}</b><span>Con empresa identificada</span></div>
       </div>
       <p class="hread">${esc(lectura(p,A,B))}</p>
+      ${(()=>{const an=S.informes[claveInforme(p)];
+        if(!an) return `<div class="hcard"><h3>Análisis North Stonebridge del período</h3><p class="mnote">Pendiente. Pídale a Claude: “haz el análisis de ${esc(p.label.toLowerCase())}”. Mientras tanto, el informe usa la lectura automática y los análisis de cada alerta.</p></div>`;
+        return `<div class="hcard hans"><h3>Análisis North Stonebridge del período${an.generado?` · ${esc(fmtD(an.generado.slice(0,10)))}`:""}</h3>
+          <div class="lect">${parrafos(an.lectura)}</div>
+          ${an.postura?`<blockquote class="postura"><span class="eyebrow">Postura institucional</span>${esc(an.postura)}</blockquote>`:""}
+          ${matrizHTML(an.matriz)}
+          <div class="hgrid"><div><h4 class="sub4">Señales a monitorear</h4>${ulist(an.senales)}</div><div><h4 class="sub4">Recomendaciones para organizaciones</h4>${ulist(an.recomendaciones)}</div></div></div>`;})()}
       <div class="hgrid">
         <div class="hcard hmap"><h3>Mapa de presión del período</h3>${A.n?mapaSVG(A,false):'<p class="mnote">Sin alertas en el período.</p>'}
           <div class="legend" style="margin-top:8px">${RBANDS.map(b=>`<span><i style="background:var(--${b.k})"></i>${b.t}</span>`).join("")}</div>
@@ -838,6 +903,10 @@ th{font-size:8pt;letter-spacing:.08em;text-transform:uppercase;color:#5F6B78}
 td.num{text-align:right;font-variant-numeric:tabular-nums;width:34px}td.bar{width:42%}td.bar span{display:block;height:7px;background:#A8884E}
 .lv{font-weight:700}.lv.Crítico{color:#9B2C2C}.lv.Alto{color:#B4632B}.lv.Medio{color:#A8884E}.lv.Bajo{color:#5F6B78}
 .det td{font-size:9pt}.src{font-size:8.5pt;color:#5F6B78;word-break:break-all}
+.post{background:#F4ECDA;border-left:3px solid #A8884E;padding:10px 14px;font-family:"Cormorant Garamond",Georgia,serif;font-size:13.5pt;line-height:1.35}
+.post .eyebrow{font-family:Lato,Arial,sans-serif}
+.mk{font-size:8pt;letter-spacing:.06em;text-transform:uppercase;color:#A8884E}
+.dest{border-bottom:1px solid #EAE3D2;padding:8px 0;break-inside:avoid}.dest ul,ul{margin:4px 0 0;padding-left:18px}li{margin-bottom:3px}
 .foot{margin-top:26px;border-top:1px solid #A8884E;padding-top:8px;font-size:8.5pt;color:#5F6B78;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px}
 .note{font-size:8.5pt;color:#5F6B78}
 h2{break-after:avoid}.kpi,table tr,.mapbox,.legend{break-inside:avoid}
@@ -850,12 +919,24 @@ h2{break-after:avoid}.kpi,table tr,.mapbox,.legend{break-inside:avoid}
 <div class="meta">${fmtD(p.ini)} – ${fmtD(new Date(Date.parse(p.fin)-864e5).toISOString().slice(0,10))} · Generado el ${esc(gen)}${desde&&desde>p.ini?` · Cobertura de Meridiano desde el ${fmtD(desde)}`:""}</div>
 <div class="kpi"><div><b>${A.n}</b><span>Alertas</span><i>${d(A.n,B.n)} vs. ${esc(P.corto)}</i></div><div><b>${A.crit+A.alto}</b><span>Críticas o altas</span><i>${d(A.crit+A.alto,B.crit+B.alto)} vs. ${esc(P.corto)}</i></div><div><b>${A.crit}</b><span>Críticas</span></div><div><b>${A.deptos}</b><span>Departamentos</span></div><div><b>${A.pros}</b><span>Con empresa</span></div></div>
 <p class="lead">${esc(lectura(p,A,B))}</p>
+${(()=>{const an=S.informes[claveInforme(p)];const mk=s=>esc(s).replace(/\[(Hecho|Inferencia|Recomendación)\]/g,'<b class="mk">$1:</b>');
+  const ul=a=>(a&&a.length)?`<ul>${a.map(x=>`<li>${mk(x)}</li>`).join("")}</ul>`:"";
+  if(!an) return "";
+  return `<h2>Lectura North Stonebridge</h2>${String(an.lectura||"").split(/\n{2,}/).map(x=>`<p>${mk(x)}</p>`).join("")}
+  ${an.postura?`<div class="post"><span class="eyebrow">Postura institucional</span><br>${esc(an.postura)}</div>`:""}
+  ${(an.matriz&&an.matriz.length)?`<h2>Matriz de implicaciones</h2><table><thead><tr><th>Dimensión</th><th>Implicación</th><th>Nivel</th><th>Expuestos</th></tr></thead><tbody>${an.matriz.map(x=>`<tr><td><b>${esc(x.dimension)}</b></td><td>${esc(x.implicacion)}</td><td>${esc(x.nivel)}</td><td>${esc(x.expuestos)}</td></tr>`).join("")}</tbody></table>`:""}
+  <div class="two"><div><h2>Señales a monitorear</h2>${ul(an.senales)}</div><div><h2>Recomendaciones</h2>${ul(an.recomendaciones)}</div></div>`;})()}
 <h2>Mapa de presión y evolución</h2>
 <div class="two"><div class="mapbox">${A.n?mapaSVG(A,true):'<p class="muted">Sin alertas en el período.</p>'}<div class="legend">${RBANDS.map(b=>`<span><i style="background:${PAL_PRINT[b.k]}"></i>${b.t}</span>`).join("")}</div>
 <p class="note">Intensidad relativa al departamento con más presión del período. Fronteras: DANE, MGN 2018.${A.loose?` ${A.loose} alerta(s) nacional(es) sin ubicación en el mapa.`:""}</p></div>
 <div>${serieSVG(pts,true)}<div class="legend"><span><i style="background:#D6A660"></i>Todas</span><span><i style="background:#8E2A24"></i>Críticas o altas</span></div>
 <h2 style="font-size:12pt">Departamentos con más presión</h2><table>${bl(Object.fromEntries(Object.entries(A.byDept).map(([k,o])=>[k,o.n])),8,nameOf)}</table></div></div>
 <div class="two"><div><h2>Tipos de hecho</h2><table>${bl(A.byType,11)}</table></div><div><h2>Actores más señalados</h2><table>${bl(A.actores,8)}</table></div></div>
+${(()=>{const con=filas.filter(r=>r.analisis).slice(0,8);if(!con.length)return"";
+  const mk=s=>esc(s).replace(/\[(Hecho|Inferencia|Recomendación)\]/g,'<b class="mk">$1:</b>');
+  return `<h2>Alertas destacadas · análisis North Stonebridge</h2>${con.map(r=>`<div class="dest"><div class="muted" style="font-size:9pt">${esc(r.fecha)} · ${esc([r.municipio,r.departamento].filter(Boolean).join(", "))} · <span class="lv ${esc(r.nivel)}">${esc(r.nivel)}</span></div><b>${esc(r.titulo)}</b>
+    ${r.analisis.postura?`<p class="post" style="margin:6px 0">${esc(r.analisis.postura)}</p>`:""}
+    ${(r.analisis.recomendaciones||[]).length?`<ul>${r.analisis.recomendaciones.slice(0,3).map(x=>`<li>${mk(x)}</li>`).join("")}</ul>`:""}</div>`).join("")}`;})()}
 <h2>Detalle de alertas (${A.n})</h2>
 ${A.n?`<table class="det"><thead><tr><th>Fecha</th><th>Nivel</th><th>Lugar</th><th>Alerta y fuente</th></tr></thead><tbody>${filas.map(r=>`<tr><td style="white-space:nowrap">${esc(r.fecha)}</td><td><span class="lv ${esc(r.nivel)}">${esc(r.nivel)}</span></td><td>${esc([r.municipio,r.departamento].filter(Boolean).join(", "))}</td><td><b>${esc(r.titulo)}</b><br><span class="muted">${esc(r.tipo)}${r.actor?" · "+esc(r.actor):""}${isPros(r)?" · Empresa: "+esc(r.empresa||""):""}</span>${(r.fuentes||[])[0]?`<div class="src">${esc(r.fuentes[0].nombre)} · ${esc(r.fuentes[0].url)}</div>`:""}</td></tr>`).join("")}</tbody></table>`:'<p class="muted">Sin alertas en el período.</p>'}
 <p class="note" style="margin-top:14px">Metodología: Meridiano registra alertas de seguridad publicadas por fuentes oficiales y prensa reconocida, verificadas en su fuente. Refleja lo reportado públicamente, no una medición completa de la seguridad de cada territorio. Hechos marcados "por confirmar" pueden variar.</p>
@@ -936,10 +1017,12 @@ ${A.n?`<table class="det"><thead><tr><th>Fecha</th><th>Nivel</th><th>Lugar</th><
     const gr=e.target.closest("[data-goradar]");if(gr){openInRadar(null,gr.dataset.goradar);return;}
     const wb=e.target.closest(".seg [data-w]");if(wb){S.win=+wb.dataset.w;document.querySelectorAll(".seg [data-w]").forEach(x=>x.setAttribute("aria-pressed",x===wb));drawMap();return;}
     const rb=e.target.closest(".seg [data-r]");if(rb){S.rel=rb.dataset.r;document.querySelectorAll(".seg [data-r]").forEach(x=>x.setAttribute("aria-pressed",x===rb));render();return;}
-    const al=e.target.closest(".al");if(al){S.sel=al.dataset.id;list();panel();if(innerWidth<920)$("panel").scrollIntoView({behavior:"smooth",block:"start"});return;}
+    const al=e.target.closest(".al");if(al){S.sel=al.dataset.id;S.atab="lectura";list();panel();if(innerWidth<920)$("panel").scrollIntoView({behavior:"smooth",block:"start"});return;}
     const st=e.target.closest("[data-st]");
     if(st){const r=S.rows.find(x=>x._id===S.sel);if(!r)return;S.local[r._id]=Object.assign({},S.local[r._id],{estado:st.dataset.st});await saveLocal();summary();list();panel();return;}
     if(e.target.id==="saveNota"){const r=S.rows.find(x=>x._id===S.sel);if(!r)return;S.local[r._id]=Object.assign({},S.local[r._id],{notas:$("nota").value});if(await saveLocal()){$("notaOk").hidden=false;setTimeout(()=>{const o=$("notaOk");if(o)o.hidden=true},1800);}return;}
+    const at=e.target.closest("[data-at]");if(at){S.atab=at.dataset.at;panel();return;}
+    const cp=e.target.closest("[data-cp]");if(cp){const r=S.rows.find(x=>x._id===S.sel);const txt=r&&textoCopia(r,cp.dataset.cp);if(!txt)return;try{await navigator.clipboard.writeText(txt);const o=$("cpAOk");if(o){o.hidden=false;setTimeout(()=>{o.hidden=true},1600);}}catch(_){const pre=cp.closest(".cp")&&cp.closest(".cp").querySelector("pre");if(pre){const rg=document.createRange();rg.selectNodeContents(pre);const s=getSelection();s.removeAllRanges();s.addRange(rg);}}return;}
     if(e.target.id==="cpMail"){const txt="Asunto: "+$("mSub").textContent+"\n\n"+$("mBody").textContent;try{await navigator.clipboard.writeText(txt);$("cpOk").hidden=false;}catch(_){const rg=document.createRange();rg.selectNodeContents($("mBody"));const s=getSelection();s.removeAllRanges();s.addRange(rg);}}
   });
   ["fNivel","fEstado"].forEach(id=>$(id).addEventListener("change",()=>S&&list()));

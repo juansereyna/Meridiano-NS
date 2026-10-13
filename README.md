@@ -25,6 +25,14 @@ Meridiano es la plataforma interna de North Stonebridge para el seguimiento de a
 
 Meridiano tiene dos pestañas: **Radar** (resumen, filtros, lista de alertas con fuentes, contactos y borradores) y **Mapa de presión** (situación por departamento). Al hacer clic en una zona del mapa se abre su ficha: nivel de presión, cifras, una lectura breve y todas las alertas de esa zona con sus fuentes, incluidas las anteriores a la ventana de tiempo como antecedente. Desde la ficha se puede abrir cualquier alerta en el Radar. El enlace `…/Meridiano-NS/#mapa` abre directamente el mapa después de ingresar la clave.
 
+### Análisis North Stonebridge
+
+Cada alerta puede llevar el análisis de la skill `ns-analisis-noticias`: lectura con [Hecho], [Inferencia] y [Recomendación], matriz de implicaciones, señales a monitorear, recomendaciones, postura institucional, conexión con el portafolio (uso interno), directriz de imagen con prompts en español e inglés, y copys para X, Instagram y LinkedIn con notas de publicación. Se ve en la ficha de la alerta (pestañas Lectura, Implicaciones, Señales y acciones, Copys, Imagen) con botones para copiar.
+
+- **Análisis completo** (con imagen y copys): alertas críticas, altas o con empresa identificada que sean publicables.
+- **Análisis breve** (lectura, matriz, señales, recomendaciones y postura): el resto de alertas críticas y altas, o las que no conviene publicar.
+- El análisis de cada período (`informes` → `AAAA-MM`, `AAAA-S1`, `AAAA-S2`, `AAAA`) alimenta la pestaña Históricos y el informe descargable. Se guarda con `tools/sellar.py periodo`.
+
 ### Históricos e informes
 
 La pestaña **Históricos** muestra cualquier mes, semestre o año: cifras clave, comparación con el período anterior (solo cuando Meridiano lo cubrió completo), lectura automática, mapa de presión del período, evolución por día o por mes, departamentos, tipos de hecho, actores y el listado de alertas. Los históricos se calculan sobre todas las alertas guardadas, que nunca se borran; los períodos cerrados no cambian.

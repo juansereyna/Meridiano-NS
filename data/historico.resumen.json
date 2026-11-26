@@ -1,0 +1,274 @@
+{
+ "generado": "2026-11-25T19:53:28-05:00",
+ "fuentes": [
+  {
+   "id": "secuestro",
+   "nombre": "Secuestro",
+   "unidad": "casos",
+   "entidad": "Ministerio de Defensa Nacional",
+   "dataset": "d7zw-hpf4",
+   "titulo": "SECUESTRO",
+   "url": "https://www.datos.gov.co/d/d7zw-hpf4",
+   "actualizado": "2026-11-17",
+   "corte": "2026-10-30"
+  },
+  {
+   "id": "extorsion",
+   "nombre": "Extorsión",
+   "unidad": "casos",
+   "entidad": "Ministerio de Defensa Nacional",
+   "dataset": "q2ib-t9am",
+   "titulo": "EXTORSIÓN",
+   "url": "https://www.datos.gov.co/d/q2ib-t9am",
+   "actualizado": "2026-11-17",
+   "corte": "2026-10-31"
+  },
+  {
+   "id": "fp_asesinados",
+   "nombre": "Fuerza Pública asesinada",
+   "unidad": "uniformados",
+   "entidad": "Ministerio de Defensa Nacional",
+   "dataset": "8rpn-wpty",
+   "titulo": "AFECTACIÓN DE MIEMBROS DE LA FUERZA PÚBLICA",
+   "url": "https://www.datos.gov.co/d/8rpn-wpty",
+   "actualizado": "2026-11-17",
+   "corte": "2026-10-31"
+  },
+  {
+   "id": "fp_heridos",
+   "nombre": "Fuerza Pública herida",
+   "unidad": "uniformados",
+   "entidad": "Ministerio de Defensa Nacional",
+   "dataset": "8rpn-wpty",
+   "titulo": "AFECTACIÓN DE MIEMBROS DE LA FUERZA PÚBLICA",
+   "url": "https://www.datos.gov.co/d/8rpn-wpty",
+   "actualizado": "2026-11-17",
+   "corte": "2026-10-31"
+  },
+  {
+   "id": "terrorismo",
+   "nombre": "Terrorismo",
+   "unidad": "casos",
+   "entidad": "Policía Nacional (SIEDCO)",
+   "dataset": "37p5-impc",
+   "titulo": "Reporte Delito Terrorismo Policía Nacional",
+   "url": "https://www.datos.gov.co/d/37p5-impc",
+   "actualizado": "2026-09-01",
+   "corte": "2026-07-29"
+  },
+  {
+   "id": "homicidio",
+   "nombre": "Homicidio intencional",
+   "unidad": "víctimas",
+   "entidad": "Ministerio de Defensa Nacional",
+   "dataset": "m8fd-ahd9",
+   "titulo": "HOMICIDIO",
+   "url": "https://www.datos.gov.co/d/m8fd-ahd9",
+   "actualizado": "2026-11-17",
+   "corte": "2026-10-31"
+  },
+  {
+   "id": "terrorismo",
+   "nombre": "Terrorismo (MinDefensa)",
+   "unidad": "casos",
+   "entidad": "Ministerio de Defensa Nacional",
+   "dataset": "yi5j-5fe9",
+   "titulo": "TERRORISMO",
+   "url": "https://www.datos.gov.co/d/yi5j-5fe9",
+   "actualizado": "2026-11-17",
+   "corte": "2026-10-31"
+  },
+  {
+   "id": "infraestructura",
+   "nombre": "Ataques a infraestructura",
+   "unidad": "casos",
+   "entidad": "Ministerio de Defensa Nacional",
+   "dataset": "s29y-2xjd",
+   "titulo": "DESTRUCCIÓN DE INFRAESTRUCTURA DE PRODUCCIÓN DE DROGAS ILÍCITAS",
+   "url": "https://www.datos.gov.co/d/s29y-2xjd",
+   "actualizado": "2026-11-17",
+   "corte": "2026-10-31"
+  },
+  {
+   "id": "pirateria",
+   "nombre": "Piratería terrestre",
+   "unidad": "casos",
+   "entidad": "Ministerio de Defensa Nacional",
+   "dataset": "sutf-7dyz",
+   "titulo": "PIRATERÍA TERRESTRE",
+   "url": "https://www.datos.gov.co/d/sutf-7dyz",
+   "actualizado": "2026-11-17",
+   "corte": "2026-09-29"
+  },
+  {
+   "id": "minas",
+   "nombre": "Víctimas de minas",
+   "unidad": "víctimas",
+   "entidad": "Ministerio de Defensa Nacional",
+   "dataset": "gr35-i7pm",
+   "titulo": "MINAS INTERVENIDAS",
+   "url": "https://www.datos.gov.co/d/gr35-i7pm",
+   "actualizado": "2026-11-17",
+   "corte": "2026-10-31"
+  }
+ ],
+ "totales": {
+  "secuestro": {
+   "2022": 223,
+   "2023": 338,
+   "2024": 313,
+   "2025": 701,
+   "2026": 374
+  },
+  "extorsion": {
+   "2022": 9791,
+   "2023": 11078,
+   "2024": 13802,
+   "2025": 13417,
+   "2026": 11344
+  },
+  "fp_asesinados": {
+   "2022": 130,
+   "2023": 84,
+   "2024": 101,
+   "2025": 174,
+   "2026": 98
+  },
+  "fp_heridos": {
+   "2022": 720,
+   "2023": 385,
+   "2024": 499,
+   "2025": 769,
+   "2026": 686
+  },
+  "terrorismo": {
+   "2022": 742,
+   "2023": 839,
+   "2024": 1126,
+   "2025": 1398,
+   "2026": 1260
+  },
+  "homicidio": {
+   "2022": 13536,
+   "2023": 13555,
+   "2024": 13497,
+   "2025": 14038,
+   "2026": 11537
+  },
+  "infraestructura": {
+   "2022": 4719,
+   "2023": 5237,
+   "2024": 5261,
+   "2025": 5444,
+   "2026": 4775
+  },
+  "pirateria": {
+   "2022": 186,
+   "2023": 144,
+   "2024": 163,
+   "2025": 101,
+   "2026": 41
+  },
+  "minas": {
+   "2022": 2413,
+   "2023": 2969,
+   "2024": 5247,
+   "2025": 6151,
+   "2026": 6435
+  }
+ },
+ "errores": [],
+ "catalogo": [
+  {
+   "term": "homicidio",
+   "id": "m8fd-ahd9",
+   "nombre": "HOMICIDIO",
+   "apto": true,
+   "actualizado": "2026-11-17"
+  },
+  {
+   "term": "masacre",
+   "id": "u8eq-92tb",
+   "nombre": "MASACRES",
+   "apto": false,
+   "actualizado": "2026-11-17"
+  },
+  {
+   "term": "masacre",
+   "id": "d78j-f66e",
+   "nombre": "Sistema de Información de Eventos de Violencia del Conflicto Armado SIEVCAC - Casos MA Masacres",
+   "apto": false,
+   "actualizado": "2026-11-19"
+  },
+  {
+   "term": "masacre",
+   "id": "cj8q-zu3u",
+   "nombre": "Sistema de Información de Eventos de Violencia del Conflicto Armado SIEVCAC - Víctimas MA Masacres",
+   "apto": false,
+   "actualizado": "2026-11-19"
+  },
+  {
+   "term": "terrorismo",
+   "id": "yi5j-5fe9",
+   "nombre": "TERRORISMO",
+   "apto": true,
+   "actualizado": "2026-11-17"
+  },
+  {
+   "term": "infraestructura",
+   "id": "t8i3-9xka",
+   "nombre": "Mantenimiento Infraestructura Palmira",
+   "apto": false,
+   "actualizado": "2026-11-18"
+  },
+  {
+   "term": "infraestructura",
+   "id": "tt26-9cmd",
+   "nombre": "Actividades infraestructura Palmira 2021",
+   "apto": false,
+   "actualizado": "2022-06-13"
+  },
+  {
+   "term": "infraestructura",
+   "id": "he2e-mqh9",
+   "nombre": "Proyectos Infraestructura Social y Hábitat",
+   "apto": false,
+   "actualizado": "2021-11-23"
+  },
+  {
+   "term": "infraestructura",
+   "id": "s29y-2xjd",
+   "nombre": "DESTRUCCIÓN DE INFRAESTRUCTURA DE PRODUCCIÓN DE DROGAS ILÍCITAS",
+   "apto": true,
+   "actualizado": "2026-11-17"
+  },
+  {
+   "term": "pirateria",
+   "id": "sutf-7dyz",
+   "nombre": "PIRATERÍA TERRESTRE",
+   "apto": true,
+   "actualizado": "2026-11-17"
+  },
+  {
+   "term": "minas",
+   "id": "yhxn-eqqw",
+   "nombre": "Situación Víctimas Minas Antipersonal en Colombia",
+   "apto": false,
+   "actualizado": "2024-01-19"
+  },
+  {
+   "term": "minas",
+   "id": "sgp4-3e6k",
+   "nombre": "Eventos Minas Antipersonal en Colombia",
+   "apto": false,
+   "actualizado": "2024-01-18"
+  },
+  {
+   "term": "minas",
+   "id": "gr35-i7pm",
+   "nombre": "MINAS INTERVENIDAS",
+   "apto": true,
+   "actualizado": "2026-11-17"
+  }
+ ]
+}

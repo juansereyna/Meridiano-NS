@@ -2,6 +2,13 @@
 *.json
 !data/alertas.enc.json
 !data/colombia.json
+!data/lotes.json
+!data/llave.enc.json
+!data/llave.pub.json
+!data/lotes/
+!data/lotes/*.json
+!anterior/data/alertas.enc.json
+!anterior/data/colombia.json
 *.txt
 !robots.txt
 .env

@@ -1,12 +1,7 @@
-<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>
 <meta name="robots" content="noindex,nofollow,noarchive">
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'">
-<title>Meridiano · North Stonebridge</title>
+<title>Meridiano</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231C2A3A'/%3E%3Crect x='3.5' y='3.5' width='25' height='25' fill='none' stroke='%23A8884E'/%3E%3Ctext x='16' y='21' font-family='Georgia' font-size='12' font-weight='700' fill='%23A8884E' text-anchor='middle'%3ENS%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Lato:wght@400;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
@@ -109,6 +104,25 @@ h1{font-family:var(--display);font-weight:600;font-size:clamp(28px,4vw,38px);lin
 .rk .bar span{position:absolute;inset:0 auto 0 0}
 .mnote{font-size:12px;color:var(--muted);margin:10px 0 0}
 .mapwrap .legend{margin-top:10px}
+.zbrief{margin-top:16px;border:1px solid var(--line);border-top:3px solid var(--gold);background:var(--bg);padding:16px 18px;display:flex;flex-direction:column;gap:14px}
+.zbrief:empty{display:none}
+.zbrief .zbh{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 14px}
+.zbrief h3{margin:2px 0 0;font-family:var(--display);font-size:22px;line-height:1.15;text-wrap:balance}
+.zbk{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+@media (max-width:560px){.zbk{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.zbk div{background:var(--surface);padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.zbk b{font-family:var(--display);font-size:26px;line-height:1;font-variant-numeric:tabular-nums}
+.zbk span{font-size:12px;color:var(--muted)}.zbk .dl{font-family:var(--mono);font-size:11px}
+.zbk .crit b{color:var(--crit)}.zbk .soc b{color:var(--med)}
+.zbtxt{margin:0;font-size:14px;line-height:1.6;max-width:72ch}
+.zb2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media (max-width:640px){.zb2{grid-template-columns:minmax(0,1fr)}}
+.zbrief h4{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 8px;font-weight:700}
+.zbl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;font-size:13px}
+.zbl li{display:flex;flex-direction:column;gap:2px}.zbl .zm{font-size:11.5px;color:var(--muted);font-family:var(--mono)}
+.zbl .linkbtn{text-align:left}
+.chips{display:flex;flex-wrap:wrap;gap:6px}.chips span{font-size:12px;border:1px solid var(--line);padding:2px 8px;background:var(--surface)}
+.zbact{display:flex;flex-wrap:wrap;gap:8px}
 /* Pestañas */
 .tabs{display:flex;gap:0;border-bottom:1px solid var(--line);overflow-x:auto}
 .tabs button{border:0;background:transparent;padding:10px 22px 12px 0;margin-right:22px;cursor:pointer;text-align:left;font-family:var(--display);font-size:22px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;display:flex;flex-direction:column;line-height:1.1;white-space:nowrap}
@@ -126,7 +140,12 @@ h1{font-family:var(--display);font-weight:600;font-size:clamp(28px,4vw,38px);lin
 .zstats b{font-family:var(--display);font-size:24px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
 .zstats span{font-size:11.5px;color:var(--muted)}
 .zread{font-size:13.5px;margin:0;color:var(--ink)}
-.zlist{display:flex;flex-direction:column;border-top:1px solid var(--line);max-height:62vh;overflow-y:auto}
+.zlist{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.more{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:12px 0 4px}
+.more .mnote{margin:0}
+.sdet{margin-top:6px;padding:10px 12px;background:var(--surface);border:1px solid var(--line)}
+.sdet p{margin:0 0 8px}.sdet p:last-child{margin-bottom:0}
+.stog{margin-top:2px}
 .zi{display:grid;grid-template-columns:4px minmax(0,1fr);gap:0 12px;padding:12px 4px 12px 0;border-bottom:1px solid var(--line)}
 .zi.old{opacity:.62}
 .zi .stripe{grid-row:1/span 4}
@@ -208,6 +227,61 @@ h1{font-family:var(--display);font-weight:600;font-size:clamp(28px,4vw,38px);lin
 @media (max-width:920px){.grid{grid-template-columns:minmax(0,1fr)}}
 .list{display:flex;flex-direction:column;border-top:1px solid var(--line)}
 .empty{padding:28px 6px;color:var(--muted)}
+.sfil{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.sdash{display:flex;flex-direction:column;gap:16px;margin:6px 0 22px}
+.skpi{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+@media (max-width:900px){.skpi{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:520px){.skpi{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.skpi .stat .n{font-size:30px}.skpi .stat.ver .n{color:var(--med)}.skpi .stat.ok .n{color:var(--ok)}.skpi .stat.hi .n{color:var(--crit)}
+.ikpi{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin:12px 0 16px}
+@media (max-width:900px){.ikpi{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ikpi .stat .n{font-size:30px}.ikpi .mil .n{color:var(--crit)}.ikpi .pol .n{color:var(--high)}.ikpi .civ .n{color:var(--gold)}.ikpi .sec .n{color:var(--low)}
+.ig2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:16px}
+@media (max-width:900px){.ig2{grid-template-columns:minmax(0,1fr)}}
+.srow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) 34px;gap:10px;align-items:center;font-size:13px}
+.sbar{display:flex;height:10px;background:var(--sunk)}.sbar span{display:block;height:100%}
+.c-mil{background:var(--crit)}.c-pol{background:var(--high)}.c-civ{background:var(--gold)}.c-sec{background:var(--low)}
+.ilg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted);margin-top:10px}.ilg i{display:inline-block;width:12px;height:10px;margin-right:5px;vertical-align:-1px}
+.itab{width:100%;border-collapse:collapse;font-size:13px}.itab th,.itab td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}.itab th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}.itab td.n{font-family:var(--mono);text-align:right;white-space:nowrap}
+.vgrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:22px;align-items:start;border:1px solid var(--line);background:var(--surface);padding:18px 20px;margin-top:12px}
+@media (max-width:860px){.vgrid{grid-template-columns:minmax(0,1fr)}}
+.vgrid svg{width:100%;height:auto;display:block;max-height:72vh}
+.tp{stroke:var(--hstroke);stroke-width:.8;cursor:pointer}.tp:hover{stroke:var(--ink);stroke-width:1.4}.tp.sel{stroke:var(--gold);stroke-width:2.2}.tp:focus-visible{outline:none;stroke:var(--gold);stroke-width:2}
+:root{--v0:#E6DFD0;--v1:#7FA88F;--v2:#D9C27A;--v3:#D6954F;--v4:#C25A3A;--v5:#8E2A24}
+@media (prefers-color-scheme:dark){:root{--v0:#243546;--v1:#3F7A5C;--v2:#9C8A45;--v3:#B5713A;--v4:#C9573D;--v5:#E0574A}}
+.vlv{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:3px 8px;border:1px solid var(--line);white-space:nowrap}.vlv i{width:10px;height:10px;display:inline-block}
+.vcond{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.vcond span{font-size:12px;padding:3px 8px;background:var(--sunk);border-left:3px solid var(--high)}
+.vrec{margin:8px 0 0;padding-left:18px;font-size:13.5px}.vrec li{margin-bottom:5px}
+.vrank{max-height:420px;overflow:auto}.vrank tr{cursor:pointer}.vrank tr:hover td{background:var(--sunk)}.vrank tr.sel td{background:var(--sunk);font-weight:700}
+.vcard h3{font-family:var(--display);font-size:26px;margin:2px 0 6px;font-weight:600}
+.disc{font-size:12.5px;color:var(--muted);border-left:3px solid var(--gold);padding:8px 12px;background:var(--sunk);margin-top:14px}
+.sg2{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px;align-items:stretch}
+.sg3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}
+@media (max-width:900px){.sg2,.sg3{grid-template-columns:minmax(0,1fr)}}
+.cloud{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;justify-content:center;padding:6px 0;min-height:140px}
+.cloud button{background:none;border:0;padding:0 2px;cursor:pointer;color:var(--ink);font-family:var(--display);line-height:1.1}
+.cloud button:hover,.cloud button[aria-pressed="true"]{color:var(--gold);text-decoration:underline}
+.cloud button.w1{opacity:.55}.cloud button.w2{opacity:.75}
+.brow.cl{cursor:pointer}.brow.cl:hover .bt,.brow.cl.on .bt{color:var(--gold);text-decoration:underline}
+.brow.cl:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.stk{display:flex;height:22px;gap:2px;margin:6px 0 10px}
+.stk span{display:block;height:100%;cursor:pointer;min-width:4px}.stk span:first-child{border-radius:4px 0 0 4px}.stk span:last-child{border-radius:0 4px 4px 0}
+.stk .conf{background:var(--ok)}.stk .ver{background:var(--med)}.stk .desm{background:var(--low)}
+.lgd{display:flex;flex-direction:column;gap:6px;font-size:13px}.lgd div{display:flex;align-items:center;gap:8px;cursor:pointer}.lgd i{width:10px;height:10px;display:inline-block;border-radius:2px}
+.lgd b{font-family:var(--mono);font-weight:500;margin-left:auto}
+.tl{position:relative}.tl svg{width:100%;height:auto;max-height:190px;display:block}.tl rect.c{fill:var(--gold)}.tl rect.c:hover{fill:var(--ink)}
+.tl text{fill:var(--muted);font-size:10px;font-family:var(--mono)}.tl line{stroke:var(--line)}
+.stip{position:absolute;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12px;padding:5px 8px;white-space:nowrap;transform:translate(-50%,-110%)}
+.sact{display:flex;flex-wrap:wrap;gap:6px;font-size:12.5px}
+.sact button{border:1px solid var(--gold);background:transparent;color:var(--ink);padding:3px 8px;cursor:pointer;font-size:12px}
+.slh{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:4px 0 0;font-weight:700}
+.sg{display:grid;grid-template-columns:4px minmax(0,1fr);gap:0 12px;padding:14px 4px 14px 0;border-bottom:1px solid var(--line)}
+.sg .stripe{align-self:stretch}.sg.st-conf .stripe{background:var(--ok)}.sg.st-ver .stripe{background:var(--med)}.sg.st-desm .stripe{background:var(--low)}
+.sg h4{margin:2px 0 4px;font-size:14.5px;line-height:1.35}.sg p{margin:0 0 6px;font-size:13px;color:var(--muted)}
+.sg .zm{font-size:11.5px;color:var(--muted);font-family:var(--mono)}
+.sb{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.04em;padding:1px 6px;border:1px solid var(--line);margin-right:4px}
+.sb.st-conf{color:var(--ok);border-color:var(--ok)}.sb.st-ver{color:var(--med);border-color:var(--med)}.sb.st-desm{color:var(--low)}
+.sg .zs{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px}
 .al{display:grid;grid-template-columns:4px minmax(0,1fr) auto;gap:0 14px;padding:13px 10px 13px 0;border:0;border-bottom:1px solid var(--line);cursor:pointer;background:transparent;text-align:left;width:100%}
 .al:hover{background:var(--sunk)}
 .al[aria-current="true"]{background:var(--surface)}
@@ -246,10 +320,11 @@ textarea{width:100%;min-height:70px;background:var(--bg);border:1px solid var(--
 .sources h3{font-family:var(--display);font-size:20px;margin:0 0 4px;font-weight:600}
 .sources ul{margin:0;padding-left:18px;color:var(--muted)}
 footer{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;border-top:1px solid var(--gold);padding-top:12px}
+footer .fsrc{flex-basis:100%;max-width:110ch;line-height:1.55}
 @media (prefers-reduced-motion:no-preference){.al{transition:background .15s}}
 </style>
-</head>
-<body>
+
+
 
 <!-- ================= INGRESO ================= -->
 <main class="gate" id="gate">
@@ -309,6 +384,9 @@ footer{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-con
     <button type="button" role="tab" id="t-radar" data-tab="radar" aria-selected="true" aria-controls="tab-radar">Radar<span>Alertas, fuentes y contactos</span></button>
     <button type="button" role="tab" id="t-mapa" data-tab="mapa" aria-selected="false" aria-controls="tab-mapa">Mapa de presión<span>Situación por zona</span></button>
     <button type="button" role="tab" id="t-historicos" data-tab="historicos" aria-selected="false" aria-controls="tab-historicos">Históricos<span>Mes, semestre y año · informes</span></button>
+    <button type="button" role="tab" id="t-senales" data-tab="senales" aria-selected="false" aria-controls="tab-senales">Escucha social<span>Qué se dice en redes abiertas</span></button>
+    <button type="button" role="tab" id="t-impacto" data-tab="impacto" aria-selected="false" aria-controls="tab-impacto">Impacto<span>Víctimas, objetivos y medios</span></button>
+    <button type="button" role="tab" id="t-viajes" data-tab="viajes" aria-selected="false" aria-controls="tab-viajes">Seguridad de viaje<span>Nivel por zona y perfil</span></button>
   </nav>
 
   <div id="tab-radar" class="tabpane" role="tabpanel" aria-labelledby="t-radar">
@@ -354,9 +432,55 @@ footer{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-con
       <svg id="map" role="img" aria-label="Mapa de Colombia por departamentos coloreado según la presión de las alertas"></svg>
       <div class="tip" id="tip" hidden></div>
       <div class="legend" id="legend"></div>
+      <article class="zbrief" id="zbrief" aria-live="polite"></article>
     </div>
     <div class="zonecol" id="zonecol" aria-live="polite"></div>
   </section>
+  </div>
+
+  <div id="tab-senales" class="tabpane" role="tabpanel" aria-labelledby="t-senales" hidden>
+    <section aria-label="Escucha social">
+      <div class="maphead">
+        <div><div class="eyebrow">Señales en redes y canales abiertos · beta</div><h2>Escucha social</h2></div>
+        <div class="seg" role="group" aria-label="Estado de verificación">
+          <button type="button" data-se="" aria-pressed="true">Todas</button>
+          <button type="button" data-se="En verificación" aria-pressed="false">En verificación</button>
+          <button type="button" data-se="Confirmado" aria-pressed="false">Confirmadas</button>
+          <button type="button" data-se="Desmentido" aria-pressed="false">Desmentidas</button>
+        </div>
+      </div>
+      <div class="sfil"><select id="sTema" aria-label="Tema"></select><select id="sDep" aria-label="Departamento"></select></div>
+      <div id="sAct" class="sact" aria-live="polite"></div>
+      <div id="sDash" class="sdash"></div>
+      <h3 class="slh">Señales <span id="sCount"></span></h3>
+      <p class="mnote">Cada señal enlaza su evidencia pública. <b>En verificación</b> = circula, sin confirmación oficial ni de prensa; no actúe sobre ella sin confirmar. Por la Ley 1581 no se registran nombres ni usuarios de particulares.</p>
+      <div id="sList" aria-live="polite"></div>
+    </section>
+  </div>
+
+  <div id="tab-impacto" class="tabpane" role="tabpanel" aria-labelledby="t-impacto" hidden>
+    <section aria-label="Impacto">
+      <div class="maphead">
+        <div><div class="eyebrow">Afectados, objetivos atacados y medios usados</div><h2>Impacto</h2></div>
+        <div class="seg" role="group" aria-label="Ventana de tiempo">
+          <button type="button" data-iw="30" aria-pressed="false">30 días</button>
+          <button type="button" data-iw="90" aria-pressed="true">90 días</button>
+          <button type="button" data-iw="9999" aria-pressed="false">Todo</button>
+        </div>
+      </div>
+      <div class="sfil"><select id="iDep" aria-label="Departamento"></select></div>
+      <div id="iBody" aria-live="polite"></div>
+    </section>
+  </div>
+
+  <div id="tab-viajes" class="tabpane" role="tabpanel" aria-labelledby="t-viajes" hidden>
+    <section aria-label="Seguridad de viaje">
+      <div class="maphead">
+        <div><div class="eyebrow">Indicador interno · últimos 90 días</div><h2>Seguridad de viaje</h2></div>
+        <div class="seg" role="group" aria-label="Perfil del viajero" id="vProf"></div>
+      </div>
+      <div id="vBody" aria-live="polite"></div>
+    </section>
   </div>
 
   <div id="tab-historicos" class="tabpane" role="tabpanel" aria-labelledby="t-historicos" hidden>
@@ -399,11 +523,11 @@ footer{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-con
   <footer>
     <span>Meridiano · Uso interno · Documento Confidencial</span>
     <span>northstonebridge.com · info@northstonebridge.com · +57 323 612 7516</span>
+    <span class="fsrc"><b>Fuentes y método:</b> medios nacionales y regionales; fuentes oficiales (Defensoría del Pueblo, Fuerza Pública, Fiscalía, gobernaciones y alcaldías); y escucha y monitoreo de redes sociales y canales abiertos (X, Facebook, TikTok, YouTube, Telegram y grupos citados por prensa). Lo que circula en redes se publica como señal <i>en verificación</i> hasta que una autoridad o un medio lo confirme. No se registran datos de personas particulares (Ley 1581 de 2012).</span>
   </footer>
 </div>
 
 <script>
-if(window.top!==window.self){try{window.top.location=window.self.location;}catch(e){document.documentElement.innerHTML="";}}
 (function(){
   "use strict";
   const DATA_URL = "data/alertas.enc.json";
@@ -413,6 +537,10 @@ if(window.top!==window.self){try{window.top.location=window.self.location;}catch
   const $=id=>document.getElementById(id);
   const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const safeUrl=u=>/^https?:\/\//i.test(String(u||""))?u:"#";
+  /* Paginación "ver más": evita listas infinitas. k = lista, sig = filtros actuales (si cambian, vuelve al inicio) */
+  const PAGE={radar:12,sen:6,zona:5,hist:10};
+  function lim(k,sig){S.lim=S.lim||{};S.limSig=S.limSig||{};if(S.limSig[k]!==sig){S.limSig[k]=sig;S.lim[k]=PAGE[k];}return S.lim[k];}
+  function masBtn(k,shown,total,sing,plur){if(shown>=total)return total>PAGE[k]?`<div class="more"><span class="mnote">Mostrando las ${total} ${plur}.</span><button type="button" class="linkbtn" data-less="${k}">Mostrar menos</button></div>`:"";const n=Math.min(PAGE[k],total-shown);return `<div class="more"><button type="button" class="btn ghost" data-more="${k}">Ver ${n} ${n===1?sing:plur} más</button><span class="mnote">Mostrando ${shown} de ${total} · quedan ${total-shown}</span>${total-shown>PAGE[k]?`<button type="button" class="linkbtn" data-moreall="${k}">Ver todas</button>`:""}</div>`;}
   const enc=new TextEncoder(), dec=new TextDecoder();
   const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
   const tob64=u=>btoa(String.fromCharCode(...new Uint8Array(u)));
@@ -433,7 +561,43 @@ if(window.top!==window.self){try{window.top.location=window.self.location;}catch
     let pt;
     try{ pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:b64(env.iv)},key,b64(env.ct)); }
     catch(e){ throw new Error("clave"); }
-    return JSON.parse(dec.decode(pt));
+    const base=JSON.parse(dec.decode(pt));
+    try{ await mergeLotes(base,pw); }catch(e){ base._loteErr=true; }
+    return base;
+  }
+  /* Lotes de barridas automáticas: cifrados con la llave pública; solo esta llave privada (protegida por la clave) los abre */
+  let PRIV=null, PRIVPW=null; const LOTES={};
+  async function getJSON(u,fresh){const r=await fetch(u+(fresh?"?t="+Date.now():""),{cache:fresh?"no-store":"force-cache"});if(!r.ok)throw new Error("net");return r.json();}
+  async function mergeLotes(base,pw){
+    let idx; try{ idx=await getJSON("data/lotes.json",true); }catch(e){ return; }
+    if(!idx||!idx.lotes||!idx.lotes.length) return;
+    if(!PRIV||PRIVPW!==pw){
+      const le=await getJSON("data/llave.enc.json",true);
+      const k=await deriveKey(pw,b64(le.salt),le.iter||600000);
+      const der=await crypto.subtle.decrypt({name:"AES-GCM",iv:b64(le.iv)},k,b64(le.ct));
+      PRIV=await crypto.subtle.importKey("pkcs8",der,{name:"RSA-OAEP",hash:"SHA-256"},false,["decrypt"]); PRIVPW=pw;
+    }
+    for(const l of idx.lotes){
+      let o=LOTES[l.archivo];
+      if(!o){
+        const e=await getJSON("data/"+l.archivo,false);
+        const raw=await crypto.subtle.decrypt({name:"RSA-OAEP"},PRIV,b64(e.ek));
+        const ak=await crypto.subtle.importKey("raw",raw,"AES-GCM",false,["decrypt"]);
+        o=LOTES[l.archivo]=JSON.parse(dec.decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:b64(e.iv)},ak,b64(e.ct))));
+      }
+      fusionar(base,o);
+    }
+  }
+  function fusionar(base,o){
+    const A=new Map((base.alertas||[]).map(a=>[a.id,a]));
+    (o.alertas||[]).forEach(a=>{const v=A.get(a.id);if(!v){A.set(a.id,Object.assign({estado:"Nueva"},a));return;}
+      Object.keys(a).forEach(k=>{if(k==="estado"||k==="notas")return;if(k==="fuentes"){const u=new Set((v.fuentes||[]).map(f=>f.url));v.fuentes=(v.fuentes||[]).concat((a.fuentes||[]).filter(f=>!u.has(f.url)));}else v[k]=a[k];});v.actualizado=(o.barrida||{}).ultima||v.actualizado;});
+    base.alertas=[...A.values()].sort((x,y)=>String(y.fecha||"").localeCompare(String(x.fecha||"")));
+    const N=new Map((base.senales||[]).map(s=>[s.id,s]));
+    (o.senales||[]).forEach(s=>{const v=N.get(s.id);if(!v){N.set(s.id,s);return;}
+      Object.keys(s).forEach(k=>{if(k==="evidencias"){const u=new Set((v.evidencias||[]).map(e=>e.url));v.evidencias=(v.evidencias||[]).concat((s.evidencias||[]).filter(e=>!u.has(e.url)));}else v[k]=s[k];});});
+    base.senales=[...N.values()];
+    if(o.barrida) base.barrida=o.barrida;
   }
 
   /* Estado y notas locales: cifrados con la misma clave, guardados solo en este equipo */
@@ -484,6 +648,7 @@ if(window.top!==window.self){try{window.top.location=window.self.location;}catch
     S.rows=(data.alertas||[]).map(a=>Object.assign({_id:a.id},a));
     S.meta=data.barrida||null;
     S.informes=data.informes||{};
+    S.senales=(data.senales||[]).slice().sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha)));
     if(!S.sel||!S.rows.some(r=>r._id===S.sel)) S.sel=null;
   }
 
@@ -529,7 +694,7 @@ if(window.top!==window.self){try{window.top.location=window.self.location;}catch
   function logout(reason){
     clearInterval(idleTimer);clearInterval(refreshTimer);idleTimer=refreshTimer=null;
     S=null;
-    $("list").innerHTML="";$("panel").innerHTML="";$("typeChips").innerHTML="";$("map").innerHTML="";$("zonecol").innerHTML="";$("hBody").innerHTML="";$("tip").hidden=true;
+    $("list").innerHTML="";$("panel").innerHTML="";$("typeChips").innerHTML="";$("map").innerHTML="";$("zonecol").innerHTML="";$("hBody").innerHTML="";$("zbrief").innerHTML="";$("sList").innerHTML="";$("iBody").innerHTML="";$("vBody").innerHTML="";$("sDash").innerHTML="";$("sAct").innerHTML="";$("tip").hidden=true;
     $("app").hidden=true;$("idleWarn").hidden=true;$("gate").hidden=false;
     $("loginMsg").className="msg info";$("loginMsg").textContent=reason||"Sesión cerrada.";
     $("pass").value="";$("pass").focus();
@@ -587,13 +752,15 @@ if(window.top!==window.self){try{window.top.location=window.self.location;}catch
     if(!S.sel&&rs.length)S.sel=rs[0]._id;
     if(!S.rows.length){$("list").innerHTML='<div class="empty">Aún no hay alertas. Las barridas de las 6:45 a. m. y 12:45 p. m. las irán cargando aquí.</div>';return;}
     if(!rs.length){$("list").innerHTML='<div class="empty">Ninguna alerta coincide con estos filtros.</div>';return;}
-    $("list").innerHTML=rs.map(r=>`<button type="button" class="al lv-${esc(r.nivel)}" data-id="${esc(r._id)}" aria-current="${S.sel===r._id}">
+    const L=lim("radar",JSON.stringify([S.type,S.rel,$("fNivel").value,$("fDepto").value,$("fEstado").value,rs.length]));
+    let vis=rs.slice(0,L);const si=rs.findIndex(r=>r._id===S.sel);if(si>=L)vis=vis.concat(rs[si]);
+    $("list").innerHTML=vis.map(r=>`<button type="button" class="al lv-${esc(r.nivel)}" data-id="${esc(r._id)}" aria-current="${S.sel===r._id}">
       <span class="stripe" aria-hidden="true"></span>
       <span class="t">${esc(r.titulo)}</span>
       <span class="d">${fmtD(r.fecha)}${r.fecha_exacta===false?"*":""}</span>
       <span class="m"><span>${esc(r.tipo)}</span><span>${esc([r.municipio,r.departamento].filter(Boolean).join(", "))}</span>
       ${isPros(r)?`<span class="tg pros">${esc(r.empresa||"Empresa")}</span>`:""}${r.actualizado?'<span class="tg upd">Actualizada</span>':""}${r.analisis?'<span class="tg ana">Análisis</span>':""}<span class="tg st-${esc(estadoDe(r).replace(/\s/g,""))}">${esc(estadoDe(r))}</span></span>
-    </button>`).join("");
+    </button>`).join("")+masBtn("radar",Math.min(L,rs.length),rs.length,"alerta","alertas");
   }
   function panel(){
     const r=S.rows.find(x=>x._id===S.sel);
@@ -683,7 +850,48 @@ if(window.top!==window.self){try{window.top.location=window.self.location;}catch
     zoneCol(P);
   }
   const shortTxt=(s,n)=>{s=String(s||"").replace(/\s+/g," ").trim();return s.length>n?s.slice(0,n).replace(/\s\S*$/,"")+"…":s;};
+  /* -------- Panorama de la zona (card al pie del mapa) -------- */
+  const SVC={A1:"Análisis de Contexto Regional",A2:"Due Diligence de Contraparte",A3:"Monitoreo y Boletines de Riesgo",B1:"Evaluación de Vulnerabilidades",B2:"Planes Estratégicos de Riesgo",C1:"HEAT / Formación en Entornos Hostiles",C2:"Briefings de Seguridad para Viajes"};
+  function zoneBrief(){
+    const el=$("zbrief");if(!el||!GEO)return;
+    const z=S.zone, d=z?GEO.dptos.find(x=>x.key===z):null, W=S.win;
+    const ok=r=>estadoDe(r)!=="Descartada";
+    const inZ=r=>!z||geoKey(r.departamento)===z;
+    const cur=S.rows.filter(r=>ok(r)&&inZ(r)&&daysAgo(r.fecha)<=W), prev=S.rows.filter(r=>ok(r)&&inZ(r)&&daysAgo(r.fecha)>W&&daysAgo(r.fecha)<=2*W);
+    const crit=cur.filter(r=>r.nivel==="Crítico").length, alto=cur.filter(r=>r.nivel==="Alto").length, pros=cur.filter(isPros).length;
+    const sen=(S.senales||[]).filter(x=>(!z||geoKey(x.departamento)===z)&&daysAgo(x.fecha)<=W);
+    const senV=sen.filter(x=>x.estado==="En verificación").length;
+    const at=S.rows.filter(r=>ok(r)&&inZ(r)&&r.tipo==="Amenaza / alerta temprana"&&daysAgo(r.fecha)<=180);
+    const delta=prev.length?Math.round((cur.length-prev.length)/prev.length*100):null;
+    const dtxt=delta===null?(cur.length?"sin registros en el periodo anterior":"—"):(delta>0?`▲ ${delta}% frente a los ${W} días previos`:delta<0?`▼ ${Math.abs(delta)}% frente a los ${W} días previos`:`igual que los ${W} días previos`);
+    const top=(rows,fn,n)=>{const o={};rows.forEach(r=>[].concat(fn(r)||[]).forEach(k=>{k=String(k||"").trim();if(k)o[k]=(o[k]||0)+1;}));return Object.entries(o).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).slice(0,n);};
+    const tipos=top(cur,r=>r.tipo,3);
+    const lugares=z?top(cur,r=>r.municipio&&!/^por confirmar|^varios/i.test(r.municipio)?r.municipio.split(/[\/(]/)[0]:"",5):top(cur,r=>r.departamento,5);
+    const actores=top(cur,r=>{const a=String(r.actor||"").split(/\s\(|;/)[0].trim();return /^por confirmar|^no |^sin |^hombres|^banda de|^grupo armado no|^medida|^encapuchados/i.test(a)?"":a;},4);
+    const sectores=top(cur,r=>String(r.sector||"").split(/\s*[\/·,;]\s*/),5);
+    const svc=top(cur,r=>(String(r.servicios||"").match(/\b[ABC][123]\b/g)||[]),3);
+    const graves=cur.filter(r=>LV[r.nivel]>=3).sort((a,b)=>(LV[b.nivel]-LV[a.nivel])||String(b.fecha).localeCompare(String(a.fecha))).slice(0,3);
+    const nombre=z?d.name:"Colombia";
+    const txt=cur.length?`En los últimos ${W} días Meridiano registra <b>${cur.length} ${cur.length===1?"hecho":"hechos"}</b> en ${esc(nombre)}${crit?`, <b>${crit} ${crit===1?"crítico":"críticos"}</b>`:""}${alto?` y ${alto} de nivel alto`:""}. Predominan ${esc(tipos.map(([t,n])=>t.toLowerCase()+" ("+n+")").join(", "))}${lugares.length?`, con más actividad en ${esc(lugares.slice(0,3).map(([l])=>l).join(", "))}`:""}.${actores.length?` Actores señalados en las fuentes: ${esc(actores.map(([a])=>a).join("; "))}.`:" Las fuentes no atribuyen los hechos a un actor confirmado."}${sen.length?` En redes y canales abiertos circulan ${sen.length} ${sen.length===1?"señal":"señales"} sobre ${z?"la zona":"el país"}${senV?`, ${senV} todavía en verificación`:""}.`:""}${at.length?` Hay ${at.length} ${at.length===1?"alerta temprana":"alertas tempranas"} de la Defensoría registradas en los últimos seis meses.`:""}`
+      :`No hay hechos registrados en ${esc(nombre)} en los últimos ${W} días.${at.length?` Sigue como antecedente ${at.length===1?"una alerta temprana":at.length+" alertas tempranas"} de la Defensoría.`:""}`;
+    const ek=e=>({"Confirmado":"conf","En verificación":"ver","Desmentido":"desm"}[e]||"ver");
+    el.innerHTML=`<div class="zbh"><div><div class="eyebrow">Panorama ${z?"de la zona":"nacional"} · últimos ${W} días</div><h3>${esc(nombre)}</h3></div></div>
+      <div class="zbk"><div><b>${cur.length}</b><span>Hechos</span><span class="dl">${esc(dtxt)}</span></div><div class="crit"><b>${crit+alto}</b><span>Críticos o altos</span></div><div><b>${pros}</b><span>Con empresa afectada en ${W} días</span></div><div class="soc"><b>${sen.length}</b><span>Señales en redes</span>${senV?`<span class="dl">${senV} en verificación</span>`:""}</div></div>
+      <p class="zbtxt">${txt}</p>
+      <div class="zb2">
+        <div><h4>Lo más grave</h4>${graves.length?`<ul class="zbl">${graves.map(r=>`<li><span class="zm">${fmtD(r.fecha)} · ${esc(r.nivel)}${r.municipio?" · "+esc(r.municipio):""}</span><button type="button" class="linkbtn" data-open="${esc(r._id)}">${esc(r.titulo)}</button></li>`).join("")}</ul>`:'<p class="mnote">Sin hechos críticos o altos en la ventana.</p>'}</div>
+        <div><h4>${z?"Municipios con más hechos":"Departamentos con más hechos"}</h4>${lugares.length?`<div class="blist">${lugares.map(([k,v])=>`<div class="brow"><span class="bt">${esc(k)}</span><span class="bb"><span style="width:${Math.max(6,v/lugares[0][1]*100)}%"></span></span><span class="bn">${v}</span></div>`).join("")}</div>`:'<p class="mnote">Sin datos.</p>'}</div>
+      </div>
+      <div class="zb2">
+        <div><h4>Lo que dicen las redes</h4>${sen.length?`<ul class="zbl">${sen.slice(0,3).map(x=>`<li><span class="zm">${fmtD(x.fecha)} · ${esc((x.redes||[]).join(", "))}</span><span><span class="sb st-${ek(x.estado)}">${esc(x.estado||"")}</span>${esc(x.titulo)}</span></li>`).join("")}</ul>`:'<p class="mnote">Sin señales de redes en la ventana.</p>'}</div>
+        <div><h4>Sectores expuestos</h4>${sectores.length?`<div class="chips">${sectores.map(([k,n])=>`<span>${esc(k)} · ${n}</span>`).join("")}</div>`:'<p class="mnote">Sin datos.</p>'}
+          ${svc.length?`<h4 style="margin-top:12px">Servicios North Stonebridge pertinentes</h4><div class="chips">${svc.map(([k])=>`<span>${k} · ${esc(SVC[k]||"")}</span>`).join("")}</div>`:""}</div>
+      </div>
+      <div class="zbact">${z?`<button type="button" class="btn ghost" data-goradar="${esc(z)}">Ver las alertas de ${esc(nombre)} en el Radar</button>`:""}${sen.length?`<button type="button" class="btn ghost" data-gosen="${esc(z?(sen[0].departamento||""):"")}">Ver lo que dicen las redes${z?" en la zona":""}</button>`:""}</div>
+      <p class="mnote">Panorama calculado solo con las alertas y señales registradas en Meridiano. Cada hecho enlaza su fuente en el Radar y cada señal su evidencia en Escucha social.</p>`;
+  }
   function zoneCol(P){
+    zoneBrief();
     const col=$("zonecol");
     const note=(P.loose.length?`${P.loose.length} ${P.loose.length===1?"alerta nacional o sin ubicación no aparece":"alertas nacionales o sin ubicación no aparecen"} en el mapa. `:"")+"La presión suma las alertas por nivel y pesa más las recientes. Fronteras: DANE, MGN 2018.";
     if(!S.zone){
@@ -713,25 +921,220 @@ if(window.top!==window.self){try{window.top.location=window.self.location;}catch
         <div><b>${pros}</b><span>Con empresa</span></div>
       </div>
       <p class="zread">${lectura}</p>
-      <div class="zlist">${all.length?all.map(r=>`<article class="zi lv-${esc(r.nivel)}${inWin(r)?"":" old"}">
+      <div class="zlist">${all.length?all.slice(0,lim("zona",S.zone+"|"+S.win)).map(r=>`<article class="zi lv-${esc(r.nivel)}${inWin(r)?"":" old"}">
           <span class="stripe" aria-hidden="true"></span>
           <div class="zm">${fmtD(r.fecha)} · ${esc(r.tipo)} · ${esc(r.nivel)}${r.municipio?" · "+esc(r.municipio):""}${inWin(r)?"":" · fuera de la ventana"}</div>
           <h4>${esc(r.titulo)}</h4>
           <p>${esc(shortTxt(r.resumen,230))}</p>
           <div class="zs">${(r.fuentes||[]).slice(0,2).map(f=>`<a href="${esc(safeUrl(f.url))}" target="_blank" rel="noopener noreferrer">${esc(f.nombre)}</a>`).join("")}${isPros(r)?`<span class="tg pros">${esc(r.empresa||"Empresa")}</span>`:""}<button type="button" class="linkbtn" data-open="${esc(r._id)}">Ver ficha completa</button></div>
-        </article>`).join(""):'<div class="empty">Meridiano no tiene alertas registradas en esta zona.</div>'}</div>
+        </article>`).join("")+masBtn("zona",Math.min(S.lim.zona,all.length),all.length,"alerta de esta zona","alertas de esta zona"):'<div class="empty">Meridiano no tiene alertas registradas en esta zona.</div>'}</div>
       ${all.length?`<div><button type="button" class="btn ghost" data-goradar="${esc(S.zone)}">Ver las ${all.length} alertas en el Radar</button></div>`:""}
       <p class="mnote">${esc(note)}</p>`;
   }
   function setTab(t){
     if(!S) return;
-    S.tab=["mapa","historicos"].includes(t)?t:"radar";
-    ["radar","mapa","historicos"].forEach(x=>{$("tab-"+x).hidden=x!==S.tab;$("t-"+x).setAttribute("aria-selected",x===S.tab);});
+    const TB=["radar","mapa","historicos","senales","impacto","viajes"];
+    S.tab=TB.includes(t)?t:"radar";
+    TB.forEach(x=>{$("tab-"+x).hidden=x!==S.tab;$("t-"+x).setAttribute("aria-selected",x===S.tab);});
     try{history.replaceState(null,"","#"+S.tab);}catch(e){}
     hideTip();
     if(S.tab==="mapa")drawMap();
     if(S.tab==="historicos")drawHist();
+    if(S.tab==="senales")drawSenales();
+    if(S.tab==="impacto")drawImpacto();
+    if(S.tab==="viajes")drawViajes();
   }
+
+  /* -------- Impacto: afectados, objetivos y medios -------- */
+  const IMK=[["mil_m","Militares muertos","mil"],["mil_h","Militares heridos","mil"],["pol_m","Policías muertos","pol"],["pol_h","Policías heridos","pol"],["civ_m","Civiles muertos","civ"],["civ_h","Civiles heridos","civ"],["sec","Secuestrados","sec"]];
+  const imp=r=>r.impacto||{};
+  const secT=r=>(imp(r).sec||0)+(imp(r).fsec||0);
+  const depName=r=>{const k=geoKey(r.departamento);const d=k&&GEO?GEO.dptos.find(x=>x.key===k):null;return d?d.name:(r.departamento||"Sin departamento");};
+  function drawImpacto(){
+    const W=S.iw||90, dsel=$("iDep").value;
+    const base=S.rows.filter(r=>estadoDe(r)!=="Descartada"&&daysAgo(r.fecha)<=W);
+    const deps=[...new Set(base.map(depName))].sort();
+    $("iDep").innerHTML='<option value="">Todo el país</option>'+deps.map(d=>`<option${d===dsel?" selected":""}>${esc(d)}</option>`).join("");
+    document.querySelectorAll("[data-iw]").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.iw===W));
+    const rows=dsel?base.filter(r=>depName(r)===dsel):base;
+    const conI=rows.filter(r=>r.impacto), parc=conI.filter(r=>imp(r).parcial).length;
+    const T={};IMK.forEach(([k])=>T[k]=0);conI.forEach(r=>IMK.forEach(([k])=>T[k]+=(k==="sec"?secT(r):(imp(r)[k]||0))));
+    const kpi=`<div class="ikpi">${IMK.map(([k,l,c])=>`<div class="stat ${c}"><span class="n">${T[k]}</span><span class="l">${l}</span></div>`).join("")}</div>`;
+    // por departamento (apilado)
+    const by={};conI.forEach(r=>{const d=depName(r);const o=by[d]||(by[d]={mil:0,pol:0,civ:0,sec:0});const i=imp(r);o.mil+=(i.mil_m||0)+(i.mil_h||0);o.pol+=(i.pol_m||0)+(i.pol_h||0);o.civ+=(i.civ_m||0)+(i.civ_h||0);o.sec+=secT(r);});
+    const dl=Object.entries(by).map(([d,o])=>[d,o,o.mil+o.pol+o.civ+o.sec]).filter(x=>x[2]>0).sort((a,b)=>b[2]-a[2]).slice(0,12);
+    const mx=dl.length?dl[0][2]:1;
+    const stack=dl.length?`<div class="blist">${dl.map(([d,o,t])=>`<div class="srow" title="${esc(d)}: ${o.mil} militares, ${o.pol} policías, ${o.civ} civiles (muertos y heridos), ${o.sec} secuestrados"><span class="bt">${esc(d)}</span><span class="sbar" style="width:${Math.max(6,t/mx*100)}%">${["mil","pol","civ","sec"].filter(k=>o[k]).map(k=>`<span class="c-${k}" style="flex:${o[k]}"></span>`).join("")}</span><span class="bn">${t}</span></div>`).join("")}</div>
+      <div class="ilg"><span><i class="c-mil"></i>Militares</span><span><i class="c-pol"></i>Policías</span><span><i class="c-civ"></i>Civiles</span><span><i class="c-sec"></i>Secuestrados</span></div>`:'<p class="mnote">Sin víctimas registradas en la ventana.</p>';
+    // Fuerza Pública vs civiles
+    const fp=T.mil_m+T.mil_h+T.pol_m+T.pol_h, cv=T.civ_m+T.civ_h, tt=fp+cv;
+    const fpcv=tt?`<div class="stk" aria-hidden="true"><span class="c-mil" style="flex:${T.mil_m+T.mil_h||0.0001}"></span><span class="c-pol" style="flex:${T.pol_m+T.pol_h||0.0001}"></span><span class="c-civ" style="flex:${cv||0.0001}"></span></div>
+      <div class="lgd"><div><i class="c-mil"></i>Militares<b>${T.mil_m+T.mil_h} · ${Math.round((T.mil_m+T.mil_h)/tt*100)}%</b></div><div><i class="c-pol"></i>Policías<b>${T.pol_m+T.pol_h} · ${Math.round((T.pol_m+T.pol_h)/tt*100)}%</b></div><div><i class="c-civ"></i>Civiles<b>${cv} · ${Math.round(cv/tt*100)}%</b></div></div>
+      <p class="mnote">Muertos y heridos. Letalidad: ${T.mil_m+T.pol_m} muertos de la Fuerza Pública y ${T.civ_m} civiles muertos.</p>`:'<p class="mnote">Sin datos.</p>';
+    const bars=(list,max)=>{if(!list.length)return '<p class="mnote">Sin datos.</p>';const m=list[0][1]||1;return `<div class="blist">${list.slice(0,max||10).map(([k,v])=>`<div class="brow" title="${esc(k)}: ${v} ${v===1?"hecho":"hechos"}"><span class="bt">${esc(k)}</span><span class="bb"><span style="width:${Math.max(4,v/m*100)}%"></span></span><span class="bn">${v}</span></div>`).join("")}</div>`;};
+    const obj=cnt(rows,r=>r.objetivo), med=cnt(rows,r=>r.medio);
+    // objetivo x medio dominante
+    const om={};rows.filter(r=>r.objetivo&&r.medio).forEach(r=>{const o=om[r.objetivo]||(om[r.objetivo]={});o[r.medio]=(o[r.medio]||0)+1;});
+    const tab=obj.length?`<div class="tscroll"><table class="itab"><thead><tr><th>Objetivo</th><th>Medio más usado</th><th>Hechos</th><th>Víctimas</th></tr></thead><tbody>${obj.slice(0,10).map(([o,n])=>{const m=Object.entries(om[o]||{}).sort((a,b)=>b[1]-a[1])[0];const v=rows.filter(r=>r.objetivo===o&&r.impacto).reduce((s,r)=>{const i=imp(r);return s+(i.mil_m||0)+(i.mil_h||0)+(i.pol_m||0)+(i.pol_h||0)+(i.civ_m||0)+(i.civ_h||0);},0);return `<tr><td>${esc(o)}</td><td>${m?esc(m[0])+" ("+m[1]+")":"—"}</td><td class="n">${n}</td><td class="n">${v}</td></tr>`;}).join("")}</tbody></table></div>`:"";
+    const graves=conI.map(r=>{const i=imp(r);return [r,(i.mil_m||0)+(i.pol_m||0)+(i.civ_m||0),(i.mil_h||0)+(i.pol_h||0)+(i.civ_h||0)+secT(r)];}).sort((a,b)=>b[1]-a[1]||b[2]-a[2]).slice(0,8);
+    const lst=graves.length?`<ul class="zbl">${graves.map(([r,m,h])=>`<li><span class="zm">${fmtD(r.fecha)} · ${esc(depName(r))} · ${m} ${m===1?"muerto":"muertos"}, ${h} ${h===1?"herido o secuestrado":"heridos o secuestrados"}${imp(r).parcial?" · cifra parcial":""}</span><button type="button" class="linkbtn" data-open="${esc(r._id)}">${esc(r.titulo)}</button></li>`).join("")}</ul>`:'<p class="mnote">Sin hechos con víctimas en la ventana.</p>';
+    $("iBody").innerHTML=kpi+
+      `<div class="ig2"><div class="hcard"><h3>Afectados por zona · ${dsel?esc(dsel):"top departamentos"}</h3>${stack}</div>
+       <div class="hcard"><h3>Fuerza Pública frente a civiles</h3>${fpcv}</div></div>
+       <div class="ig2"><div class="hcard"><h3>Qué están atacando</h3>${bars(obj)}</div>
+       <div class="hcard"><h3>Con qué atacan</h3>${bars(med)}</div></div>
+       ${tab?`<div class="hcard" style="margin-bottom:16px"><h3>Objetivos y medio predominante</h3>${tab}</div>`:""}
+       <div class="hcard"><h3>Hechos con más víctimas</h3>${lst}</div>
+       <p class="mnote">Cifras mínimas confirmadas por las fuentes de cada alerta (muertos y heridos; los secuestrados incluyen rescatados y liberados). ${parc?`${parc} ${parc===1?"hecho tiene":"hechos tienen"} cifras parciales ("decenas", "varios"), contadas por lo bajo. `:""}No se cuentan integrantes de grupos armados abatidos. Las cifras agregadas de informes oficiales no se suman para no duplicar.</p>`;
+  }
+
+  /* -------- Seguridad de viaje: nivel por zona y perfil -------- */
+  const VPROF={general:{t:"Viajero general",d:"Turismo, visita familiar o trámites",w:{vial:1.3,sec:1.3,arm:1.1,exp:1.1,dron:0.9,infra:0.6,ext:0.7,paro:1.3}},
+    ejecutivo:{t:"Ejecutivo urbano",d:"Reuniones en ciudades y aeropuertos",w:{vial:0.8,sec:1.5,arm:1.0,exp:1.2,dron:0.6,infra:0.6,ext:0.9,paro:1.0}},
+    campo:{t:"Técnico o contratista en campo",d:"Obras, minería, energía, zonas rurales",w:{vial:1.4,sec:1.5,arm:1.1,exp:1.3,dron:1.3,infra:1.2,ext:1.4,paro:1.4}},
+    prensa:{t:"Periodista u ONG",d:"Trabajo con comunidades y cobertura",w:{vial:1.1,sec:1.3,arm:1.3,exp:1.1,dron:1.2,infra:0.6,ext:0.8,paro:1.4}}};
+  const VLV=[{n:0,t:"Sin registros",d:"Meridiano no tiene hechos registrados; no equivale a zona segura."},{n:1,t:"Precauciones normales",d:"Hechos aislados o de baja gravedad."},{n:2,t:"Precaución",d:"Incidentes recientes; planear rutas y horarios."},{n:3,t:"Alta precaución",d:"Violencia frecuente o grave; viajar con plan y contactos."},{n:4,t:"Reconsiderar el viaje",d:"Ataques graves y condiciones especiales activas."},{n:5,t:"Evitar viajes no esenciales",d:"Riesgo muy alto o restricciones de movilidad vigentes."}];
+  const VIAL=new Set(["Peaje","Vía o puente","Vehículo de transporte o carga"]),EXPL=new Set(["Carro o moto bomba","Artefacto explosivo","Cilindros o tatucos","Mina o área preparada"]),INFRA=new Set(["Red eléctrica","Generación de energía","Oleoducto o poliducto","Minería o vía férrea","Petróleo y gas"]);
+  function vCats(r){const c=[];if(VIAL.has(r.objetivo))c.push("vial");if(r.tipo==="Secuestro"||r.medio==="Secuestro")c.push("sec");if(r.medio==="Arma de fuego")c.push("arm");if(EXPL.has(r.medio))c.push("exp");if(r.medio==="Dron con explosivos")c.push("dron");if(INFRA.has(r.objetivo))c.push("infra");if(r.tipo==="Extorsión"||r.medio==="Extorsión")c.push("ext");if(r.tipo==="Paro armado / restricción")c.push("paro");return c;}
+  function travel(prof){
+    const w=VPROF[prof].w, by={};
+    const get=k=>by[k]||(by[k]={score:0,n:0,c:{vial:0,sec:0,arm:0,exp:0,dron:0,infra:0,ext:0,paro:0},at:0,fp:0,paroAct:0,rum:0,last:[],vict:0});
+    S.rows.forEach(r=>{
+      if(estadoDe(r)==="Descartada")return;const k=geoKey(r.departamento);if(!k)return;const d=daysAgo(r.fecha);
+      if(r.tipo==="Amenaza / alerta temprana"&&/defensor/i.test((r.fuentes||[]).map(f=>f.nombre).join(" ")+" "+r.titulo)&&d<=180){get(k).at++;}
+      if(d>90)return;
+      const o=get(k),cs=vCats(r),dec=Math.pow(0.5,d/30);
+      const mult=cs.length?Math.max(...cs.map(c=>w[c]||1)):(r.tipo==="Contexto / informe"?0.3:0.8);
+      o.score+=(LV[r.nivel]||1)*mult*dec;o.n++;cs.forEach(c=>o.c[c]++);
+      const i=r.impacto||{};const fv=(i.mil_m||0)+(i.mil_h||0)+(i.pol_m||0)+(i.pol_h||0);if(fv)o.fp+=fv;o.vict+=(i.civ_m||0)+(i.civ_h||0)+(i.sec||0);
+      if(r.tipo==="Paro armado / restricción"&&d<=14)o.paroAct++;
+      o.last.push(r);
+    });
+    (S.senales||[]).forEach(x=>{const k=geoKey(x.departamento);if(!k||daysAgo(x.fecha)>14)return;if(/paro|restricci|bloqueo|cierre/i.test(x.tema||"")&&x.estado!=="Desmentido"){const o=get(k);o.rum++;o.score+=(x.estado==="Confirmado"?1:0.5)*w.paro;}});
+    Object.values(by).forEach(o=>{o.score+=Math.min(o.at,3)*0.5;let l=o.n===0&&!o.at&&!o.rum?0:o.score<1.5?1:o.score<4?2:o.score<8?3:o.score<14?4:5;if(o.paroAct&&l<4)l=4;if(l===0&&(o.at||o.rum))l=1;o.lv=l;o.last.sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha))||(LV[b.nivel]||0)-(LV[a.nivel]||0));});
+    return by;
+  }
+  function vConds(o){const c=[];
+    if(o.paroAct)c.push("Paro armado o restricción de movilidad en los últimos 14 días");
+    if(o.rum)c.push(`${o.rum} ${o.rum===1?"señal":"señales"} en redes sobre paros o bloqueos`);
+    if(o.c.dron)c.push(`Ataques con drones (${o.c.dron})`);
+    if(o.c.vial)c.push(`Ataques en vías, peajes o vehículos (${o.c.vial})`);
+    if(o.c.exp)c.push(`Explosivos (${o.c.exp})`);
+    if(o.c.sec)c.push(`Secuestros (${o.c.sec})`);
+    if(o.c.ext)c.push(`Extorsión (${o.c.ext})`);
+    if(o.c.infra)c.push(`Ataques a energía o hidrocarburos (${o.c.infra})`);
+    if(o.fp)c.push(`${o.fp} uniformados muertos o heridos`);
+    if(o.at)c.push(`${o.at} ${o.at===1?"alerta temprana":"alertas tempranas"} de la Defensoría (6 meses)`);
+    return c;}
+  function vRecs(o,prof){const r=[];const L=o.lv;
+    if(L>=4)r.push("Viajar solo si es esencial, con plan de seguridad aprobado, itinerario compartido con un punto de contacto y reportes a horas fijas.");
+    if(L>=3)r.push("Hacer un briefing de seguridad antes del viaje (servicio C2) y definir rutas alternas y puntos seguros.");
+    if(o.paroAct||o.rum)r.push("Confirmar con autoridades locales y medios regionales el estado de movilidad el mismo día; no transitar durante paros o bloqueos.");
+    if(o.c.vial)r.push("Evitar desplazamientos por carretera de noche; revisar el estado de las vías y no detenerse cerca de peajes o puentes atacados.");
+    if(o.c.dron||o.c.exp)r.push("Mantener distancia de estaciones de Policía, bases militares y vehículos oficiales; no alojarse a menos de unas cuadras de ellos.");
+    if(o.c.sec)r.push("Bajo perfil: no publicar ubicación ni itinerario en redes, usar transporte verificado y variar horarios.");
+    if(o.c.ext&&prof==="campo")r.push("Verificar con la empresa protocolos frente a extorsión a contratistas y transporte de carga.");
+    if(prof==="prensa"&&L>=3)r.push("Coordinar el ingreso con organizaciones locales y la Defensoría; llevar identificación institucional visible solo donde convenga.");
+    if(prof==="ejecutivo"&&L>=2)r.push("Preferir vuelos directos y traslados aeropuerto–hotel con proveedor verificado; evitar zonas de vida nocturna señaladas en los hechos.");
+    if(!r.length)r.push("Mantener las precauciones habituales y revisar Meridiano antes de salir.");
+    return r;}
+  const vCol=l=>`var(--v${l})`;
+  function drawViajes(){
+    if(!GEO){$("vBody").innerHTML='<div class="empty">No se pudo cargar el mapa.</div>';return;}
+    const prof=S.vprof||"general";
+    $("vProf").innerHTML=Object.entries(VPROF).map(([k,p])=>`<button type="button" data-vp="${k}" aria-pressed="${k===prof}" title="${esc(p.d)}">${esc(p.t)}</button>`).join("");
+    const by=travel(prof), z=S.vzone;
+    const [ix,iy,iw,ih]=GEO.inset;
+    let svg=`<g class="inset"><rect x="${ix}" y="${iy}" width="${iw}" height="${ih}"/><text x="${ix+4}" y="${iy+9}">San Andrés y Prov.</text></g>`;
+    svg+=GEO.dptos.map(d=>{const o=by[d.key];const l=o?o.lv:0;return `<path class="tp${d.key===z?" sel":""}" d="${d.d}" data-vk="${esc(d.key)}" fill="${vCol(l)}" tabindex="0" role="button" aria-label="${esc(d.name)}: ${VLV[l].t}"><title>${esc(d.name)}: ${VLV[l].t}</title></path>`;}).join("");
+    const legend=`<div class="legend">${VLV.map(v=>`<span><i style="background:${vCol(v.n)}"></i>${v.n?v.n+" · ":""}${v.t}</span>`).join("")}</div>`;
+    const rank=GEO.dptos.map(d=>[d,by[d.key]]).filter(x=>x[1]&&x[1].lv>0).sort((a,b)=>b[1].lv-a[1].lv||b[1].score-a[1].score);
+    const tbl=`<div class="vrank"><table class="itab"><thead><tr><th>Departamento</th><th>Nivel</th><th>Hechos 90 d</th></tr></thead><tbody>${rank.map(([d,o])=>`<tr data-vk="${esc(d.key)}" class="${d.key===z?"sel":""}"><td>${esc(d.name)}</td><td><span class="vlv"><i style="background:${vCol(o.lv)}"></i>${o.lv} · ${VLV[o.lv].t}</span></td><td class="n">${o.n}</td></tr>`).join("")}</tbody></table></div>`;
+    let card;
+    if(z){const d=GEO.dptos.find(x=>x.key===z),o=by[z]||{lv:0,n:0,c:{},last:[],at:0,rum:0,fp:0,paroAct:0,score:0};const cs=o.lv?vConds(o):[];
+      card=`<article class="vcard"><div class="eyebrow">${esc(VPROF[prof].t)} · últimos 90 días</div><h3>${esc(d.name)}</h3>
+        <span class="vlv" style="font-size:14px"><i style="background:${vCol(o.lv)}"></i>Nivel ${o.lv} · ${VLV[o.lv].t}</span>
+        <p class="mnote">${esc(VLV[o.lv].d)}</p>
+        ${cs.length?`<h4 class="sub4">Condiciones especiales de riesgo</h4><div class="vcond">${cs.map(c=>`<span>${esc(c)}</span>`).join("")}</div>`:""}
+        <h4 class="sub4">Recomendaciones para este perfil</h4><ul class="vrec">${vRecs(o,prof).map(x=>`<li><span class="mk mk-Recomendación">Recomendación</span> ${esc(x)}</li>`).join("")}</ul>
+        ${o.last.length?`<h4 class="sub4">Hechos recientes que pesan en el nivel</h4><ul class="zbl">${o.last.slice(0,5).map(r=>`<li><span class="zm">${fmtD(r.fecha)} · ${esc(r.nivel)}${r.municipio?" · "+esc(r.municipio):""}</span><button type="button" class="linkbtn" data-open="${esc(r._id)}">${esc(r.titulo)}</button></li>`).join("")}</ul>`:""}
+        <div class="zbact"><button type="button" class="btn ghost" data-vback="1">Ver todo el país</button>${o.n?`<button type="button" class="btn ghost" data-goradar="${esc(z)}">Ver las alertas en el Radar</button>`:""}</div></article>`;}
+    else{const c=[0,0,0,0,0,0];GEO.dptos.forEach(d=>c[(by[d.key]||{lv:0}).lv]++);
+      card=`<article class="vcard"><div class="eyebrow">${esc(VPROF[prof].t)} · ${esc(VPROF[prof].d)}</div><h3>Colombia</h3>
+        <p>${c[5]?`<b>${c[5]}</b> ${c[5]===1?"departamento":"departamentos"} en nivel 5 y `:""}<b>${c[4]}</b> en nivel 4; ${c[3]} en alta precaución. Seleccione un departamento en el mapa o en la tabla para ver sus condiciones especiales y las recomendaciones para este perfil.</p>${tbl}</article>`;}
+    $("vBody").innerHTML=`<div class="vgrid"><div><svg viewBox="0 0 ${GEO.w} ${GEO.h}" role="img" aria-label="Mapa de nivel de seguridad para viajes por departamento">${svg}</svg>${legend}</div><div>${card}</div></div>
+      <div class="disc"><b>Cómo leer este indicador.</b> [Inferencia] Es un cálculo interno de North Stonebridge con los hechos registrados en Meridiano en los últimos 90 días (los recientes pesan más), las alertas tempranas de la Defensoría de los últimos seis meses y las señales de redes sobre paros o bloqueos de los últimos 14 días. Cada perfil da más peso a los riesgos que más lo exponen. Un paro armado o restricción reciente sube el nivel a 4 como mínimo. No reemplaza las indicaciones de las autoridades ni un análisis del itinerario: para viajes a zonas de nivel 3 o más, North Stonebridge ofrece el servicio C2 · Briefings de Seguridad para Viajes.</div>`;
+  }
+
+  /* -------- Escucha social (beta): tablero + lista -------- */
+  const STOP=new Set("a al algo algun alguna ante antes aun bajo cada casi como con contra cual cuando de del desde donde dos durante el ella ellas ellos en entre era es esa ese eso esta este esto estos estas fue fueron ha han hasta hay la las le les lo los mas más muy ni no nos o otra otro otros para pero por porque que qué se sea segun según ser si sí sin sobre su sus tambien también tras un una uno unos y ya hecho inferencia desde cerca tiene tienen puede pueden podria podría habria habría sido sector zona cada vez parte luego donde entre hacia mismo misma según tres cuatro cinco seis siete ocho nueve diez primer primera segundo segunda otras ninguna ninguno fuente fuentes pide piden junto anticipar cerró circuló suele suelen enero febrero marzo abril mayo junio julio agosto septiembre octubre noviembre diciembre sectores momento quedó quedaron tras luego mientras ante".split(" "));
+  const sNorm=t=>String(t||"").replace(/\[(Hecho|Inferencia|Recomendación)\]/g," ");
+  function sWords(x){const t=sNorm(x.titulo+" "+x.resumen).toLowerCase().match(/[a-záéíóúñü]{4,}/g)||[];return [...new Set(t.filter(w=>!STOP.has(w)))];}
+  function sFiltered(skip){
+    const f=S.sf||(S.sf={});const all=S.senales||[];
+    return all.filter(x=>(skip==="estado"||!S.sEstado||x.estado===S.sEstado)&&(skip==="tema"||!$("sTema").value||x.tema===$("sTema").value)&&(skip==="dep"||!$("sDep").value||x.departamento===$("sDep").value)&&(!f.red||(x.redes||[]).includes(f.red))&&(!f.word||sWords(x).includes(f.word))&&(!f.dia||x.fecha===f.dia));
+  }
+  const cnt=(rows,fn)=>{const o={};rows.forEach(r=>[].concat(fn(r)||[]).forEach(k=>{if(k)o[k]=(o[k]||0)+1;}));return Object.entries(o).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));};
+  function sBars(list,kind,cur,max){if(!list.length)return '<p class="mnote">Sin datos.</p>';const m=list[0][1]||1;return `<div class="blist">${list.slice(0,max||8).map(([k,v])=>`<div class="brow cl${k===cur?" on":""}" role="button" tabindex="0" data-sk="${kind}" data-sv="${esc(k)}" title="${esc(k)}: ${v} ${v===1?"señal":"señales"} · clic para filtrar"><span class="bt">${esc(k)}</span><span class="bb"><span style="width:${Math.max(4,v/m*100)}%"></span></span><span class="bn">${v}</span></div>`).join("")}</div>`;}
+  function sDash(rows){
+    const f=S.sf||{};const ek=e=>({"Confirmado":"conf","En verificación":"ver","Desmentido":"desm"}[e]||"ver");
+    const n=rows.length,ver=rows.filter(x=>x.estado==="En verificación").length,conf=rows.filter(x=>x.estado==="Confirmado").length,des=rows.filter(x=>x.estado==="Desmentido").length,alta=rows.filter(x=>x.intensidad==="Alta").length,deps=new Set(rows.map(x=>x.departamento).filter(Boolean)).size;
+    const kpi=`<div class="skpi"><div class="stat"><span class="n">${n}</span><span class="l">Señales</span></div><div class="stat ver"><span class="n">${ver}</span><span class="l">En verificación</span></div><div class="stat ok"><span class="n">${conf}</span><span class="l">Confirmadas</span></div><div class="stat"><span class="n">${des}</span><span class="l">Desmentidas</span></div><div class="stat hi"><span class="n">${alta}</span><span class="l">Intensidad alta</span></div><div class="stat"><span class="n">${deps}</span><span class="l">Departamentos</span></div></div>`;
+    const ws=cnt(rows,sWords).filter(([,v])=>v>=1).slice(0,40);const wm=ws.length?ws[0][1]:1;
+    const sorted=ws.slice().sort((a,b)=>a[0].localeCompare(b[0]));
+    const cloud=ws.length?`<div class="cloud">${sorted.map(([w,v])=>{const r=v/wm;const fs=Math.round(13+Math.sqrt(r)*23);return `<button type="button" class="${r<.34?"w1":r<.67?"w2":""}" style="font-size:${fs}px" data-sw="${esc(w)}" aria-pressed="${f.word===w}" title="${esc(w)}: aparece en ${v} ${v===1?"señal":"señales"} · clic para filtrar">${esc(w)}</button>`;}).join("")}</div>`:'<p class="mnote">Sin datos.</p>';
+    const est=[["Confirmado",conf,"conf"],["En verificación",ver,"ver"],["Desmentido",des,"desm"]];
+    const stk=n?`<div class="stk" aria-hidden="true">${est.filter(e=>e[1]).map(e=>`<span class="${e[2]}" style="flex:${e[1]}" data-se2="${e[0]}" title="${e[0]}: ${e[1]} (${Math.round(e[1]/n*100)}%)"></span>`).join("")}</div>`:"";
+    const lgd=`<div class="lgd">${est.map(e=>`<div data-se2="${e[0]}" title="Clic para filtrar"><i class="${e[2]}" style="background:var(--${e[2]==="conf"?"ok":e[2]==="ver"?"med":"low"})"></i>${e[0]}<b>${e[1]} · ${n?Math.round(e[1]/n*100):0}%</b></div>`).join("")}</div>`;
+    // línea de tiempo por día
+    const dias=cnt(rows,x=>x.fecha).sort((a,b)=>a[0].localeCompare(b[0]));let tl='<p class="mnote">Sin datos.</p>';
+    if(dias.length){const d0=new Date(dias[0][0]+"T12:00:00"),d1=new Date(dias[dias.length-1][0]+"T12:00:00");const days=[];for(let d=new Date(d0);d<=d1;d.setDate(d.getDate()+1))days.push(d.toISOString().slice(0,10));
+      const mp=Object.fromEntries(dias),mx=Math.max(...dias.map(d=>d[1])),W=960,H=150,pl=8,pb=22,bw=Math.min(36,(W-pl*2)/days.length-4);
+      tl=`<div class="tl" id="sTl"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Señales por día"><line x1="0" y1="${H-pb}" x2="${W}" y2="${H-pb}"/>${days.map((d,i)=>{const v=mp[d]||0,x=pl+i*((W-pl*2)/days.length)+(((W-pl*2)/days.length)-bw)/2,h=v?Math.max(4,(H-pb-14)*v/mx):0;return `${v?`<rect class="c" x="${x}" y="${H-pb-h}" width="${bw}" height="${h}" rx="3" data-sd="${d}" data-tip="${fmtD(d)}: ${v} ${v===1?"señal":"señales"}"/>`:""}${(days.length<=16||i%2===0)?`<text x="${x+bw/2}" y="${H-6}" text-anchor="middle">${+d.slice(8)}/${+d.slice(5,7)}</text>`:""}`;}).join("")}</svg><div class="stip" id="sTip" hidden></div></div>`;}
+    $("sDash").innerHTML=kpi+
+      `<div class="sg2"><div class="hcard"><h3>Nube de palabras · de qué se habla</h3>${cloud}<p class="mnote">Tamaño = número de señales que mencionan la palabra. Clic en una palabra para filtrar.</p></div>
+       <div class="hcard"><h3>Estado de verificación</h3>${stk}${lgd}</div></div>
+       <div class="sg3"><div class="hcard"><h3>Por tema</h3>${sBars(cnt(sFiltered("tema"),x=>x.tema),"tema",$("sTema").value)}</div>
+       <div class="hcard"><h3>Por departamento</h3>${sBars(cnt(sFiltered("dep"),x=>x.departamento),"dep",$("sDep").value)}</div>
+       <div class="hcard"><h3>Dónde circula</h3>${sBars(cnt(rows,x=>x.redes),"red",f.red)}</div></div>
+       <div class="hcard"><h3>Evolución por día</h3>${tl}</div>`;
+    const act=[];if(S.sEstado)act.push(["estado",S.sEstado]);if($("sTema").value)act.push(["tema",$("sTema").value]);if($("sDep").value)act.push(["dep",$("sDep").value]);if(f.red)act.push(["red",f.red]);if(f.word)act.push(["word","“"+f.word+"”"]);if(f.dia)act.push(["dia",fmtD(f.dia)]);
+    $("sAct").innerHTML=act.length?act.map(([k,v])=>`<button type="button" data-sx="${k}" title="Quitar filtro">${esc(v)} ✕</button>`).join("")+`<button type="button" data-sx="all">Limpiar todo</button>`:"";
+  }
+  function drawSenales(){
+    const all=S.senales||[];
+    const opt=(id,vals,lbl)=>{const el=$(id),cur=el.value;el.innerHTML=`<option value="">${lbl}</option>`+vals.map(v=>`<option${v===cur?" selected":""}>${esc(v)}</option>`).join("");};
+    opt("sTema",[...new Set(all.map(x=>x.tema).filter(Boolean))].sort(),"Todos los temas");
+    opt("sDep",[...new Set(all.map(x=>x.departamento).filter(Boolean))].sort(),"Todos los departamentos");
+    document.querySelectorAll("[data-se]").forEach(b=>b.setAttribute("aria-pressed",(b.dataset.se||"")===(S.sEstado||"")));
+    if(!all.length){$("sDash").innerHTML="";$("sAct").innerHTML="";$("sCount").textContent="";$("sList").innerHTML='<div class="empty">Aún no hay señales. Las barridas irán cargando lo que circula en redes y canales abiertos.</div>';return;}
+    const rs=sFiltered();
+    sDash(rs);
+    $("sCount").textContent=`· ${rs.length} de ${all.length}`;
+    if(!rs.length){$("sList").innerHTML='<div class="empty">Ninguna señal coincide con estos filtros.</div>';return;}
+    const ek=e=>({"Confirmado":"conf","En verificación":"ver","Desmentido":"desm"}[e]||"ver");
+    const L=lim("sen",JSON.stringify([S.sEstado,$("sTema").value,$("sDep").value,S.sf,rs.length]));S.sOpen=S.sOpen||{};
+    $("sList").innerHTML=rs.slice(0,L).map(x=>{const op=!!S.sOpen[x.id];return `<article class="sg st-${ek(x.estado)}"><span class="stripe"></span><div>
+      <div class="zm">${fmtD(x.fecha)} · ${esc(x.tema||"")} · ${esc([x.municipio,x.departamento].filter(Boolean).join(", "))}${x.intensidad?" · intensidad "+esc(x.intensidad):""}</div>
+      <h4><span class="sb st-${ek(x.estado)}">${esc(x.estado||"")}</span>${esc(x.titulo)}</h4>
+      ${op?`<div class="sdet"><p>${lvTxt(x.resumen)}</p>
+      <p><b>Dónde circula:</b> ${esc((x.redes||[]).join(", ")||"—")} · <b>Emisor:</b> ${esc(x.emisor||"—")}</p>
+      ${x.verificacion?`<p><b>Qué está confirmado y qué falta:</b> ${esc(x.verificacion)}</p>`:""}
+      <p><b>Evidencias (${(x.evidencias||[]).length}):</b></p><div class="zs">${(x.evidencias||[]).map(f=>`<a href="${esc(safeUrl(f.url))}" target="_blank" rel="noopener noreferrer">${esc(f.nombre)}${f.tipo?" · "+esc(f.tipo):""}</a>`).join("")}</div></div>`
+      :`<p>${esc(shortTxt(sNorm(x.resumen).replace(/\s+/g," ").trim(),170))}</p>`}
+      <button type="button" class="linkbtn stog" data-stog="${esc(x.id)}" aria-expanded="${op}">${op?"Ocultar detalle":`Ver qué se dice, quién lo emite y ${(x.evidencias||[]).length} ${(x.evidencias||[]).length===1?"evidencia":"evidencias"}`}</button></div></article>`;}).join("")+masBtn("sen",Math.min(L,rs.length),rs.length,"señal","señales");
+  }
+  function sClick(e){
+    if(!S)return false;const f=S.sf||(S.sf={});
+    const b=e.target.closest("[data-sk]");if(b){const k=b.dataset.sk,v=b.dataset.sv;if(k==="tema")$("sTema").value=$("sTema").value===v?"":v;else if(k==="dep")$("sDep").value=$("sDep").value===v?"":v;else if(k==="red")f.red=f.red===v?"":v;drawSenales();return true;}
+    const w=e.target.closest("[data-sw]");if(w){f.word=f.word===w.dataset.sw?"":w.dataset.sw;drawSenales();return true;}
+    const st=e.target.closest("[data-se2]");if(st){S.sEstado=S.sEstado===st.dataset.se2?"":st.dataset.se2;drawSenales();return true;}
+    const dd=e.target.closest("[data-sd]");if(dd){f.dia=f.dia===dd.dataset.sd?"":dd.dataset.sd;drawSenales();return true;}
+    const x=e.target.closest("[data-sx]");if(x){const k=x.dataset.sx;if(k==="all"){S.sEstado="";$("sTema").value="";$("sDep").value="";S.sf={};}else if(k==="estado")S.sEstado="";else if(k==="tema")$("sTema").value="";else if(k==="dep")$("sDep").value="";else f[k]="";drawSenales();return true;}
+    return false;
+  }
+  document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.closest&&e.target.closest("[data-sk]")){e.preventDefault();sClick(e);}});
+  document.addEventListener("mousemove",e=>{const t=$("sTip");if(!t)return;const r=e.target.closest&&e.target.closest("rect[data-tip]");if(!r){t.hidden=true;return;}const box=$("sTl").getBoundingClientRect();t.textContent=r.dataset.tip;t.style.left=(e.clientX-box.left)+"px";t.style.top=(e.clientY-box.top)+"px";t.hidden=false;});
 
   /* -------- Históricos -------- */
   const MESES=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
@@ -867,7 +1270,7 @@ if(window.top!==window.self){try{window.top.location=window.self.location;}catch
         <div class="hcard"><h3>Actores más señalados</h3>${bars(A.actores,8)}</div>
       </div>
       <div class="hcard"><h3>Alertas del período (${A.n})</h3>${A.n?`<div class="tscroll"><table class="htable"><thead><tr><th>Fecha</th><th>Nivel</th><th>Departamento</th><th>Tipo</th><th>Alerta</th></tr></thead><tbody>${
-        A.rows.slice().sort((a,b)=>b.fecha.localeCompare(a.fecha)||(LV[b.nivel]||0)-(LV[a.nivel]||0)).map(r=>`<tr><td class="n">${esc(r.fecha)}</td><td><span class="lvl ${esc(r.nivel)}">${esc(r.nivel)}</span></td><td>${esc([r.municipio,r.departamento].filter(Boolean).join(", "))}</td><td>${esc(r.tipo)}</td><td>${esc(r.titulo)}${isPros(r)?` <span class="tg pros">${esc(r.empresa||"Empresa")}</span>`:""}</td></tr>`).join("")}</tbody></table></div>`:'<p class="mnote">Sin alertas en el período.</p>'}</div>`;
+        A.rows.slice().sort((a,b)=>b.fecha.localeCompare(a.fecha)||(LV[b.nivel]||0)-(LV[a.nivel]||0)).slice(0,lim("hist",p.label)).map(r=>`<tr><td class="n">${esc(r.fecha)}</td><td><span class="lvl ${esc(r.nivel)}">${esc(r.nivel)}</span></td><td>${esc([r.municipio,r.departamento].filter(Boolean).join(", "))}</td><td>${esc(r.tipo)}</td><td>${esc(r.titulo)}${isPros(r)?` <span class="tg pros">${esc(r.empresa||"Empresa")}</span>`:""}</td></tr>`).join("")}</tbody></table></div>${masBtn("hist",Math.min(S.lim.hist,A.n),A.n,"alerta","alertas")}`:'<p class="mnote">Sin alertas en el período.</p>'}</div>`;
   }
   function informeHTML(){
     const {p,P,A,B,pts,desde,parcial}=histData();
@@ -1005,12 +1408,20 @@ ${A.n?`<table class="det"><thead><tr><th>Fecha</th><th>Nivel</th><th>Lugar</th><
   $("map").addEventListener("focusout",hideTip);
   $("map").addEventListener("keydown",e=>{const p=e.target.closest(".dp");if(p&&(e.key==="Enter"||e.key===" ")){e.preventDefault();pickDept(p.dataset.k);}});
 
-  function render(){if(!S)return;summary();chips();deptos();if(S.tab==="mapa")drawMap();if(S.tab==="historicos")drawHist();list();panel();}
+  function render(){if(!S)return;summary();chips();deptos();if(S.tab==="mapa")drawMap();if(S.tab==="historicos")drawHist();if(S.tab==="senales")drawSenales();if(S.tab==="impacto")drawImpacto();if(S.tab==="viajes")drawViajes();list();panel();}
 
   document.addEventListener("click",async e=>{
     if(!S) return;
     const t=e.target.closest("#typeChips [data-t]");if(t){S.type=t.dataset.t;render();return;}
     const tb=e.target.closest(".tabs [data-tab]");if(tb){setTab(tb.dataset.tab);return;}
+    const iw=e.target.closest("[data-iw]");if(iw){S.iw=+iw.dataset.iw;drawImpacto();return;}
+    const vp=e.target.closest("[data-vp]");if(vp){S.vprof=vp.dataset.vp;drawViajes();return;}
+    const vk=e.target.closest("[data-vk]");if(vk){S.vzone=S.vzone===vk.dataset.vk?null:vk.dataset.vk;drawViajes();return;}
+    if(e.target.closest("[data-vback]")){S.vzone=null;drawViajes();return;}
+    const sb=e.target.closest("[data-se]");if(sb&&S){S.sEstado=sb.dataset.se;drawSenales();return;}
+    if(sClick(e))return;
+    const mo=e.target.closest("[data-more],[data-moreall],[data-less]");if(mo&&S){const k=mo.dataset.more||mo.dataset.moreall||mo.dataset.less;S.lim[k]=mo.dataset.less?PAGE[k]:mo.dataset.moreall?1e6:S.lim[k]+PAGE[k];({radar:list,sen:drawSenales,zona:()=>drawMap(),hist:drawHist})[k]();return;}
+    const tg=e.target.closest("[data-stog]");if(tg&&S){S.sOpen=S.sOpen||{};S.sOpen[tg.dataset.stog]=!S.sOpen[tg.dataset.stog];drawSenales();return;}
     const hm=e.target.closest("[data-hm]");if(hm){S.hist.mode=hm.dataset.hm;const m=+hoyStr().slice(5,7)-1;S.hist.idx=S.hist.mode==="mes"?m:S.hist.mode==="sem"?(m<6?0:1):0;drawHist();return;}
     if(e.target.id==="hDown"){descargarInforme();return;}
     if(e.target.id==="hPdf"){imprimirInforme();return;}
@@ -1018,6 +1429,7 @@ ${A.n?`<table class="det"><thead><tr><th>Fecha</th><th>Nivel</th><th>Lugar</th><
     if(e.target.closest("[data-back]")){S.zone=null;drawMap();return;}
     const op=e.target.closest("[data-open]");if(op){openInRadar(op.dataset.open,null);return;}
     const gr=e.target.closest("[data-goradar]");if(gr){openInRadar(null,gr.dataset.goradar);return;}
+    const gs=e.target.closest("[data-gosen]");if(gs&&S){S.sEstado="";S.sf={};$("sTema").value="";$("sDep").value="";setTab("senales");if(gs.dataset.gosen){$("sDep").value=gs.dataset.gosen;drawSenales();}window.scrollTo({top:0});return;}
     const wb=e.target.closest(".seg [data-w]");if(wb){S.win=+wb.dataset.w;document.querySelectorAll(".seg [data-w]").forEach(x=>x.setAttribute("aria-pressed",x===wb));drawMap();return;}
     const rb=e.target.closest(".seg [data-r]");if(rb){S.rel=rb.dataset.r;document.querySelectorAll(".seg [data-r]").forEach(x=>x.setAttribute("aria-pressed",x===rb));render();return;}
     const al=e.target.closest(".al");if(al){S.sel=al.dataset.id;S.atab="lectura";list();panel();if(innerWidth<920)$("panel").scrollIntoView({behavior:"smooth",block:"start"});return;}
@@ -1030,6 +1442,8 @@ ${A.n?`<table class="det"><thead><tr><th>Fecha</th><th>Nivel</th><th>Lugar</th><
   });
   ["fNivel","fEstado"].forEach(id=>$(id).addEventListener("change",()=>S&&list()));
   $("fDepto").addEventListener("change",()=>{if(S){drawMap();list();}});
+  ["sTema","sDep"].forEach(id=>$(id).addEventListener("change",()=>S&&drawSenales()));
+  $("iDep").addEventListener("change",()=>S&&drawImpacto());
   $("hYear").addEventListener("change",()=>{if(S){S.hist.year=+$("hYear").value;drawHist();}});
   $("hIdx").addEventListener("change",()=>{if(S){S.hist.idx=+$("hIdx").value;drawHist();}});
   $("fQ").addEventListener("input",()=>S&&list());
@@ -1038,5 +1452,7 @@ ${A.n?`<table class="det"><thead><tr><th>Fecha</th><th>Nivel</th><th>Lugar</th><
   else $("pass").focus();
 })();
 </script>
-</body>
-</html>
+
+
+
+</body></html>

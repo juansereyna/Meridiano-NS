@@ -1,6 +1,15 @@
 {
  "v": 1,
- "lotes": [],
+ "lotes": [
+  {
+   "archivo": "lotes/2026-11-25-2058.json",
+   "sellado": "2026-11-25T20:58:18-05:00",
+   "nuevas": 2,
+   "actualizadas": 2,
+   "senales": 2,
+   "informes": []
+  }
+ ],
  "huellas": [
   "01fddfe427fb2670f5c94db7",
   "04d1fab75562f6c86ac5ade1",
@@ -16,6 +25,7 @@
   "153edaa0b4d7d079d237967a",
   "15638f154fb767ef143b08e4",
   "1577c749fcc8b0a1daae7a94",
+  "15cc09ca5e545335d2934199",
   "164481fcbfb74b6bb3a72191",
   "1747ec313072d860b3eaefe5",
   "192799230335b713caf67c81",
@@ -48,6 +58,7 @@
   "444ce7d452ac8d5058e8c2d5",
   "478be95c28053b2a3bf7cd3c",
   "48f54c354e00e28ce2f452e7",
+  "4afb085d2690a478078a6937",
   "4ceb86a385e6dc0384321821",
   "4d51b1761ffd95aec0693eaf",
   "4e3d9f94b12d05737a8d286a",
@@ -133,6 +144,7 @@
   "baf55813e7b3f998e32d9a52",
   "bb95f1561cd43040ea01c7e5",
   "bbf2524af65e363363bed960",
+  "be616b5844217b2b9822b2af",
   "bee2fd6d87f77fa939c92b81",
   "bf1ba49528be8ea3c26b115b",
   "c128d97568bff787d982eae3",
@@ -142,6 +154,7 @@
   "c391043972830ebbd8d77db4",
   "c3d076b126147f5571958fd4",
   "c490387b373e3b633da8fda2",
+  "c4ba1d688fec50f4f8b553cb",
   "c5be6407a3802add6dc28d8c",
   "c9be4dc1aedaa17941372dc7",
   "ca5ae9a0753ce12db3ff3542",
@@ -181,5 +194,5 @@
   "fe685e86f1e997cac123be14",
   "ff07237d525beba4925704f1"
  ],
- "ultima": "2026-11-25T13:00:00-05:00"
+ "ultima": "2026-11-25T21:10:00-05:00"
 }

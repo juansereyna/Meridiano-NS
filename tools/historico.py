@@ -34,7 +34,7 @@ DEP = {"05": "antioquia", "08": "atlantico", "11": "bogota d c", "13": "bolivar"
 MDN = "Ministerio de Defensa Nacional"
 # Fuentes fijas, verificadas a mano en datos.gov.co (noviembre de 2026)
 FUENTES = [
-    {"id": "secuestro", "nombre": "Secuestro", "unidad": "casos", "ds": "d7zw-hpf4", "entidad": MDN, "modo": "mdn"},
+    {"id": "secuestro", "nombre": "Secuestro", "unidad": "registros", "ds": "d7zw-hpf4", "entidad": MDN, "modo": "mdn"},
     {"id": "extorsion", "nombre": "Extorsión", "unidad": "casos", "ds": "q2ib-t9am", "entidad": MDN, "modo": "mdn"},
     {"id": "fp_asesinados", "nombre": "Fuerza Pública asesinada", "unidad": "uniformados", "ds": "8rpn-wpty",
      "entidad": MDN, "modo": "mdn", "filtro": "accion='ASESINADO'"},

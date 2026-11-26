@@ -538,7 +538,7 @@ footer .fsrc{flex-basis:100%;max-width:110ch;line-height:1.55}
   <footer>
     <span>Meridiano · Uso interno · Documento Confidencial</span>
     <span>northstonebridge.com · info@northstonebridge.com · +57 323 612 7516</span>
-    <span class="fsrc"><b>Fuentes y método:</b> medios nacionales y regionales; fuentes oficiales (Defensoría del Pueblo, Fuerza Pública, Fiscalía, gobernaciones y alcaldías); y escucha y monitoreo de redes sociales y canales abiertos (X, Facebook, TikTok, YouTube, Telegram y grupos citados por prensa). Lo que circula en redes se publica como señal <i>en verificación</i> hasta que una autoridad o un medio lo confirme. No se registran datos de personas particulares (Ley 1581 de 2012).</span>
+    <span class="fsrc"><b>Fuentes y método:</b> medios nacionales y regionales; fuentes oficiales (Defensoría del Pueblo, Fuerza Pública, Fiscalía, gobernaciones y alcaldías); y escucha de redes sociales y canales abiertos (X, Facebook, Instagram, TikTok, YouTube, Telegram y grupos citados por prensa), solo con publicaciones públicas que se pueden enlazar. Lo que circula en redes se publica como señal <i>en verificación</i> hasta que una autoridad o un medio lo confirme. No se registran datos de personas particulares (Ley 1581 de 2012).</span>
   </footer>
 </div>
 
@@ -1296,7 +1296,8 @@ footer .fsrc{flex-basis:100%;max-width:110ch;line-height:1.55}
           <div class="lect">${parrafos(an.lectura)}</div>
           ${an.postura?`<blockquote class="postura"><span class="eyebrow">Postura institucional</span>${esc(an.postura)}</blockquote>`:""}
           ${matrizHTML(an.matriz)}
-          <div class="hgrid"><div><h4 class="sub4">Señales a monitorear</h4>${ulist(an.senales)}</div><div><h4 class="sub4">Recomendaciones para organizaciones</h4>${ulist(an.recomendaciones)}</div></div></div>`;})()}
+          <div class="hgrid"><div><h4 class="sub4">Señales a monitorear</h4>${ulist(an.senales)}</div><div><h4 class="sub4">Recomendaciones para organizaciones</h4>${ulist(an.recomendaciones)}</div></div>
+          ${(an.fuentes&&an.fuentes.length)?`<p class="osrc"><b>Fuentes:</b> ${an.fuentes.map(f=>`<a href="${esc(safeUrl(f.url))}" target="_blank" rel="noopener noreferrer">${esc(f.nombre)}</a>`).join(" · ")}</p>`:""}</div>`;})()}
       <div class="hgrid">
         <div class="hcard hmap"><h3>Mapa de presión del período</h3>${A.n?mapaSVG(A,false):'<p class="mnote">Sin alertas en el período.</p>'}
           <div class="legend" style="margin-top:8px">${RBANDS.map(b=>`<span><i style="background:var(--${b.k})"></i>${b.t}</span>`).join("")}</div>
@@ -1434,7 +1435,8 @@ ${(()=>{const an=S.informes[claveInforme(p)];const mk=s=>esc(s).replace(/\[(Hech
   return `<h2>Lectura North Stonebridge</h2>${String(an.lectura||"").split(/\n{2,}/).map(x=>`<p>${mk(x)}</p>`).join("")}
   ${an.postura?`<div class="post"><span class="eyebrow">Postura institucional</span><br>${esc(an.postura)}</div>`:""}
   ${(an.matriz&&an.matriz.length)?`<h2>Matriz de implicaciones</h2><table><thead><tr><th>Dimensión</th><th>Implicación</th><th>Nivel</th><th>Expuestos</th></tr></thead><tbody>${an.matriz.map(x=>`<tr><td><b>${esc(x.dimension)}</b></td><td>${esc(x.implicacion)}</td><td>${esc(x.nivel)}</td><td>${esc(x.expuestos)}</td></tr>`).join("")}</tbody></table>`:""}
-  <div class="two"><div><h2>Señales a monitorear</h2>${ul(an.senales)}</div><div><h2>Recomendaciones</h2>${ul(an.recomendaciones)}</div></div>`;})()}
+  <div class="two"><div><h2>Señales a monitorear</h2>${ul(an.senales)}</div><div><h2>Recomendaciones</h2>${ul(an.recomendaciones)}</div></div>
+  ${(an.fuentes&&an.fuentes.length)?`<p class="note"><b>Fuentes:</b> ${an.fuentes.map(f=>esc(f.nombre)+" ("+esc(f.url)+")").join(" · ")}</p>`:""}`;})()}
 <h2>Mapa de presión y evolución</h2>
 <div class="two"><div class="mapbox">${A.n?mapaSVG(A,true):'<p class="muted">Sin alertas en el período.</p>'}<div class="legend">${RBANDS.map(b=>`<span><i style="background:${PAL_PRINT[b.k]}"></i>${b.t}</span>`).join("")}</div>
 <p class="note">Intensidad relativa al departamento con más presión del período. Fronteras: DANE, MGN 2018.${A.loose?` ${A.loose} alerta(s) nacional(es) sin ubicación en el mapa.`:""}</p></div>

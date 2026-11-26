@@ -118,7 +118,8 @@ def agregar(d, nuevas_p, meta_p):
     _escribir(f"{d}/{nombre}", lote)
     hs |= {huella(x["id"]) for x in nuevas.get("alertas", []) + nuevas.get("senales", [])}
     idx["huellas"] = sorted(hs)
-    idx["lotes"].append({"archivo": nombre, "sellado": sello, "nuevas": nue, "actualizadas": act, "senales": len(nuevas.get("senales", []))})
+    idx["lotes"].append({"archivo": nombre, "sellado": sello, "nuevas": nue, "actualizadas": act, "senales": len(nuevas.get("senales", [])),
+                         "informes": sorted(nuevas.get("informes", {}))})
     idx["ultima"] = meta.get("ultima", sello)
     _escribir(f"{d}/lotes.json", idx)
     print(f"Lote {nombre}: {nue} nuevas, {act} actualizadas, {len(nuevas.get('senales', []))} señales. Lotes en total: {len(idx['lotes'])}.")

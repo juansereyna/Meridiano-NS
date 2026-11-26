@@ -8,6 +8,22 @@
    "actualizadas": 2,
    "senales": 2,
    "informes": []
+  },
+  {
+   "archivo": "lotes/2026-11-26-0703.json",
+   "sellado": "2026-11-26T07:03:38-05:00",
+   "nuevas": 1,
+   "actualizadas": 1,
+   "senales": 1,
+   "informes": []
+  },
+  {
+   "archivo": "lotes/2026-11-26-1249.json",
+   "sellado": "2026-11-26T12:49:57-05:00",
+   "nuevas": 4,
+   "actualizadas": 1,
+   "senales": 1,
+   "informes": []
   }
  ],
  "huellas": [
@@ -28,6 +44,7 @@
   "15cc09ca5e545335d2934199",
   "164481fcbfb74b6bb3a72191",
   "1747ec313072d860b3eaefe5",
+  "178ee892462a9bc9c35a062a",
   "192799230335b713caf67c81",
   "1b4e52b2b6cb81b27a96b02b",
   "1cd28883a05df5dbd4213f17",
@@ -51,6 +68,8 @@
   "3761d688ee2556db62860daa",
   "37bf13846cf1b4c5e874723d",
   "39957081008e9ec2d28fe091",
+  "3a7d7a15b4412e50a22bf569",
+  "3d5d95c765e2a0c7ee01714f",
   "3df024d4bb22dd1248b68907",
   "3ed81a6bd7fceca4ffa953ca",
   "4078eaf214913522050bfa24",
@@ -59,6 +78,7 @@
   "478be95c28053b2a3bf7cd3c",
   "48f54c354e00e28ce2f452e7",
   "4afb085d2690a478078a6937",
+  "4bbbbab88bb1b2089cbc7f5d",
   "4ceb86a385e6dc0384321821",
   "4d51b1761ffd95aec0693eaf",
   "4e3d9f94b12d05737a8d286a",
@@ -130,6 +150,7 @@
   "a7c4269396df9eaf0399aa4c",
   "a85a8a3a680d9535e459cf44",
   "a9a88daa38e9a11576e91d90",
+  "abe567cec1593d381e94b042",
   "ac5396fc309bce60b69498ff",
   "af0e9681057b48bcfa9aabf0",
   "af487b56b15443c605ada80b",
@@ -147,6 +168,7 @@
   "be616b5844217b2b9822b2af",
   "bee2fd6d87f77fa939c92b81",
   "bf1ba49528be8ea3c26b115b",
+  "c04cf082ec159344bbfc3e66",
   "c128d97568bff787d982eae3",
   "c1291f7c59333c239d3547c0",
   "c15cade043ee31fbaa743bf7",
@@ -154,6 +176,7 @@
   "c391043972830ebbd8d77db4",
   "c3d076b126147f5571958fd4",
   "c490387b373e3b633da8fda2",
+  "c4b372e3dedc69d87c77db7c",
   "c4ba1d688fec50f4f8b553cb",
   "c5be6407a3802add6dc28d8c",
   "c9be4dc1aedaa17941372dc7",
@@ -194,5 +217,5 @@
   "fe685e86f1e997cac123be14",
   "ff07237d525beba4925704f1"
  ],
- "ultima": "2026-11-25T21:10:00-05:00"
+ "ultima": "2026-11-26T12:49:57-05:00"
 }

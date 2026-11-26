@@ -1,9 +1,10 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow,noarchive">
 <meta name="referrer" content="no-referrer">
 <title>Meridiano</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231C2A3A'/%3E%3Crect x='3.5' y='3.5' width='25' height='25' fill='none' stroke='%23A8884E'/%3E%3Ctext x='16' y='21' font-family='Georgia' font-size='12' font-weight='700' fill='%23A8884E' text-anchor='middle'%3ENS%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Lato:wght@400;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="theme-color" content="#1C2A3A">
+</head><body>
 <style>
 /* Meridiano: ingreso con clave · barra de sesión · resumen · filtros · lista con franja de severidad · panel de detalle */
 :root{
@@ -618,9 +619,9 @@ footer .fsrc{flex-basis:100%;max-width:110ch;line-height:1.55}
   const HITPAQ={};
   async function abrirHitos(pw){
     let idx; try{ idx=await getJSON("data/hitos.idx.json",true); }catch(e){ return null; }
-    const M=new Map();
-    for(const q of (idx.paquetes||[])){ let o=HITPAQ[q.archivo]; if(!o){ o=HITPAQ[q.archivo]=await abrirPub("data/"+q.archivo,pw); } (o&&o.hitos||[]).forEach(h=>M.set(h.id,h)); }
-    return {hitos:[...M.values()]};
+    const M=new Map(),INF={};
+    for(const q of (idx.paquetes||[])){ let o=HITPAQ[q.archivo]; if(!o){ o=HITPAQ[q.archivo]=await abrirPub("data/"+q.archivo,pw); } (o&&o.hitos||[]).forEach(h=>M.set(h.id,h)); if(o&&o.informes)Object.assign(INF,o.informes); }
+    return {hitos:[...M.values()],informes:INF};
   }
   function fusionar(base,o){
     const A=new Map((base.alertas||[]).map(a=>[a.id,a]));
@@ -632,6 +633,8 @@ footer .fsrc{flex-basis:100%;max-width:110ch;line-height:1.55}
       Object.keys(s).forEach(k=>{if(k==="evidencias"){const u=new Set((v.evidencias||[]).map(e=>e.url));v.evidencias=(v.evidencias||[]).concat((s.evidencias||[]).filter(e=>!u.has(e.url)));}else v[k]=s[k];});});
     base.senales=[...N.values()];
     if(o.barrida) base.barrida=o.barrida;
+    /* Análisis North Stonebridge por período (AAAA-MM, AAAA-S1/S2, AAAA): el más reciente gana */
+    if(o.informes){base.informes=base.informes||{};for(const [k,v] of Object.entries(o.informes)){const a=base.informes[k];if(!a||String(v.generado||"")>=String(a.generado||""))base.informes[k]=v;}}
   }
 
   /* Estado y notas locales: cifrados con la misma clave, guardados solo en este equipo */
@@ -681,7 +684,8 @@ footer .fsrc{flex-basis:100%;max-width:110ch;line-height:1.55}
   function ingest(data){
     S.rows=(data.alertas||[]).map(a=>Object.assign({_id:a.id},a));
     S.meta=data.barrida||null;
-    S.informes=data.informes||{};
+    S.informes=Object.assign({},data.informes||{});
+    for(const [k,v] of Object.entries((data._hitos||{}).informes||{})){const a=S.informes[k];if(!a||String(v.generado||"")>=String(a.generado||""))S.informes[k]=v;}
     S.ofi=data._ofi||null; S.hitos=((data._hitos||{}).hitos||[]).slice().sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha)));
     S.senales=(data.senales||[]).slice().sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha)));
     if(!S.sel||!S.rows.some(r=>r._id===S.sel)) S.sel=null;

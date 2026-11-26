@@ -8,8 +8,9 @@ clave, las abre.
 
 Salidas
   data/historico.enc.json      cifras por indicador → mes → departamento (cifrado)
-  data/historico.resumen.json  fuentes, fechas de corte y totales NACIONALES por año
-                               (cifras oficiales públicas; sirven para auditar la carga)
+  data/historico.resumen.json  fuentes, fechas de corte, totales NACIONALES por año y mes y
+                               los seis departamentos con más casos por año (cifras oficiales
+                               públicas; sirven para auditar la carga y redactar los análisis)
 
 Uso:  python3 tools/historico.py [dir_data]
 """
@@ -179,6 +180,13 @@ def main(d="data"):
             anual[mes[:4]] = anual.get(mes[:4], 0) + sum(deps.values())
         resumen["fuentes"].append(info)
         resumen["totales"][f["id"]] = dict(sorted(anual.items()))
+        resumen.setdefault("mensual", {})[f["id"]] = {m: sum(d.values()) for m, d in sorted(serie.items())}
+        top = {}
+        for mes, deps in serie.items():
+            t = top.setdefault(mes[:4], {})
+            for k, v in deps.items():
+                t[k] = t.get(k, 0) + v
+        resumen.setdefault("top_deptos", {})[f["id"]] = {y: sorted(t.items(), key=lambda x: -x[1])[:6] for y, t in sorted(top.items())}
         print(f"  OK · corte {corte} · {anual}")
     if not out["series"]:
         json.dump(resumen, open(f"{d}/historico.resumen.json", "w"), ensure_ascii=False, indent=1)

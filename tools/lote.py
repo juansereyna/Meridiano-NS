@@ -109,7 +109,8 @@ def agregar(d, nuevas_p, meta_p):
     hs = set(idx.get("huellas", []))
     nue = sum(1 for x in nuevas.get("alertas", []) if huella(x["id"]) not in hs)
     act = len(nuevas.get("alertas", [])) - nue
-    payload = json.dumps({"alertas": nuevas.get("alertas", []), "senales": nuevas.get("senales", []), "barrida": meta}, ensure_ascii=False).encode()
+    payload = json.dumps({"alertas": nuevas.get("alertas", []), "senales": nuevas.get("senales", []),
+                          "informes": nuevas.get("informes", {}), "barrida": meta}, ensure_ascii=False).encode()
     k, iv = AESGCM.generate_key(256), os.urandom(12)
     lote = {"v": 1, "alg": "RSA-OAEP-256+AES-GCM", "ek": b64(pub.encrypt(k, OAEP)), "iv": b64(iv), "ct": b64(AESGCM(k).encrypt(iv, payload, None))}
     sello = ahora()

@@ -171,6 +171,20 @@ h1{font-family:var(--display);font-weight:600;font-size:clamp(28px,4vw,38px);lin
 @media (max-width:760px){.hkpi{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .hgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
 @media (max-width:860px){.hgrid{grid-template-columns:minmax(0,1fr)}}
+.ofi{display:flex;flex-direction:column;gap:14px;border-top:2px solid var(--gold);padding-top:14px}
+.ohead{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}.ohead .mnote{max-width:460px;margin:0}
+.oh3{font-family:var(--display);font-size:24px;font-weight:600;margin:2px 0 0}
+.ochips{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.ochips button{all:unset;cursor:pointer;background:var(--surface);padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.ochips button[aria-pressed="true"]{background:var(--ivory);box-shadow:inset 0 -3px 0 var(--gold)}
+.ochips button:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
+.ochips b{font-family:var(--display);font-size:26px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.ochips span{font-size:12px;color:var(--muted)}.ochips em{font-style:normal;font-size:11px;font-family:var(--mono)}
+.osrc{font-size:11.5px;color:var(--muted);margin:0}.osrc a{color:inherit}
+.hitos{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.hitos li{display:grid;grid-template-columns:96px 1fr;gap:12px;border-bottom:1px solid var(--line);padding-bottom:10px}
+.hitos .hf{font-family:var(--mono);font-size:12px;color:var(--muted)}.hitos p{margin:4px 0;font-size:13.5px}
+.hsrc{font-size:12px}.hsrc a{color:var(--gold)}
 .hcard{background:var(--surface);border:1px solid var(--line);padding:16px 18px;min-width:0}
 .hcard h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 10px;font-weight:700}
 .hcard svg{width:100%;height:auto;display:block}
@@ -563,6 +577,8 @@ footer .fsrc{flex-basis:100%;max-width:110ch;line-height:1.55}
     catch(e){ throw new Error("clave"); }
     const base=JSON.parse(dec.decode(pt));
     try{ await mergeLotes(base,pw); }catch(e){ base._loteErr=true; }
+    try{ base._ofi=await abrirPub("data/historico.enc.json",pw); }catch(e){ base._ofi=null; }
+    try{ base._hitos=await abrirPub("data/hitos.enc.json",pw); }catch(e){ base._hitos=null; }
     return base;
   }
   /* Lotes de barridas automáticas: cifrados con la llave pública; solo esta llave privada (protegida por la clave) los abre */
@@ -571,12 +587,7 @@ footer .fsrc{flex-basis:100%;max-width:110ch;line-height:1.55}
   async function mergeLotes(base,pw){
     let idx; try{ idx=await getJSON("data/lotes.json",true); }catch(e){ return; }
     if(!idx||!idx.lotes||!idx.lotes.length) return;
-    if(!PRIV||PRIVPW!==pw){
-      const le=await getJSON("data/llave.enc.json",true);
-      const k=await deriveKey(pw,b64(le.salt),le.iter||600000);
-      const der=await crypto.subtle.decrypt({name:"AES-GCM",iv:b64(le.iv)},k,b64(le.ct));
-      PRIV=await crypto.subtle.importKey("pkcs8",der,{name:"RSA-OAEP",hash:"SHA-256"},false,["decrypt"]); PRIVPW=pw;
-    }
+    await getPriv(pw);
     for(const l of idx.lotes){
       let o=LOTES[l.archivo];
       if(!o){
@@ -587,6 +598,22 @@ footer .fsrc{flex-basis:100%;max-width:110ch;line-height:1.55}
       }
       fusionar(base,o);
     }
+  }
+  async function getPriv(pw){
+    if(PRIV&&PRIVPW===pw) return PRIV;
+    const le=await getJSON("data/llave.enc.json",true);
+    const k=await deriveKey(pw,b64(le.salt),le.iter||600000);
+    const der=await crypto.subtle.decrypt({name:"AES-GCM",iv:b64(le.iv)},k,b64(le.ct));
+    PRIV=await crypto.subtle.importKey("pkcs8",der,{name:"RSA-OAEP",hash:"SHA-256"},false,["decrypt"]); PRIVPW=pw;
+    return PRIV;
+  }
+  /* Archivos sellados con la llave pública (histórico oficial, hitos): null si aún no existen */
+  async function abrirPub(u,pw){
+    const r=await fetch(u+"?t="+Date.now(),{cache:"no-store"}); if(!r.ok) return null;
+    const e=await r.json(); const pk=await getPriv(pw);
+    const raw=await crypto.subtle.decrypt({name:"RSA-OAEP"},pk,b64(e.ek));
+    const ak=await crypto.subtle.importKey("raw",raw,"AES-GCM",false,["decrypt"]);
+    return JSON.parse(dec.decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:b64(e.iv)},ak,b64(e.ct))));
   }
   function fusionar(base,o){
     const A=new Map((base.alertas||[]).map(a=>[a.id,a]));
@@ -648,6 +675,7 @@ footer .fsrc{flex-basis:100%;max-width:110ch;line-height:1.55}
     S.rows=(data.alertas||[]).map(a=>Object.assign({_id:a.id},a));
     S.meta=data.barrida||null;
     S.informes=data.informes||{};
+    S.ofi=data._ofi||null; S.hitos=((data._hitos||{}).hitos||[]).slice().sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha)));
     S.senales=(data.senales||[]).slice().sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha)));
     if(!S.sel||!S.rows.some(r=>r._id===S.sel)) S.sel=null;
   }
@@ -693,7 +721,7 @@ footer .fsrc{flex-basis:100%;max-width:110ch;line-height:1.55}
   /* -------- Cierre de sesión -------- */
   function logout(reason){
     clearInterval(idleTimer);clearInterval(refreshTimer);idleTimer=refreshTimer=null;
-    S=null;
+    S=null; PRIV=null; PRIVPW=null; for(const k in LOTES) delete LOTES[k];
     $("list").innerHTML="";$("panel").innerHTML="";$("typeChips").innerHTML="";$("map").innerHTML="";$("zonecol").innerHTML="";$("hBody").innerHTML="";$("zbrief").innerHTML="";$("sList").innerHTML="";$("iBody").innerHTML="";$("vBody").innerHTML="";$("sDash").innerHTML="";$("sAct").innerHTML="";$("tip").hidden=true;
     $("app").hidden=true;$("idleWarn").hidden=true;$("gate").hidden=false;
     $("loginMsg").className="msg info";$("loginMsg").textContent=reason||"Sesión cerrada.";
@@ -1168,15 +1196,15 @@ footer .fsrc{flex-basis:100%;max-width:110ch;line-height:1.55}
   const RBANDS=[{k:"h0",t:"Sin reportes"},{k:"h1",t:"Baja"},{k:"h2",t:"Moderada"},{k:"h3",t:"Alta"},{k:"h4",t:"Muy alta"}];
   function rband(score,max){if(!score)return RBANDS[0];const f=score/max;return f>.75?RBANDS[4]:f>.5?RBANDS[3]:f>.25?RBANDS[2]:RBANDS[1];}
   const PAL_PRINT={h0:"#ECE6D8",h1:"#EAD7AC",h2:"#D6A660",h3:"#B9662F",h4:"#8E2A24",stroke:"#FFFFFF",ink:"#1C2A3A",muted:"#5F6B78",gold:"#A8884E",line:"#DDD3BE"};
-  function mapaSVG(A,print){
+  function mapaSVG(A,print,u){
     if(!GEO)return"";
     const max=Math.max(1,...Object.values(A.byDept).map(o=>o.score));
     const [ix,iy,iw,ih]=GEO.inset;
     const fill=k=>print?PAL_PRINT[k]:`var(--${k})`;
     let s=`<svg viewBox="0 0 ${GEO.w} ${GEO.h}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mapa de presión del período">`;
     s+=`<rect x="${ix}" y="${iy}" width="${iw}" height="${ih}" fill="none" stroke="${print?PAL_PRINT.line:"var(--line)"}" stroke-dasharray="3 2"/><text x="${ix+4}" y="${iy+9}" font-size="7" fill="${print?PAL_PRINT.muted:"var(--muted)"}" font-family="sans-serif">San Andrés y Prov.</text>`;
-    s+=GEO.dptos.map(d=>{const o=A.byDept[d.key];const b=rband(o?o.score:0,max);return `<path d="${d.d}" fill="${fill(b.k)}" stroke="${print?PAL_PRINT.stroke:"var(--hstroke)"}" stroke-width=".8"><title>${esc(d.name)}: ${o?o.n+" alertas":"sin reportes"}</title></path>`;}).join("");
-    s+=GEO.dptos.filter(d=>A.byDept[d.key]).map(d=>{const n=A.byDept[d.key].n;return `<circle cx="${d.cx}" cy="${d.cy}" r="${n>9?8:6.5}" fill="${print?"#FFFFFF":"var(--surface)"}" stroke="${print?PAL_PRINT.ink:"var(--ink)"}" stroke-width=".8"/><text x="${d.cx}" y="${d.cy}" font-size="9" font-family="monospace" fill="${print?PAL_PRINT.ink:"var(--ink)"}" text-anchor="middle" dominant-baseline="central">${n}</text>`;}).join("");
+    s+=GEO.dptos.map(d=>{const o=A.byDept[d.key];const b=rband(o?o.score:0,max);return `<path d="${d.d}" fill="${fill(b.k)}" stroke="${print?PAL_PRINT.stroke:"var(--hstroke)"}" stroke-width=".8"><title>${esc(d.name)}: ${o?o.n.toLocaleString("es-CO")+" "+(u||"alertas"):"sin reportes"}</title></path>`;}).join("");
+    if(!u) s+=GEO.dptos.filter(d=>A.byDept[d.key]).map(d=>{const n=A.byDept[d.key].n;return `<circle cx="${d.cx}" cy="${d.cy}" r="${n>9?8:6.5}" fill="${print?"#FFFFFF":"var(--surface)"}" stroke="${print?PAL_PRINT.ink:"var(--ink)"}" stroke-width=".8"/><text x="${d.cx}" y="${d.cy}" font-size="9" font-family="monospace" fill="${print?PAL_PRINT.ink:"var(--ink)"}" text-anchor="middle" dominant-baseline="central">${n}</text>`;}).join("");
     return s+"</svg>";
   }
   function serie(p,rows){
@@ -1185,14 +1213,14 @@ footer .fsrc{flex-basis:100%;max-width:110ch;line-height:1.55}
     else{const m0=p.mode==="sem"?p.i*6:0,m1=p.mode==="sem"?m0+6:12;for(let m=m0;m<m1;m++){const pre=`${p.y}-${pad(m+1)}`;pts.push({l:MESES[m].slice(0,3),n:rows.filter(r=>r.fecha.startsWith(pre)).length,c:rows.filter(r=>r.fecha.startsWith(pre)&&LV[r.nivel]>=3).length});}}
     return pts;
   }
-  function serieSVG(pts,print){
+  function serieSVG(pts,print,u){
     const W=560,H=170,L=26,B=22,T=10,max=Math.max(1,...pts.map(p=>p.n));
     const step=Math.max(1,Math.ceil(max/4)),top=step*Math.ceil(max/step);
     const bw=(W-L-6)/pts.length,col=k=>print?{a:"#D6A660",c:"#8E2A24",t:"#5F6B78",g:"#E6DFD0"}[k]:{a:"var(--h2)",c:"var(--crit)",t:"var(--muted)",g:"var(--line)"}[k];
-    let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Alertas por ${pts.length>12?"día":"mes"}">`;
-    for(let v=0;v<=top;v+=step){const y=T+(H-T-B)*(1-v/top);s+=`<line x1="${L}" x2="${W}" y1="${y}" y2="${y}" stroke="${col("g")}" stroke-width=".6"/><text x="${L-5}" y="${y}" font-size="9" fill="${col("t")}" text-anchor="end" dominant-baseline="central" font-family="monospace">${v}</text>`;}
+    let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${u?esc(u):"Alertas"} por ${pts.length>12?"día":"período"}">`;
+    for(let v=0;v<=top;v+=step){const y=T+(H-T-B)*(1-v/top);s+=`<line x1="${L}" x2="${W}" y1="${y}" y2="${y}" stroke="${col("g")}" stroke-width=".6"/><text x="${L-5}" y="${y}" font-size="9" fill="${col("t")}" text-anchor="end" dominant-baseline="central" font-family="monospace">${v>=1000?(v/1000).toLocaleString("es-CO",{maximumFractionDigits:1})+"k":v}</text>`;}
     pts.forEach((p,i)=>{const x=L+i*bw+bw*.15,w=bw*.7,h=(H-T-B)*p.n/top,hc=(H-T-B)*p.c/top,y=H-B-h;
-      if(p.n)s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${col("a")}"><title>${p.l}: ${p.n} alertas (${p.c} críticas o altas)</title></rect>`;
+      if(p.n)s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${col("a")}"><title>${p.l}: ${u?p.n.toLocaleString("es-CO")+" "+u:p.n+" alertas ("+p.c+" críticas o altas)"}${p.nota?" · "+p.nota:""}</title></rect>`;
       if(p.c)s+=`<rect x="${x}" y="${H-B-hc}" width="${w}" height="${hc}" fill="${col("c")}"/>`;
       if(pts.length<=12||i%5===0||i===pts.length-1)s+=`<text x="${x+w/2}" y="${H-B+12}" font-size="9" fill="${col("t")}" text-anchor="middle" font-family="sans-serif">${p.l}</text>`;});
     return s+"</svg>";
@@ -1231,7 +1259,8 @@ footer .fsrc{flex-basis:100%;max-width:110ch;line-height:1.55}
     if(!S)return;
     const h=S.hist,hoy=hoyStr(),yNow=+hoy.slice(0,4),mNow=+hoy.slice(5,7)-1;
     if(h.year==null){h.year=yNow;h.idx=mNow;}
-    const years=[...new Set(S.rows.map(r=>+String(r.fecha||"").slice(0,4)).filter(Boolean).concat([yNow]))].sort((a,b)=>b-a);
+    const y0=S.ofi?+String(S.ofi.desde||"2022").slice(0,4):yNow, yAll=[];for(let y=Math.max(y0,yNow-4);y<=yNow;y++)yAll.push(y);
+    const years=[...new Set(S.rows.map(r=>+String(r.fecha||"").slice(0,4)).filter(Boolean).concat(yAll))].sort((a,b)=>b-a);
     $("hYear").innerHTML=years.map(y=>`<option${y===h.year?" selected":""}>${y}</option>`).join("");
     fillPeriodSelect();
     document.querySelectorAll("[data-hm]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.hm===h.mode));
@@ -1248,6 +1277,8 @@ footer .fsrc{flex-basis:100%;max-width:110ch;line-height:1.55}
         <div><b>${A.pros}</b><span>Con empresa identificada</span></div>
       </div>
       <p class="hread">${esc(lectura(p,A,B))}</p>
+      ${ofiHTML(p,P)}
+      ${hitosHTML(p)}
       ${(()=>{const an=S.informes[claveInforme(p)];
         if(!an) return `<div class="hcard"><h3>Análisis North Stonebridge del período</h3><p class="mnote">Pendiente. Pídale a Claude: “haz el análisis de ${esc(p.label.toLowerCase())}”. Mientras tanto, el informe usa la lectura automática y los análisis de cada alerta.</p></div>`;
         return `<div class="hcard hans"><h3>Análisis North Stonebridge del período${an.generado?` · ${esc(fmtD(an.generado.slice(0,10)))}`:""}</h3>
@@ -1271,6 +1302,66 @@ footer .fsrc{flex-basis:100%;max-width:110ch;line-height:1.55}
       </div>
       <div class="hcard"><h3>Alertas del período (${A.n})</h3>${A.n?`<div class="tscroll"><table class="htable"><thead><tr><th>Fecha</th><th>Nivel</th><th>Departamento</th><th>Tipo</th><th>Alerta</th></tr></thead><tbody>${
         A.rows.slice().sort((a,b)=>b.fecha.localeCompare(a.fecha)||(LV[b.nivel]||0)-(LV[a.nivel]||0)).slice(0,lim("hist",p.label)).map(r=>`<tr><td class="n">${esc(r.fecha)}</td><td><span class="lvl ${esc(r.nivel)}">${esc(r.nivel)}</span></td><td>${esc([r.municipio,r.departamento].filter(Boolean).join(", "))}</td><td>${esc(r.tipo)}</td><td>${esc(r.titulo)}${isPros(r)?` <span class="tg pros">${esc(r.empresa||"Empresa")}</span>`:""}</td></tr>`).join("")}</tbody></table></div>${masBtn("hist",Math.min(S.lim.hist,A.n),A.n,"alerta","alertas")}`:'<p class="mnote">Sin alertas en el período.</p>'}</div>`;
+  }
+  /* -------- Cifras oficiales (MinDefensa · Policía, datos.gov.co) -------- */
+  const nf=n=>Number(n||0).toLocaleString("es-CO");
+  function ofiFuente(id){return (S.ofi&&S.ofi.fuentes||[]).find(f=>f.id===id);}
+  function ofiSum(id,p){const s=(S.ofi.series||{})[id]||{};let n=0;for(const [m,d] of Object.entries(s)){const f=m+"-01";if(f>=p.ini&&f<p.fin)for(const v of Object.values(d))n+=v;}return n;}
+  function ofiDeps(id,p){const s=(S.ofi.series||{})[id]||{},o={};for(const [m,d] of Object.entries(s)){const f=m+"-01";if(f>=p.ini&&f<p.fin)for(const [k,v] of Object.entries(d))if(k!=="sin_depto")o[k]=(o[k]||0)+v;}return o;}
+  const ultDia=p=>new Date(Date.parse(p.fin)-864e5).toISOString().slice(0,10);
+  function ofiEstado(id,p){const f=ofiFuente(id),desde=(S.ofi.desde||"2022-01")+"-01";
+    if(p.fin<=desde) return "sin";
+    if(p.ini>f.corte) return "sin";
+    return ultDia(p)>f.corte?"parcial":"ok";}
+  function ofiDelta(id,p,P){
+    const e=ofiEstado(id,p),eP=ofiEstado(id,P);
+    if(e==="parcial") return `<em class="flat">período incompleto · datos al ${esc(fmtD(ofiFuente(id).corte))}</em>`;
+    if(eP!=="ok") return `<em class="flat">sin período previo con datos</em>`;
+    const a=ofiSum(id,p),b=ofiSum(id,P),d=pct(a,b);
+    if(d===null) return `<em class="flat">período previo sin casos</em>`;
+    if(d===0) return `<em class="flat">igual que ${esc(P.corto)}</em>`;
+    return `<em class="${d>0?"up":"down"}">${d>0?"▲":"▼"} ${Math.abs(d)} % vs. ${esc(P.corto)}</em>`;}
+  function ofiHTML(p,P){
+    if(!S.ofi||!(S.ofi.fuentes||[]).length) return `<div class="hcard"><h3>Cifras oficiales</h3><p class="mnote">El histórico oficial (MinDefensa y Policía, 2022 en adelante) todavía no está cargado. Se genera en GitHub y aparece aquí en cuanto termine.</p></div>`;
+    const F=S.ofi.fuentes; if(!S.hist.ind||!ofiFuente(S.hist.ind)) S.hist.ind=F[0].id;
+    const f=ofiFuente(S.hist.ind), est=ofiEstado(f.id,p);
+    const chips=F.map(x=>{const e=ofiEstado(x.id,p);return `<button type="button" data-oi="${esc(x.id)}" aria-pressed="${x.id===f.id}"><b>${e==="sin"?"—":nf(ofiSum(x.id,p))}</b><span>${esc(x.nombre)}</span>${e==="sin"?`<em class="flat">sin datos para el período</em>`:ofiDelta(x.id,p,P)}</button>`;}).join("");
+    const deps=ofiDeps(f.id,p);
+    const Am={byDept:Object.fromEntries(Object.entries(deps).map(([k,v])=>[k,{n:v,score:v}]))};
+    const yNow=+hoyStr().slice(0,4), y0=Math.max(+String(S.ofi.desde).slice(0,4),yNow-4), pts=[];
+    for(let y=y0;y<=yNow;y++){const q=periodo("anio",y,0),e=ofiEstado(f.id,q);pts.push({l:String(y)+(e==="parcial"?"*":""),n:e==="sin"?0:ofiSum(f.id,q),c:0,nota:e==="parcial"?"año incompleto, datos al "+fmtD(f.corte):""});}
+    const sinDep=((S.ofi.series[f.id]||{}),Object.entries(S.ofi.series[f.id]||{}).reduce((n,[m,d])=>{const x=m+"-01";return x>=p.ini&&x<p.fin?n+(d.sin_depto||0):n;},0));
+    return `<section class="ofi" aria-label="Cifras oficiales del período">
+      <div class="ohead"><div><div class="eyebrow">Cifras oficiales · ${esc(p.label)}</div><h3 class="oh3">Lo que registran las autoridades</h3></div>
+        <p class="mnote">Ministerio de Defensa y Policía Nacional (datos.gov.co). Son el total del país, no solo lo que Meridiano alertó.</p></div>
+      <div class="ochips" role="group" aria-label="Indicador">${chips}</div>
+      ${est==="sin"?`<p class="mnote">No hay cifras oficiales de ${esc(f.nombre.toLowerCase())} para este período.</p>`:`
+      <div class="hgrid">
+        <div class="hcard hmap"><h3>${esc(f.nombre)} por departamento</h3>${mapaSVG(Am,false,f.unidad)}
+          <div class="legend" style="margin-top:8px">${RBANDS.map(b=>`<span><i style="background:var(--${b.k})"></i>${b.t}</span>`).join("")}</div>
+          <p class="mnote">Intensidad relativa al departamento con más ${esc(f.unidad)} del período.${sinDep?` ${nf(sinDep)} sin departamento asignado.`:""}${est==="parcial"?` Datos al ${esc(fmtD(f.corte))}.`:""}</p></div>
+        <div style="display:flex;flex-direction:column;gap:22px;min-width:0">
+          <div class="hcard"><h3>${esc(f.nombre)} · ${y0} a ${yNow}</h3>${serieSVG(pts,false,f.unidad)}
+            <p class="mnote">${pts.some(x=>x.nota)?"* Año incompleto: datos al "+esc(fmtD(f.corte))+". ":""}Total nacional por año.</p></div>
+          <div class="hcard"><h3>Departamentos con más ${esc(f.unidad)}</h3>${bars(deps,8,nameOf)}</div>
+        </div>
+      </div>`}
+      <p class="osrc">Fuente: ${esc(f.entidad)} · <a href="${esc(safeUrl(f.url))}" target="_blank" rel="noopener noreferrer">${esc(f.titulo||f.nombre)}</a> · actualizado ${esc(f.actualizado?fmtD(f.actualizado):"s. f.")} · corte ${esc(fmtD(f.corte))}. Cifras sujetas a revisión de la entidad; pueden diferir de boletines de prensa anteriores. Histórico generado el ${esc(fmtD(String(S.ofi.generado).slice(0,10)))}.</p>
+    </section>`;
+  }
+  function hitosEn(p){return (S.hitos||[]).filter(h=>h.fecha&&h.fecha>=p.ini&&h.fecha<p.fin);}
+  function hitosHTML(p){
+    const H=hitosEn(p); if(!S.hitos||!S.hitos.length) return "";
+    return `<div class="hcard"><h3>Hechos clave del período (${H.length})</h3>${H.length?`<ul class="hitos">${H.map(h=>`<li><span class="hf">${esc(fmtD(h.fecha))}</span><div><b>${esc(h.titulo)}</b><span class="mnote"> · ${esc([h.municipio,h.departamento].filter(Boolean).join(", "))}${h.tipo?" · "+esc(h.tipo):""}</span>${h.resumen?`<p>${esc(h.resumen)}</p>`:""}<span class="hsrc">${(h.fuentes||[]).map(x=>`<a href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener noreferrer">${esc(x.nombre)}</a>`).join(" · ")}</span></div></li>`).join("")}</ul>`:'<p class="mnote">Sin hechos clave registrados en el período.</p>'}</div>`;
+  }
+  function ofiInformeHTML(p,P){
+    if(!S.ofi||!(S.ofi.fuentes||[]).length) return "";
+    const rows=S.ofi.fuentes.map(f=>{const e=ofiEstado(f.id,p),eP=ofiEstado(f.id,P),a=ofiSum(f.id,p),b=ofiSum(f.id,P),d=pct(a,b);
+      return `<tr><td><b>${esc(f.nombre)}</b></td><td class="n">${e==="sin"?"—":nf(a)}</td><td class="n">${eP==="ok"?nf(b):"—"}</td><td>${e==="parcial"?"incompleto (al "+esc(fmtD(f.corte))+")":eP!=="ok"||d===null?"—":(d>0?"+":"")+d+" %"}</td><td class="src">${esc(f.entidad)} · ${esc(f.dataset)}</td></tr>`;}).join("");
+    const H=hitosEn(p);
+    return `<h2>Cifras oficiales del período</h2><table><thead><tr><th>Indicador</th><th>${esc(p.corto)}</th><th>${esc(P.corto)}</th><th>Variación</th><th>Fuente</th></tr></thead><tbody>${rows}</tbody></table>
+      <p class="note">Ministerio de Defensa y Policía Nacional (datos.gov.co). Total nacional, sujeto a revisión de la entidad.</p>
+      ${H.length?`<h2>Hechos clave</h2>${H.map(h=>`<div class="dest"><b>${esc(fmtD(h.fecha))} · ${esc(h.titulo)}</b><br><span class="note">${esc([h.municipio,h.departamento].filter(Boolean).join(", "))}</span>${h.resumen?`<br>${esc(h.resumen)}`:""}<div class="src">${(h.fuentes||[]).map(x=>esc(x.nombre)+" "+esc(x.url)).join(" · ")}</div></div>`).join("")}`:""}`;
   }
   function informeHTML(){
     const {p,P,A,B,pts,desde,parcial}=histData();
@@ -1325,6 +1416,7 @@ h2{break-after:avoid}.kpi,table tr,.mapbox,.legend{break-inside:avoid}
 <div class="meta">${fmtD(p.ini)} – ${fmtD(new Date(Date.parse(p.fin)-864e5).toISOString().slice(0,10))} · Generado el ${esc(gen)}${desde&&desde>p.ini?` · Cobertura de Meridiano desde el ${fmtD(desde)}`:""}</div>
 <div class="kpi"><div><b>${A.n}</b><span>Alertas</span><i>${d(A.n,B.n)} vs. ${esc(P.corto)}</i></div><div><b>${A.crit+A.alto}</b><span>Críticas o altas</span><i>${d(A.crit+A.alto,B.crit+B.alto)} vs. ${esc(P.corto)}</i></div><div><b>${A.crit}</b><span>Críticas</span></div><div><b>${A.deptos}</b><span>Departamentos</span></div><div><b>${A.pros}</b><span>Con empresa</span></div></div>
 <p class="lead">${esc(lectura(p,A,B))}</p>
+${ofiInformeHTML(p,P)}
 ${(()=>{const an=S.informes[claveInforme(p)];const mk=s=>esc(s).replace(/\[(Hecho|Inferencia|Recomendación)\]/g,'<b class="mk">$1:</b>');
   const ul=a=>(a&&a.length)?`<ul>${a.map(x=>`<li>${mk(x)}</li>`).join("")}</ul>`:"";
   if(!an) return "";
@@ -1422,6 +1514,7 @@ ${A.n?`<table class="det"><thead><tr><th>Fecha</th><th>Nivel</th><th>Lugar</th><
     if(sClick(e))return;
     const mo=e.target.closest("[data-more],[data-moreall],[data-less]");if(mo&&S){const k=mo.dataset.more||mo.dataset.moreall||mo.dataset.less;S.lim[k]=mo.dataset.less?PAGE[k]:mo.dataset.moreall?1e6:S.lim[k]+PAGE[k];({radar:list,sen:drawSenales,zona:()=>drawMap(),hist:drawHist})[k]();return;}
     const tg=e.target.closest("[data-stog]");if(tg&&S){S.sOpen=S.sOpen||{};S.sOpen[tg.dataset.stog]=!S.sOpen[tg.dataset.stog];drawSenales();return;}
+    const oi=e.target.closest("[data-oi]");if(oi&&S){S.hist.ind=oi.dataset.oi;drawHist();return;}
     const hm=e.target.closest("[data-hm]");if(hm){S.hist.mode=hm.dataset.hm;const m=+hoyStr().slice(5,7)-1;S.hist.idx=S.hist.mode==="mes"?m:S.hist.mode==="sem"?(m<6?0:1):0;drawHist();return;}
     if(e.target.id==="hDown"){descargarInforme();return;}
     if(e.target.id==="hPdf"){imprimirInforme();return;}

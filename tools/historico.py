@@ -40,13 +40,12 @@ FUENTES = [
      "entidad": MDN, "modo": "mdn", "filtro": "accion='ASESINADO'"},
     {"id": "fp_heridos", "nombre": "Fuerza Pública herida", "unidad": "uniformados", "ds": "8rpn-wpty",
      "entidad": MDN, "modo": "mdn", "filtro": "accion='HERIDO'"},
-    {"id": "terrorismo", "nombre": "Terrorismo", "unidad": "casos", "ds": "37p5-impc",
-     "entidad": "Policía Nacional (SIEDCO)", "modo": "policia"},
+    {"id": "terrorismo", "nombre": "Terrorismo", "unidad": "casos", "ds": "yi5j-5fe9", "entidad": MDN, "modo": "mdn"},
+    {"id": "homicidio", "nombre": "Homicidio", "unidad": "víctimas", "ds": "m8fd-ahd9", "entidad": MDN, "modo": "mdn"},
+    {"id": "pirateria", "nombre": "Piratería terrestre", "unidad": "casos", "ds": "sutf-7dyz", "entidad": MDN, "modo": "mdn"},
 ]
-# Búsqueda de otros conjuntos del Ministerio de Defensa con el mismo formato (fecha_hecho, cod_depto, cantidad)
-BUSCAR = {"homicidio": ("Homicidio intencional", "víctimas"), "masacre": ("Masacres", "casos"),
-          "terrorismo": ("Terrorismo (MinDefensa)", "casos"), "infraestructura": ("Ataques a infraestructura", "casos"),
-          "pirateria": ("Piratería terrestre", "casos"), "minas": ("Víctimas de minas", "víctimas")}
+# Exploración informativa: lista los conjuntos del MinDefensa con el mismo formato (no se cargan solos)
+ATTR = "Ministerio de Defensa Nacional - MinDefensa"
 
 
 def get(url, intentos=4):
@@ -125,36 +124,33 @@ def cargar_policia(f):
     return serie, corte, tot
 
 
-def descubrir(usados):
-    """Busca en el catálogo otros conjuntos del MinDefensa con formato fecha_hecho/cod_depto/cantidad."""
-    extra, vistos = [], []
-    for term, (nombre, unidad) in BUSCAR.items():
+def descubrir():
+    """Lista los conjuntos del MinDefensa con formato fecha_hecho/cod_depto/cantidad (para revisión humana)."""
+    vistos, off = [], 0
+    while off < 400:
         try:
             res = get("https://api.us.socrata.com/api/catalog/v1?" + urllib.parse.urlencode(
-                {"domains": "www.datos.gov.co", "search_context": "www.datos.gov.co", "q": term, "only": "dataset", "limit": 40}))
+                {"domains": "www.datos.gov.co", "search_context": "www.datos.gov.co", "attribution": ATTR,
+                 "only": "dataset", "limit": 100, "offset": off}))
         except Exception as e:
-            print(f"  catálogo '{term}': {e}")
-            continue
-        for it in res.get("results", []):
+            print(f"  catálogo: {e}")
+            break
+        rs = res.get("results", [])
+        for it in rs:
             r = it.get("resource", {})
             cols = set(r.get("columns_field_name") or [])
-            attr = (r.get("attribution") or "") + " " + json.dumps(it.get("classification", {}), ensure_ascii=False)
-            ok = "MinDefensa" in attr and {"fecha_hecho", "cod_depto", "cantidad"} <= cols
-            vistos.append({"term": term, "id": r.get("id"), "nombre": r.get("name"), "apto": ok,
-                           "actualizado": (r.get("data_updated_at") or "")[:10]})
-            if ok and r["id"] not in usados and not r.get("name", "").upper().startswith("VISTA") \
-                    and term.split()[0][:6].lower() in r.get("name", "").lower().replace("í", "i").replace("é", "e"):
-                usados.add(r["id"])
-                extra.append({"id": term, "nombre": nombre, "unidad": unidad, "ds": r["id"], "entidad": MDN, "modo": "mdn",
-                              "titulo_ds": r.get("name")})
-                break
-    return extra, vistos
+            vistos.append({"id": r.get("id"), "nombre": r.get("name"), "columnas": sorted(cols)[:12],
+                           "apto": {"fecha_hecho", "cantidad"} <= cols, "actualizado": (r.get("data_updated_at") or "")[:10]})
+        if len(rs) < 100:
+            break
+        off += 100
+    return vistos
 
 
 def main(d="data"):
     pub = serialization.load_der_public_key(base64.b64decode(json.load(open(f"{d}/llave.pub.json"))["spki"]))
-    usados = {f["ds"] for f in FUENTES}
-    extra, vistos = descubrir(usados)
+    vistos = descubrir()
+    extra = []
     out = {"v": 1, "desde": f"{DESDE}-01", "generado": datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=-5))).isoformat(timespec="seconds"),
            "fuentes": [], "series": {}}
     resumen = {"generado": out["generado"], "fuentes": [], "totales": {}, "errores": [], "catalogo": vistos}

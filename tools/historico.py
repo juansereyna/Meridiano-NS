@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Meridiano · histórico oficial 2022 → hoy (corre en GitHub Actions, sin clave).
+(Fuente actual: Ministerio de Defensa Nacional en datos.gov.co.)
 
 Descarga de datos.gov.co las cifras oficiales por departamento y mes, las valida y las
 sella con la LLAVE PÚBLICA (igual que los lotes de barrida). Solo el navegador, con la

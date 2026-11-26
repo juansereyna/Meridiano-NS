@@ -578,7 +578,7 @@ footer .fsrc{flex-basis:100%;max-width:110ch;line-height:1.55}
     const base=JSON.parse(dec.decode(pt));
     try{ await mergeLotes(base,pw); }catch(e){ base._loteErr=true; }
     try{ base._ofi=await abrirPub("data/historico.enc.json",pw); }catch(e){ base._ofi=null; }
-    try{ base._hitos=await abrirPub("data/hitos.enc.json",pw); }catch(e){ base._hitos=null; }
+    try{ base._hitos=await abrirHitos(pw); }catch(e){ base._hitos=null; }
     return base;
   }
   /* Lotes de barridas automáticas: cifrados con la llave pública; solo esta llave privada (protegida por la clave) los abre */
@@ -614,6 +614,13 @@ footer .fsrc{flex-basis:100%;max-width:110ch;line-height:1.55}
     const raw=await crypto.subtle.decrypt({name:"RSA-OAEP"},pk,b64(e.ek));
     const ak=await crypto.subtle.importKey("raw",raw,"AES-GCM",false,["decrypt"]);
     return JSON.parse(dec.decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:b64(e.iv)},ak,b64(e.ct))));
+  }
+  const HITPAQ={};
+  async function abrirHitos(pw){
+    let idx; try{ idx=await getJSON("data/hitos.idx.json",true); }catch(e){ return null; }
+    const M=new Map();
+    for(const q of (idx.paquetes||[])){ let o=HITPAQ[q.archivo]; if(!o){ o=HITPAQ[q.archivo]=await abrirPub("data/"+q.archivo,pw); } (o&&o.hitos||[]).forEach(h=>M.set(h.id,h)); }
+    return {hitos:[...M.values()]};
   }
   function fusionar(base,o){
     const A=new Map((base.alertas||[]).map(a=>[a.id,a]));
@@ -721,7 +728,7 @@ footer .fsrc{flex-basis:100%;max-width:110ch;line-height:1.55}
   /* -------- Cierre de sesión -------- */
   function logout(reason){
     clearInterval(idleTimer);clearInterval(refreshTimer);idleTimer=refreshTimer=null;
-    S=null; PRIV=null; PRIVPW=null; for(const k in LOTES) delete LOTES[k];
+    S=null; PRIV=null; PRIVPW=null; for(const k in LOTES) delete LOTES[k]; for(const k in HITPAQ) delete HITPAQ[k];
     $("list").innerHTML="";$("panel").innerHTML="";$("typeChips").innerHTML="";$("map").innerHTML="";$("zonecol").innerHTML="";$("hBody").innerHTML="";$("zbrief").innerHTML="";$("sList").innerHTML="";$("iBody").innerHTML="";$("vBody").innerHTML="";$("sDash").innerHTML="";$("sAct").innerHTML="";$("tip").hidden=true;
     $("app").hidden=true;$("idleWarn").hidden=true;$("gate").hidden=false;
     $("loginMsg").className="msg info";$("loginMsg").textContent=reason||"Sesión cerrada.";
@@ -1322,7 +1329,7 @@ footer .fsrc{flex-basis:100%;max-width:110ch;line-height:1.55}
     if(d===0) return `<em class="flat">igual que ${esc(P.corto)}</em>`;
     return `<em class="${d>0?"up":"down"}">${d>0?"▲":"▼"} ${Math.abs(d)} % vs. ${esc(P.corto)}</em>`;}
   function ofiHTML(p,P){
-    if(!S.ofi||!(S.ofi.fuentes||[]).length) return `<div class="hcard"><h3>Cifras oficiales</h3><p class="mnote">El histórico oficial (MinDefensa y Policía, 2022 en adelante) todavía no está cargado. Se genera en GitHub y aparece aquí en cuanto termine.</p></div>`;
+    if(!S.ofi||!(S.ofi.fuentes||[]).length) return `<div class="hcard"><h3>Cifras oficiales</h3><p class="mnote">El histórico oficial (Ministerio de Defensa, 2022 en adelante) todavía no está cargado. Se genera en GitHub y aparece aquí en cuanto termine.</p></div>`;
     const F=S.ofi.fuentes; if(!S.hist.ind||!ofiFuente(S.hist.ind)) S.hist.ind=F[0].id;
     const f=ofiFuente(S.hist.ind), est=ofiEstado(f.id,p);
     const chips=F.map(x=>{const e=ofiEstado(x.id,p);return `<button type="button" data-oi="${esc(x.id)}" aria-pressed="${x.id===f.id}"><b>${e==="sin"?"—":nf(ofiSum(x.id,p))}</b><span>${esc(x.nombre)}</span>${e==="sin"?`<em class="flat">sin datos para el período</em>`:ofiDelta(x.id,p,P)}</button>`;}).join("");
@@ -1333,7 +1340,7 @@ footer .fsrc{flex-basis:100%;max-width:110ch;line-height:1.55}
     const sinDep=((S.ofi.series[f.id]||{}),Object.entries(S.ofi.series[f.id]||{}).reduce((n,[m,d])=>{const x=m+"-01";return x>=p.ini&&x<p.fin?n+(d.sin_depto||0):n;},0));
     return `<section class="ofi" aria-label="Cifras oficiales del período">
       <div class="ohead"><div><div class="eyebrow">Cifras oficiales · ${esc(p.label)}</div><h3 class="oh3">Lo que registran las autoridades</h3></div>
-        <p class="mnote">Ministerio de Defensa y Policía Nacional (datos.gov.co). Son el total del país, no solo lo que Meridiano alertó.</p></div>
+        <p class="mnote">Ministerio de Defensa Nacional (datos.gov.co). Son el total del país, no solo lo que Meridiano alertó.</p></div>
       <div class="ochips" role="group" aria-label="Indicador">${chips}</div>
       ${est==="sin"?`<p class="mnote">No hay cifras oficiales de ${esc(f.nombre.toLowerCase())} para este período.</p>`:`
       <div class="hgrid">
@@ -1360,7 +1367,7 @@ footer .fsrc{flex-basis:100%;max-width:110ch;line-height:1.55}
       return `<tr><td><b>${esc(f.nombre)}</b></td><td class="n">${e==="sin"?"—":nf(a)}</td><td class="n">${eP==="ok"?nf(b):"—"}</td><td>${e==="parcial"?"incompleto (al "+esc(fmtD(f.corte))+")":eP!=="ok"||d===null?"—":(d>0?"+":"")+d+" %"}</td><td class="src">${esc(f.entidad)} · ${esc(f.dataset)}</td></tr>`;}).join("");
     const H=hitosEn(p);
     return `<h2>Cifras oficiales del período</h2><table><thead><tr><th>Indicador</th><th>${esc(p.corto)}</th><th>${esc(P.corto)}</th><th>Variación</th><th>Fuente</th></tr></thead><tbody>${rows}</tbody></table>
-      <p class="note">Ministerio de Defensa y Policía Nacional (datos.gov.co). Total nacional, sujeto a revisión de la entidad.</p>
+      <p class="note">Ministerio de Defensa Nacional (datos.gov.co). Total nacional, sujeto a revisión de la entidad.</p>
       ${H.length?`<h2>Hechos clave</h2>${H.map(h=>`<div class="dest"><b>${esc(fmtD(h.fecha))} · ${esc(h.titulo)}</b><br><span class="note">${esc([h.municipio,h.departamento].filter(Boolean).join(", "))}</span>${h.resumen?`<br>${esc(h.resumen)}`:""}<div class="src">${(h.fuentes||[]).map(x=>esc(x.nombre)+" "+esc(x.url)).join(" · ")}</div></div>`).join("")}`:""}`;
   }
   function informeHTML(){

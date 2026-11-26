@@ -5,7 +5,9 @@
 !data/lotes.json
 !data/historico.enc.json
 !data/historico.resumen.json
-!data/hitos.enc.json
+!data/hitos.idx.json
+!data/hitos/
+!data/hitos/*.json
 !data/llave.enc.json
 !data/llave.pub.json
 !data/lotes/

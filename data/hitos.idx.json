@@ -1,0 +1,24 @@
+{
+ "v": 1,
+ "paquetes": [
+  {
+   "archivo": "hitos/2026-11-25-1959.json",
+   "sellado": "2026-11-25T19:59:57-05:00",
+   "n": 12,
+   "huellas": [
+    "f1981d9024e29f12321de9d4",
+    "f1407827b1cbb37373a9ea4b",
+    "e67eca5c25f53ef9c798cfb0",
+    "ff9c2f2bc1ed33faa6490e6b",
+    "bf4a449e606e2a465c76c574",
+    "df45e0c197da8e5d0eda695a",
+    "c221ce7103d064322f2fe695",
+    "3bfe71b03756d16f81d61d4d",
+    "4404d6d37fc37005084c2ffa",
+    "28f89a51a816c10260d4b54d",
+    "dff6b4315976a1bf9bda5963",
+    "56284d08d04fb0d3185da675"
+   ]
+  }
+ ]
+}

@@ -64,6 +64,14 @@
    "actualizadas": 1,
    "senales": 0,
    "informes": []
+  },
+  {
+   "archivo": "lotes/2026-11-28-0647.json",
+   "sellado": "2026-11-28T06:47:14-05:00",
+   "nuevas": 1,
+   "actualizadas": 1,
+   "senales": 1,
+   "informes": []
   }
  ],
  "huellas": [
@@ -132,6 +140,7 @@
   "56d0f3af670b3a66cd488ea7",
   "5af68e9bb4be3b23c3b9c0a7",
   "5b3e74d716c0e1c6f127f7e1",
+  "5b3f399d5759883b52939a2d",
   "5b5108be31b0303c98d7b544",
   "5bb5cafb79f57963932a059f",
   "5c79808ea1d20c40e9892820",
@@ -174,6 +183,7 @@
   "7d17af5d5364ef2585fc27fe",
   "81b9038fc24152a25aa148f6",
   "81f8292b02479b10fd700571",
+  "82841e2718d8ce2e17021739",
   "85b10e7f0a6bbb838b3b6dd9",
   "873104769a86b526d153d912",
   "875f1cb1afb8ad4211186aeb",
@@ -266,5 +276,5 @@
   "fef5b2cf8c9d48586bd464e5",
   "ff07237d525beba4925704f1"
  ],
- "ultima": "2026-11-27T12:50:29-05:00"
+ "ultima": "2026-11-28T06:47:14-05:00"
 }

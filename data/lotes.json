@@ -56,6 +56,14 @@
    "actualizadas": 0,
    "senales": 0,
    "informes": []
+  },
+  {
+   "archivo": "lotes/2026-11-27-1250.json",
+   "sellado": "2026-11-27T12:50:29-05:00",
+   "nuevas": 0,
+   "actualizadas": 1,
+   "senales": 0,
+   "informes": []
   }
  ],
  "huellas": [
@@ -258,5 +266,5 @@
   "fef5b2cf8c9d48586bd464e5",
   "ff07237d525beba4925704f1"
  ],
- "ultima": "2026-11-27T12:48:43-05:00"
+ "ultima": "2026-11-27T12:50:29-05:00"
 }
